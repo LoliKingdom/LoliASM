@@ -45,17 +45,11 @@ repositories {
 
     jcenter()
 
-    maven {
-        url "https://www.cursemaven.com"
-    }
-
 }
 
 dependencies {
 
     embed 'me.nallar.whocalled:WhoCalled:1.1'
-
-    deobfCompile "curse.maven:forestry-59751:2918418"
 
 }
 
