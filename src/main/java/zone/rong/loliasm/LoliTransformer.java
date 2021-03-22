@@ -214,7 +214,7 @@ public class LoliTransformer implements IClassTransformer {
         final String ownerOfNewCall;
         final MethodInsnNode staticRedirect;
 
-        boolean foundBakedQuad = false;
+        boolean foundNewCall = false;
 
         ReplaceNewWithStaticCall(int api, MethodVisitor mv, String ownerOfNewCall, MethodInsnNode staticRedirect) {
             super(api, mv);
@@ -225,7 +225,7 @@ public class LoliTransformer implements IClassTransformer {
         @Override
         public void visitTypeInsn(int opcode, String type) {
             if (opcode == NEW && type.equals(ownerOfNewCall)) {
-                foundBakedQuad = true;
+                foundNewCall = true;
             } else {
                 super.visitTypeInsn(opcode, type);
             }
@@ -233,8 +233,8 @@ public class LoliTransformer implements IClassTransformer {
 
         @Override
         public void visitInsn(int opcode) {
-            if (foundBakedQuad && opcode == DUP) {
-                foundBakedQuad = false;
+            if (foundNewCall && opcode == DUP) {
+                foundNewCall = false;
             } else {
                 super.visitInsn(opcode);
             }
