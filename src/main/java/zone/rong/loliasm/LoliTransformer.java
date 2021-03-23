@@ -64,7 +64,8 @@ public class LoliTransformer implements IClassTransformer {
     // Better way
     private byte[] redirectNewBakedQuadCalls$EventBased(byte[] bytes) {
         ClassReader reader = new ClassReader(bytes);
-        ClassWriter writer = new ClassWriter(reader, 0);
+
+        ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES); // in certain cases, this flag is needed
 
         MethodInsnNode node = new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/bakedquad/BakedQuadFactory", "create", "([IILnet/minecraft/util/EnumFacing;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;ZLnet/minecraft/client/renderer/vertex/VertexFormat;)Lnet/minecraft/client/renderer/block/model/BakedQuad;", false);
 
