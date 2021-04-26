@@ -8,6 +8,7 @@ import org.objectweb.asm.Opcodes;
 import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.LoliTransformer;
 
+import java.lang.invoke.MethodHandle;
 import java.util.Locale;
 
 import static org.objectweb.asm.Opcodes.*;
@@ -19,6 +20,8 @@ import static org.objectweb.asm.Opcodes.*;
  * EnumFacings are patched in directly with no field ref, along with shouldApplyDiffuseLighting and tintIndex
  */
 public final class BakedQuadClassFactory {
+
+    private static final MethodHandle classLoader$DefineClass = LoliReflector.resolveMethod(ClassLoader.class, "defineClass", String.class, byte[].class, int.class, int.class);
 
     // Called prior to transforming BakedQuadFactory
     public static void predefineBakedQuadClasses() {
@@ -60,6 +63,7 @@ public final class BakedQuadClassFactory {
                         // Load into the ctor!
                         methodVisitor.visitVarInsn(ALOAD, 0); // Load this
                         methodVisitor.visitVarInsn(ALOAD, 1); // Load int[]
+                        methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/bakedquad/VertexDataCache", "canonize", "([I)[I", false);
                         methodVisitor.visitVarInsn(ALOAD, hasTint ? 3 : 2); // Load TextureAtlasSprite (order shifted if hasTint)
                         methodVisitor.visitVarInsn(ALOAD, hasTint ? 4 : 3); // Load VertexFormat (order shifted if hasTint)
                         // Call super(); <= this is a must need as the ClassWriter won't pass the JVM class verification
@@ -265,9 +269,8 @@ public final class BakedQuadClassFactory {
                         // Fortunately, no references should be kept so AppClassLoader should discard it some GC runs later.
                         //
                         // Solution found:
-                        // Don't flag the ClassWriter with COMPUTE_FRAMES!
-                        LoliReflector.classLoader$DefineClass.invoke(Launch.classLoader, className.replace('/', '.'), classBytes, 0, classBytes.length);
-                        // LoliReflector.classLoader$DefineClass.invoke(ClassWriter.class.getClassLoader(), className.replace('/', '.'), classBytes, 0, classBytes.length);
+                        // No need to COMPUTE_FRAMES!
+                        Class clazz = (Class) classLoader$DefineClass.invokeExact((ClassLoader) Launch.classLoader, className.replace('/', '.'), classBytes, 0, classBytes.length);
                     } catch (Throwable t) {
                         t.printStackTrace();
                     }
