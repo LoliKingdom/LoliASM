@@ -27,7 +27,7 @@ minecraft {
     runDir = "run"
     mappings = "stable_39"
     def args = [
-            '-Dfml.coreMods.load=zone.rong.loliasm.LoliLoadingPlugin',
+            '-Dfml.coreMods.load=zone.rong.loliasm.core.LoliLoadingPlugin',
             '-Dmixin.hotSwap=true',
             '-Dmixin.checks.interfaces=true',
 			'-Dmixin.debug.export=true'
@@ -102,7 +102,7 @@ jar {
     manifest {
         attributes([
                 "FMLCorePluginContainsFMLMod": true,
-                "FMLCorePlugin": 'zone.rong.loliasm.LoliLoadingPlugin',
+                "FMLCorePlugin": 'zone.rong.loliasm.core.LoliLoadingPlugin',
                 "ForceLoadAsMod": true,
                 "TweakClass": 'org.spongepowered.asm.launch.MixinTweaker',
                 "FMLAT": "loliasm_at.cfg"
