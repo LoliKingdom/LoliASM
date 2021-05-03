@@ -24,14 +24,16 @@ public class LoliTransformer implements IClassTransformer {
     public LoliTransformer() {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
         LoliConfig.Data data = LoliConfig.getConfig();
-        transformations = new Object2ObjectOpenHashMap<>(5 + data.bakedQuadPatchClasses.length);
-        addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", BakedQuadPatch::rewriteBakedQuad);
-        addTransformation("net.minecraft.client.renderer.block.model.BakedQuadRetextured", BakedQuadRetexturedPatch::patchBakedQuadRetextured);
-        addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad);
-        addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad$Builder", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad$Builder);
-        addTransformation("zone.rong.loliasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
-        for (String classToPatch : data.bakedQuadPatchClasses) {
-            addTransformation(classToPatch, this::redirectNewBakedQuadCalls$EventBased);
+        transformations = new Object2ObjectOpenHashMap<>();
+        if (data.bakedQuadsSquasher) {
+            addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", BakedQuadPatch::rewriteBakedQuad);
+            addTransformation("net.minecraft.client.renderer.block.model.BakedQuadRetextured", BakedQuadRetexturedPatch::patchBakedQuadRetextured);
+            addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad);
+            addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad$Builder", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad$Builder);
+            addTransformation("zone.rong.loliasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
+            for (String classToPatch : data.bakedQuadPatchClasses) {
+                addTransformation(classToPatch, this::redirectNewBakedQuadCalls$EventBased);
+            }
         }
         if (data.canonizeObjects) {
             addTransformation("net.minecraft.util.ResourceLocation", this::canonizeResourceLocationStrings);

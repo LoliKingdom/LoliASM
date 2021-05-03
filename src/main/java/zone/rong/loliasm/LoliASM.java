@@ -13,7 +13,7 @@ import zone.rong.loliasm.client.models.conditions.CanonicalConditions;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod(modid = "loliasm", name = "LoliASM", version = "1.2")
+@Mod(modid = "loliasm", name = "LoliASM", version = "2.0.1")
 @Mod.EventBusSubscriber
 public class LoliASM {
 

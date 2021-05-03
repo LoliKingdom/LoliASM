@@ -17,7 +17,7 @@ public class LoliConfig {
 
         @Config.Ignore
         final String bakedQuadsSquasherComment = "Saves memory by optimizing BakedQuads with creation of new BakedQuad classes to squash variables down.";
-        final boolean bakedQuadsSquasher;
+        public final boolean bakedQuadsSquasher;
 
         @Config.Ignore
         final String logClassesThatNeedPatchingComment = "Turn this on to log any callers using old BakedQuads constructors. Check logs and put them in the 'bakedQuadPatchClasses' list.";

@@ -1,14 +1,13 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "loliasm",
+  "name": "LoliASM",
+  "description": "The lolis have bytecode manipulated your game.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["Rongmario"],
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
