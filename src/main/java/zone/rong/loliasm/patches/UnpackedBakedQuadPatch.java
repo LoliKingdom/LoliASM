@@ -4,7 +4,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
-import zone.rong.loliasm.LoliTransformer;
+import zone.rong.loliasm.core.LoliTransformer;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -12,7 +12,7 @@ import static org.objectweb.asm.Opcodes.*;
  * TODO Commenting
  * 
  * This class contains class writers for patched UnpackedBakedQuad and UnpackedBakedQuad$Builder
- * defineClass not called here, pass raw byte[] back to {@link zone.rong.loliasm.LoliTransformer#transform(String, String, byte[])}
+ * defineClass not called here, pass raw byte[] back to {@link LoliTransformer#transform(String, String, byte[])}
  *
  * No optimizations here except for soft patching `int tintIndex` to `byte tintIndex` like other BakedQuad derivatives.
  * Essentially just patching for bytecode compatibility at the moment.

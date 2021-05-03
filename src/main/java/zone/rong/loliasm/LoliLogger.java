@@ -5,6 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 public class LoliLogger {
 
-    public static Logger instance = LogManager.getLogger("LoliASM");
+    public static final Logger instance = LogManager.getLogger("LoliASM");
 
 }

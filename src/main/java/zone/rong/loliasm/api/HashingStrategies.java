@@ -3,6 +3,7 @@ package zone.rong.loliasm.api;
 import it.unimi.dsi.fastutil.Hash;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
+import net.minecraft.item.ItemStack;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -69,5 +70,22 @@ public class HashingStrategies {
         hash = hash * 31 + ((Float.floatToIntBits(vector.scale.getX())) * 31 + Float.floatToIntBits(vector.scale.getY())) * 31 + Float.floatToIntBits(vector.scale.getZ());
         return hash * 31 + ((Float.floatToIntBits(vector.translation.getX())) * 31 + Float.floatToIntBits(vector.translation.getY())) * 31 + Float.floatToIntBits(vector.translation.getZ());
     }
+
+    public static final Hash.Strategy<ItemStack> ITEM_AND_META_HASH = new Hash.Strategy<ItemStack>() {
+        @Override
+        public int hashCode(ItemStack o) {
+            int hash = 1;
+            hash = hash * 31 + o.getItem().hashCode();
+            int metadata = o.getMetadata();
+            return (metadata == Short.MAX_VALUE || metadata == 0) ? hash : hash * 31 + metadata;
+        }
+        @Override
+        public boolean equals(ItemStack a, ItemStack b) {
+            if (a == null || b == null) {
+                return false;
+            }
+            return a.getItem() == b.getItem() && (a.getMetadata() == Short.MAX_VALUE || b.getMetadata() == Short.MAX_VALUE || a.getMetadata() == b.getMetadata());
+        }
+    };
 
 }

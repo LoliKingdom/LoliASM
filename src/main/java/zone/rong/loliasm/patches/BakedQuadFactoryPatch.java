@@ -10,6 +10,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 import zone.rong.loliasm.bakedquad.BakedQuadClassFactory;
+import zone.rong.loliasm.core.LoliTransformer;
 
 import java.util.ListIterator;
 
@@ -17,7 +18,7 @@ import static org.objectweb.asm.Opcodes.*;
 
 /**
  * This class contains class writers for patched BakedQuadFactory
- * defineClass not called here, pass raw byte[] back to {@link zone.rong.loliasm.LoliTransformer#transform(String, String, byte[])}
+ * defineClass not called here, pass raw byte[] back to {@link LoliTransformer#transform(String, String, byte[])}
  *
  * No optimizations for this patch, it is also not a whole class patch.
  * Just before the transformation, we predefine the classes via ASM in {@link BakedQuadClassFactory}

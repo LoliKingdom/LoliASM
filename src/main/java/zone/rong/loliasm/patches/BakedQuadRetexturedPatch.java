@@ -4,13 +4,13 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
-import zone.rong.loliasm.LoliTransformer;
+import zone.rong.loliasm.core.LoliTransformer;
 
 import static org.objectweb.asm.Opcodes.*;
 
 /**
  * This class contains class writers for patched BakedQuadRetextured
- * defineClass not called here, pass raw byte[] back to {@link zone.rong.loliasm.LoliTransformer#transform(String, String, byte[])}
+ * defineClass not called here, pass raw byte[] back to {@link LoliTransformer#transform(String, String, byte[])}
  *
  * It is one of the very few instances where BakedQuad actually gets extended.
  *

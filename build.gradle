@@ -1,17 +1,19 @@
 buildscript {
     repositories {
-        jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-
-version = "1.1"
+version = "2.0"
 group = "zone.rong.loliasm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "loliasm"
 
@@ -45,11 +47,26 @@ repositories {
 
     jcenter()
 
+    maven {
+        url "https://repo.spongepowered.org/maven"
+    }
+
 }
 
 dependencies {
 
     embed 'me.nallar.whocalled:WhoCalled:1.1'
+
+    // implementation ("org.spongepowered:mixin:0.8.3-SNAPSHOT") {
+    embed ("org.spongepowered:mixin:0.8") {
+        exclude module: "asm-commons"
+        exclude module: "asm-tree"
+        exclude module: "launchwrapper"
+        exclude module: "guava"
+        exclude module: "log4j-core"
+        exclude module: "gson"
+        exclude module: "commons-io"
+    }
 
 }
 
@@ -72,6 +89,12 @@ processResources {
     }
 }
 
+sourceSets {
+    main {
+        ext.refMap = "mixins.loliasm.refmap.json"
+    }
+}
+
 jar {
     from (configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
         exclude 'LICENSE.txt', 'META-INF/MANIFSET.MF', 'META-INF/maven/**', 'META-INF/*.RSA', 'META-INF/*.SF'
@@ -80,7 +103,9 @@ jar {
         attributes([
                 "FMLCorePluginContainsFMLMod": true,
                 "FMLCorePlugin": 'zone.rong.loliasm.LoliLoadingPlugin',
-                "ForceLoadAsMod": true
+                "ForceLoadAsMod": true,
+                "TweakClass": 'org.spongepowered.asm.launch.MixinTweaker',
+                "FMLAT": "loliasm_at.cfg"
         ])
     }
 }

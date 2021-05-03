@@ -2,7 +2,7 @@ package zone.rong.loliasm.patches;
 
 import org.objectweb.asm.*;
 import zone.rong.loliasm.LoliConfig;
-import zone.rong.loliasm.LoliTransformer;
+import zone.rong.loliasm.core.LoliTransformer;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -10,7 +10,7 @@ import static org.objectweb.asm.Opcodes.*;
  * TODO Commenting
  *
  * This class contains class writers for patched BakedQuad
- * defineClass not called here, pass raw byte[] back to {@link zone.rong.loliasm.LoliTransformer#transform(String, String, byte[])}
+ * defineClass not called here, pass raw byte[] back to {@link LoliTransformer#transform(String, String, byte[])}
  *
  * Optimizations:
  *
@@ -128,7 +128,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitLabel(l4);
             methodVisitor.visitLineNumber(44, l4);
             Label startingLabel = null;
-            if (LoliConfig.config.logClassesThatNeedPatching) {
+            if (LoliConfig.getConfig().logClassesThatNeedPatching) {
                 methodVisitor.visitFieldInsn(GETSTATIC, "me/nallar/whocalled/WhoCalled", "$", "Lme/nallar/whocalled/WhoCalled;");
                 methodVisitor.visitInsn(ICONST_1);
                 methodVisitor.visitMethodInsn(INVOKEINTERFACE, "me/nallar/whocalled/WhoCalled", "getCallingClass", "(I)Ljava/lang/Class;", true);
@@ -169,7 +169,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitLocalVariable("spriteIn", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, l0, finalLabel, 4);
             methodVisitor.visitLocalVariable("applyDiffuseLighting", "Z", null, l0, finalLabel, 5);
             methodVisitor.visitLocalVariable("format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;", null, l0, finalLabel, 6);
-            if (LoliConfig.config.logClassesThatNeedPatching) {
+            if (LoliConfig.getConfig().logClassesThatNeedPatching) {
                 methodVisitor.visitLocalVariable("callee", "Ljava/lang/Class;", null, startingLabel, finalLabel, 7);
                 methodVisitor.visitMaxs(3, 8);
             } else {

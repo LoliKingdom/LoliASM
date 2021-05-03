@@ -6,9 +6,8 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.LoliTransformer;
+import zone.rong.loliasm.core.LoliTransformer;
 
-import java.lang.invoke.MethodHandle;
 import java.util.Locale;
 
 import static org.objectweb.asm.Opcodes.*;
@@ -20,8 +19,6 @@ import static org.objectweb.asm.Opcodes.*;
  * EnumFacings are patched in directly with no field ref, along with shouldApplyDiffuseLighting and tintIndex
  */
 public final class BakedQuadClassFactory {
-
-    private static final MethodHandle classLoader$DefineClass = LoliReflector.resolveMethod(ClassLoader.class, "defineClass", String.class, byte[].class, int.class, int.class);
 
     // Called prior to transforming BakedQuadFactory
     public static void predefineBakedQuadClasses() {
@@ -270,7 +267,7 @@ public final class BakedQuadClassFactory {
                         //
                         // Solution found:
                         // No need to COMPUTE_FRAMES!
-                        Class clazz = (Class) classLoader$DefineClass.invokeExact((ClassLoader) Launch.classLoader, className.replace('/', '.'), classBytes, 0, classBytes.length);
+                        Class clazz = LoliReflector.defineClass((ClassLoader) Launch.classLoader, className.replace('/', '.'), classBytes);
                     } catch (Throwable t) {
                         t.printStackTrace();
                     }

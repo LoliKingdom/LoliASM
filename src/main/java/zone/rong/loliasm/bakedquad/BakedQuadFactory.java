@@ -3,9 +3,10 @@ package zone.rong.loliasm.bakedquad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
+import zone.rong.loliasm.core.LoliTransformer;
 
 /**
- * This class aids the dispatches of BakedQuad instances. The create method is removed/patched in {@link zone.rong.loliasm.LoliTransformer}
+ * This class aids the dispatches of BakedQuad instances. The create method is removed/patched in {@link LoliTransformer}
  */
 public final class BakedQuadFactory {
 
