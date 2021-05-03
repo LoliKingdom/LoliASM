@@ -14,11 +14,15 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Locale;
 
 /**
  * Helper class for Reflection nonsense.
  */
 public class LoliReflector {
+
+    private static boolean isOpenJ9 = System.getProperty("java.vm.name").toLowerCase(Locale.ROOT).contains("openj9");
 
     private static final MethodHandles.Lookup lookup = MethodHandles.lookup();
 
@@ -99,8 +103,11 @@ public class LoliReflector {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
+            if (isOpenJ9) {
+                fixOpenJ9PrivateStaticFinalRestraint(field);
+            }
             return lookup.unreflectGetter(field);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             return null;
         }
@@ -112,8 +119,11 @@ public class LoliReflector {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
+            if (isOpenJ9) {
+                fixOpenJ9PrivateStaticFinalRestraint(field);
+            }
             return lookup.unreflectSetter(field);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             return null;
         }
@@ -135,5 +145,11 @@ public class LoliReflector {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private static void fixOpenJ9PrivateStaticFinalRestraint(Field field) throws Throwable {
+        Field modifiers = Field.class.getDeclaredField("modifiers");
+        modifiers.setAccessible(true);
+        lookup.unreflectSetter(modifiers).invokeExact(field, field.getModifiers() & ~Modifier.FINAL);
     }
 }
