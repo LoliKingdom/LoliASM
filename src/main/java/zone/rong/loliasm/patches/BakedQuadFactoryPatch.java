@@ -34,7 +34,7 @@ public final class BakedQuadFactoryPatch {
 
     public static byte[] patchCreateMethod(byte[] originalClass) {
 
-        BakedQuadClassFactory.predefineBakedQuadClasses(); // Define classes prior to transforming!
+        // BakedQuadClassFactory.predefineBakedQuadClasses(); // Define classes prior to transforming!
 
         ClassReader reader = new ClassReader(originalClass);
         ClassNode node = new ClassNode();

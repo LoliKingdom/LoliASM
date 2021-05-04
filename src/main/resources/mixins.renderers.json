@@ -1,0 +1,15 @@
+{
+  "package": "zone.rong.loliasm.client.models.mixins",
+  "refmap": "mixins.loliasm.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+
+  ]
+}

@@ -21,9 +21,10 @@ public class LoliFMLCallHook implements IFMLCallHook {
     @SuppressWarnings("unchecked")
     public Void call() {
         try {
-            // This deduplicates 50% of data in deobfuscated environments
+            // This deduplicates 50% of String data in deobfuscated environments
             LoliReflector.resolveFieldSetter(FMLDeobfuscatingRemapper.class, "classNameBiMap").invokeExact(FMLDeobfuscatingRemapper.INSTANCE, canonizeClassNames((BiMap<String, String>) LoliReflector.resolveFieldGetter(FMLDeobfuscatingRemapper.class, "classNameBiMap").invokeExact(FMLDeobfuscatingRemapper.INSTANCE)));
-            if (!FMLLaunchHandler.isDeobfuscatedEnvironment() && LoliConfig.getConfig().remapperMemorySaver) {
+            LoliConfig.Data data = LoliConfig.getConfig();
+            if (!FMLLaunchHandler.isDeobfuscatedEnvironment() && data.remapperMemorySaver) {
                 LoliReflector.resolveFieldSetter(FMLDeobfuscatingRemapper.class, "rawFieldMaps").invokeExact(FMLDeobfuscatingRemapper.INSTANCE, DeobfuscatedMappingsMap.of((Map<String, Map<String, String>>) LoliReflector.resolveFieldGetter(FMLDeobfuscatingRemapper.class, "rawFieldMaps").invokeExact(FMLDeobfuscatingRemapper.INSTANCE), true));
                 LoliReflector.resolveFieldSetter(FMLDeobfuscatingRemapper.class, "rawMethodMaps").invokeExact(FMLDeobfuscatingRemapper.INSTANCE, DeobfuscatedMappingsMap.of((Map<String, Map<String, String>>) LoliReflector.resolveFieldGetter(FMLDeobfuscatingRemapper.class, "rawMethodMaps").invokeExact(FMLDeobfuscatingRemapper.INSTANCE), false));
                 LoliReflector.resolveFieldSetter(FMLDeobfuscatingRemapper.class, "fieldNameMaps").invokeExact(FMLDeobfuscatingRemapper.INSTANCE, DeobfuscatedMappingsMap.of((Map<String, Map<String, String>>) LoliReflector.resolveFieldGetter(FMLDeobfuscatingRemapper.class, "fieldNameMaps").invokeExact(FMLDeobfuscatingRemapper.INSTANCE), true));

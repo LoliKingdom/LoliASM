@@ -267,7 +267,8 @@ public final class BakedQuadClassFactory {
                         //
                         // Solution found:
                         // No need to COMPUTE_FRAMES!
-                        Class clazz = LoliReflector.defineClass((ClassLoader) Launch.classLoader, className.replace('/', '.'), classBytes);
+
+                        Class clazz = LoliReflector.defineClass(Launch.classLoader, className.replace('/', '.'), classBytes);
                     } catch (Throwable t) {
                         t.printStackTrace();
                     }

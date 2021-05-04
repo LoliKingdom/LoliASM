@@ -10,12 +10,17 @@ import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
 import zone.rong.loliasm.client.models.MultipartBakedModelCache;
 import zone.rong.loliasm.client.models.conditions.CanonicalConditions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod(modid = "loliasm", name = "LoliASM", version = "2.0.1")
+import static zone.rong.loliasm.LoliASM.VERSION;
+
+@Mod(modid = "loliasm", name = "LoliASM", version = VERSION)
 @Mod.EventBusSubscriber
 public class LoliASM {
+
+    public static final String VERSION = "2.1";
 
     public static List<RegistrySimpleExtender> simpleRegistryInstances = new ArrayList<>();
 
@@ -49,7 +54,7 @@ public class LoliASM {
     }
 
     @Mod.EventHandler
-    public void loadComplete(FMLLoadCompleteEvent event) {
+    public void loadComplete(FMLLoadCompleteEvent event) throws IOException {
         // Map<ResourceLocation, IModel> cache = (Map<ResourceLocation, IModel>) LoliReflector.resolveFieldGetter(ModelLoaderRegistry.class, "cache").invokeExact();
         // ProgressManager.ProgressBar bar = ProgressManager.push("Optimizing Models", cache.size(), true);
         // deduplicator = null; // Free the deduplicator

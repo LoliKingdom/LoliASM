@@ -1,12 +1,12 @@
 package zone.rong.loliasm;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.objectweb.asm.Type;
-import zone.rong.loliasm.api.datastructures.fastmap.StateAndIndex;
-import zone.rong.loliasm.api.datastructures.fastmap.StateAndKey;
-import zone.rong.loliasm.api.datastructures.fastmap.FastMapStateHolder;
+import zone.rong.loliasm.api.datastructures.ResourceCache;
+import zone.rong.loliasm.core.LoliLoadingPlugin;
 
 import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
@@ -15,19 +15,18 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Locale;
+import java.util.Map;
 
 /**
  * Helper class for Reflection nonsense.
  */
 public class LoliReflector {
 
-    private static boolean isOpenJ9 = System.getProperty("java.vm.name").toLowerCase(Locale.ROOT).contains("openj9");
-
     private static final MethodHandles.Lookup lookup = MethodHandles.lookup();
 
     private static final MethodHandle classLoader$DefineClass = resolveMethod(ClassLoader.class, "defineClass", String.class, byte[].class, int.class, int.class);
 
+    /*
     static {
         ClassLoader classLoader = ImmutableMap.class.getClassLoader();
         // defineClass(classLoader, LoliEntrySet.class);
@@ -37,6 +36,22 @@ public class LoliReflector {
         defineClass(classLoader, StateAndKey.class);
         defineClass(classLoader, FastMapStateHolder.class);
     }
+     */
+
+    public static Class defineMixinClass(String className, byte[] classBytes) {
+        try {
+            // defineClass(Launch.classLoader, className, classBytes);
+            Map<String, byte[]> resourceCache = (Map<String, byte[]>) resolveFieldGetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader);
+            if (resourceCache instanceof ResourceCache) {
+                ((ResourceCache) resourceCache).add(className, classBytes);
+            } else {
+                resourceCache.put(className, classBytes);
+            }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
+    }
 
     public static <CL extends ClassLoader> Class defineClass(CL classLoader, Class clazz) {
         String name = Type.getInternalName(clazz);
@@ -45,8 +60,7 @@ public class LoliReflector {
             byte[] classBytes = new byte[byteStream.available()];
             final int bytesRead = byteStream.read(classBytes);
             Preconditions.checkState(bytesRead == classBytes.length);
-            // return defineClass(classLoader, name.replace('/', '.'), classBytes);
-            return (Class) classLoader$DefineClass.invoke(classLoader, name.replace('/', '.'), classBytes, 0, classBytes.length);
+            return (Class) classLoader$DefineClass.invokeExact(classLoader, name.replace('/', '.'), classBytes, 0, classBytes.length);
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -103,7 +117,7 @@ public class LoliReflector {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            if (isOpenJ9) {
+            if (LoliLoadingPlugin.isVMOpenJ9) {
                 fixOpenJ9PrivateStaticFinalRestraint(field);
             }
             return lookup.unreflectGetter(field);
@@ -119,7 +133,7 @@ public class LoliReflector {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            if (isOpenJ9) {
+            if (LoliLoadingPlugin.isVMOpenJ9) {
                 fixOpenJ9PrivateStaticFinalRestraint(field);
             }
             return lookup.unreflectSetter(field);
@@ -145,6 +159,14 @@ public class LoliReflector {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static boolean doesClassExist(String className) {
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException ignored) { }
+        return false;
     }
 
     private static void fixOpenJ9PrivateStaticFinalRestraint(Field field) throws Throwable {

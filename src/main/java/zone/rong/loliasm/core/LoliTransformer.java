@@ -25,15 +25,12 @@ public class LoliTransformer implements IClassTransformer {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
         LoliConfig.Data data = LoliConfig.getConfig();
         transformations = new Object2ObjectOpenHashMap<>();
-        if (data.bakedQuadsSquasher) {
+        if (!LoliLoadingPlugin.isOptifineInstalled && data.bakedQuadsSquasher) {
             addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", BakedQuadPatch::rewriteBakedQuad);
             addTransformation("net.minecraft.client.renderer.block.model.BakedQuadRetextured", BakedQuadRetexturedPatch::patchBakedQuadRetextured);
             addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad);
             addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad$Builder", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad$Builder);
             addTransformation("zone.rong.loliasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
-            for (String classToPatch : data.bakedQuadPatchClasses) {
-                addTransformation(classToPatch, this::redirectNewBakedQuadCalls$EventBased);
-            }
         }
         if (data.canonizeObjects) {
             addTransformation("net.minecraft.util.ResourceLocation", this::canonizeResourceLocationStrings);
@@ -67,19 +64,6 @@ public class LoliTransformer implements IClassTransformer {
             return getBytes.apply(bytes);
         }
         return bytes;
-    }
-
-    // Better way
-    private byte[] redirectNewBakedQuadCalls$EventBased(byte[] bytes) {
-        ClassReader reader = new ClassReader(bytes);
-        ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES); // in certain cases, this flag is needed
-
-        MethodInsnNode node = new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/bakedquad/BakedQuadFactory", "create", "([IILnet/minecraft/util/EnumFacing;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;ZLnet/minecraft/client/renderer/vertex/VertexFormat;)Lnet/minecraft/client/renderer/block/model/BakedQuad;", false);
-        reader.accept(new RedirectNewWithStaticCallClassVisitor(writer, "net/minecraft/client/renderer/block/model/BakedQuad", node), 0);
-
-        LoliLogger.instance.info("Redirecting {}'s BakedQuad calls", reader.getClassName());
-
-        return writer.toByteArray();
     }
 
     private byte[] canonizeResourceLocationStrings(byte[] bytes) {
@@ -367,63 +351,5 @@ public class LoliTransformer implements IClassTransformer {
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         node.accept(writer);
         return writer.toByteArray();
-    }
-
-    static class RedirectNewWithStaticCallClassVisitor extends ClassVisitor {
-
-        final String ownerOfNewCall;
-        final MethodInsnNode staticRedirect;
-
-        RedirectNewWithStaticCallClassVisitor(ClassVisitor cv, String ownerOfNewCall, MethodInsnNode staticRedirect) {
-            super(ASM5, cv);
-            this.ownerOfNewCall = ownerOfNewCall;
-            this.staticRedirect = staticRedirect;
-        }
-
-        @Override
-        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-            return new ReplaceNewWithStaticCall(ASM5, cv.visitMethod(access, name, desc, signature, exceptions), ownerOfNewCall, staticRedirect);
-        }
-    }
-
-    static class ReplaceNewWithStaticCall extends MethodVisitor {
-
-        final String ownerOfNewCall;
-        final MethodInsnNode staticRedirect;
-
-        boolean foundNewCall = false;
-
-        ReplaceNewWithStaticCall(int api, MethodVisitor mv, String ownerOfNewCall, MethodInsnNode staticRedirect) {
-            super(api, mv);
-            this.ownerOfNewCall = ownerOfNewCall;
-            this.staticRedirect = staticRedirect;
-        }
-
-        @Override
-        public void visitTypeInsn(int opcode, String type) {
-            if (opcode == NEW && type.equals(ownerOfNewCall)) {
-                foundNewCall = true;
-            } else {
-                super.visitTypeInsn(opcode, type);
-            }
-        }
-
-        @Override
-        public void visitInsn(int opcode) {
-            if (foundNewCall && opcode == DUP) {
-                foundNewCall = false;
-            } else {
-                super.visitInsn(opcode);
-            }
-        }
-
-        @Override
-        public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-            if (opcode == INVOKESPECIAL && owner.equals(ownerOfNewCall) && name.equals("<init>")) {
-                super.visitMethodInsn(staticRedirect.getOpcode(), staticRedirect.owner, staticRedirect.name, staticRedirect.desc, staticRedirect.itf);
-            } else {
-                super.visitMethodInsn(opcode, owner, name, desc, itf);
-            }
-        }
     }
 }
