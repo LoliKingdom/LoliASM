@@ -1,5 +1,13 @@
 # LoliASM Changelog
 
+## 2.1
+- WIP: Dynamic Model Baking.
+- WIP: Speedy Fluid Rendering.
+- Optifine now does not crash with LoliASM. Same effect as if you disabled `bakedQuadsSquasher` in configs. The real fix will be addressed soon:tm:.
+- I wrote a mixin with ASM, counter-intuitive?
+- Added branding, don't be pissed off :^).
+- Cleanups.
+
 ## 2.0
 - Revamped configuration. Some new options there. **REFRESH YOUR CONFIGS**
 - Removed soft/hard patch variations for optimizing BakedQuads. Hard patch remains as it is now stable and saves more RAM.
