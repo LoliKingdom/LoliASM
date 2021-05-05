@@ -49,7 +49,7 @@ public class LoliASM {
     public void preInit(FMLPreInitializationEvent event) {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(manager -> {
             CanonicalConditions.destroyCache();
-            MultipartBakedModelCache.destroyCache();
+            // MultipartBakedModelCache.destroyCache();
         });
     }
 

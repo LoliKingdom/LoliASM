@@ -1,13 +1,11 @@
 package zone.rong.loliasm.common.registries.mixins;
 
+import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import net.minecraft.util.registry.RegistrySimple;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import zone.rong.loliasm.LoliASM;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
 
@@ -20,7 +18,7 @@ public class RegistrySimpleMixin<K, V> implements RegistrySimpleExtender {
 
     @Shadow @Final private static Logger LOGGER;
 
-    @Shadow @Final protected Map<K, V> registryObjects;
+    @Shadow @Mutable @Final protected Map<K, V> registryObjects;
 
     /**
      * @author Rongmario
@@ -63,7 +61,13 @@ public class RegistrySimpleMixin<K, V> implements RegistrySimpleExtender {
 
     @Override
     public void trim() {
-        ((Object2ReferenceOpenHashMap<K, V>) this.registryObjects).trim();
+        if (this.registryObjects instanceof Object2ReferenceOpenHashMap) {
+            if (this.registryObjects.size() > 32) {
+                ((Object2ReferenceOpenHashMap<K, V>) this.registryObjects).trim();
+            } else {
+                this.registryObjects = new Object2ReferenceArrayMap<>(this.registryObjects);
+            }
+        }
     }
 
 }
