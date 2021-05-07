@@ -11,9 +11,7 @@ import java.util.Set;
 public class LoliMixinPlugin implements IMixinConfigPlugin {
 
     public LoliMixinPlugin() {
-        if (LoliTransformer.squashBakedQuads) {
-            BakedQuadRedirectorFactory.generateRedirectorClass();
-        }
+        BakedQuadRedirectorFactory.generateRedirectorClass();
     }
 
     @Override

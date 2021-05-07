@@ -22,7 +22,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
     public static final boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
     public static final boolean isVMOpenJ9 = System.getProperty("java.vm.name").toLowerCase(Locale.ROOT).contains("openj9");
-    public static final boolean isClient = ((List<ITweaker>) Launch.blackboard.get("Tweaks")).stream().anyMatch(t -> t.getClass().getName().endsWith(".common.launcher.FMLTweaker"));
+    public static final boolean isClient = ((Map) Launch.blackboard.get("launchArgs")).containsKey("--assetIndex");
 
     public LoliLoadingPlugin() {
         LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
