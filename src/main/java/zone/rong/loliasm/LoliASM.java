@@ -23,7 +23,7 @@ import static zone.rong.loliasm.LoliASM.VERSION;
 @Mod.EventBusSubscriber
 public class LoliASM {
 
-    public static final String VERSION = "2.1";
+    public static final String VERSION = "2.2";
 
     @SidedProxy(modId = "loliasm", clientSide = "zone.rong.loliasm.proxy.ClientProxy", serverSide = "zone.rong.loliasm.proxy.CommonProxy")
     public static CommonProxy proxy;
