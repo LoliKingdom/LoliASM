@@ -18,6 +18,7 @@ import static org.objectweb.asm.Opcodes.*;
 public class LoliTransformer implements IClassTransformer {
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
+    public static final boolean squashBakedQuads = LoliLoadingPlugin.isClient && LoliConfig.getConfig().bakedQuadsSquasher && !LoliLoadingPlugin.isOptifineInstalled;
 
     final Map<String, Function<byte[], byte[]>> transformations;
 
@@ -25,7 +26,7 @@ public class LoliTransformer implements IClassTransformer {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
         LoliConfig.Data data = LoliConfig.getConfig();
         transformations = new Object2ObjectOpenHashMap<>();
-        if (!LoliLoadingPlugin.isOptifineInstalled && data.bakedQuadsSquasher) {
+        if (squashBakedQuads) {
             addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", BakedQuadPatch::rewriteBakedQuad);
             addTransformation("net.minecraft.client.renderer.block.model.BakedQuadRetextured", BakedQuadRetexturedPatch::patchBakedQuadRetextured);
             addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad);
@@ -34,17 +35,21 @@ public class LoliTransformer implements IClassTransformer {
         }
         if (data.canonizeObjects) {
             addTransformation("net.minecraft.util.ResourceLocation", this::canonizeResourceLocationStrings);
-            addTransformation("net.minecraft.client.renderer.block.model.ModelResourceLocation", this::canonizeResourceLocationStrings);
-            addTransformation("net.minecraft.client.renderer.block.model.multipart.ICondition", this::canonicalBoolConditions);
-            addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionOr", bytes -> canonicalPredicatedConditions(bytes, true));
-            addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionAnd", bytes -> canonicalPredicatedConditions(bytes, false));
-            addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionPropertyValue", this::canonicalPropertyValueConditions);
-            // addTransformation("net.minecraft.client.renderer.block.model.MultipartBakedModel$Builder", this::cacheMultipartBakedModels); TODO
+            if (LoliLoadingPlugin.isClient) {
+                addTransformation("net.minecraft.client.renderer.block.model.ModelResourceLocation", this::canonizeResourceLocationStrings);
+                addTransformation("net.minecraft.client.renderer.block.model.multipart.ICondition", this::canonicalBoolConditions);
+                addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionOr", bytes -> canonicalPredicatedConditions(bytes, true));
+                addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionAnd", bytes -> canonicalPredicatedConditions(bytes, false));
+                addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionPropertyValue", this::canonicalPropertyValueConditions);
+                // addTransformation("net.minecraft.client.renderer.block.model.MultipartBakedModel$Builder", this::cacheMultipartBakedModels); TODO
+            }
         }
         if (data.optimizeDataStructures) {
+            if (LoliLoadingPlugin.isClient) {
+                addTransformation("net.minecraft.client.audio.SoundRegistry", this::removeDupeMapFromSoundRegistry);
+                addTransformation("net.minecraft.client.audio.SoundEventAccessor", this::removeInstancedRandom);
+            }
             addTransformation("net.minecraft.util.registry.RegistrySimple", this::removeValuesArrayFromRegistrySimple);
-            addTransformation("net.minecraft.client.audio.SoundRegistry", this::removeDupeMapFromSoundRegistry);
-            addTransformation("net.minecraft.client.audio.SoundEventAccessor", this::removeInstancedRandom);
             addTransformation("net.minecraft.nbt.NBTTagCompound", this::nbtTagCompound$replaceDefaultHashMap);
         }
         if (data.optimizeFurnaceRecipes) {

@@ -14,7 +14,7 @@ public class DummyMap<K, V> implements Map<K, V> {
     private static final Set SET_INSTANCE = Collections.newSetFromMap(INSTANCE);
 
     @SuppressWarnings("unchecked")
-    public static <K, V> DummyMap<K, V> of() {
+    public static <K, V> Map<K, V> of() {
         return (DummyMap<K, V>) INSTANCE;
     }
 

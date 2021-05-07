@@ -3,7 +3,6 @@ package zone.rong.loliasm.core;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import zone.rong.loliasm.LoliConfig;
 import zone.rong.loliasm.core.classfactories.BakedQuadRedirectorFactory;
 
 import java.util.List;
@@ -12,7 +11,9 @@ import java.util.Set;
 public class LoliMixinPlugin implements IMixinConfigPlugin {
 
     public LoliMixinPlugin() {
-        BakedQuadRedirectorFactory.generateRedirectorClass();
+        if (LoliTransformer.squashBakedQuads) {
+            BakedQuadRedirectorFactory.generateRedirectorClass();
+        }
     }
 
     @Override
@@ -25,7 +26,7 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return !LoliLoadingPlugin.isOptifineInstalled && LoliConfig.getConfig().bakedQuadsSquasher;
+        return LoliTransformer.squashBakedQuads;
     }
 
     @Override

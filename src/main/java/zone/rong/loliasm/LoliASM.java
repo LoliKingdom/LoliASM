@@ -1,23 +1,21 @@
 package zone.rong.loliasm;
 
 import com.google.common.cache.CacheBuilder;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.HttpUtil;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import zone.rong.loliasm.api.datastructures.DummyMap;
 import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
-import zone.rong.loliasm.client.models.MultipartBakedModelCache;
-import zone.rong.loliasm.client.models.conditions.CanonicalConditions;
+import zone.rong.loliasm.proxy.CommonProxy;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static zone.rong.loliasm.LoliASM.VERSION;
 
@@ -27,15 +25,18 @@ public class LoliASM {
 
     public static final String VERSION = "2.1";
 
+    @SidedProxy(modId = "loliasm", clientSide = "zone.rong.loliasm.proxy.ClientProxy", serverSide = "zone.rong.loliasm.proxy.CommonProxy")
+    public static CommonProxy proxy;
+
     public static List<RegistrySimpleExtender> simpleRegistryInstances = new ArrayList<>();
 
     public LoliASM() {
         if (LoliConfig.getConfig().cleanupLaunchClassLoader) {
             try {
                 LoliLogger.instance.info("Cleaning up LaunchClassLoader");
-                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader, CacheBuilder.newBuilder().concurrencyLevel(2).weakValues().build().asMap());
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader, (Map) CacheBuilder.newBuilder().concurrencyLevel(2).weakValues().build().asMap());
                 LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "invalidClasses").invokeExact(Launch.classLoader, DummyMap.asSet());
-                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "packageManifests").invoke(Launch.classLoader, DummyMap.of());
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "packageManifests").invokeExact(Launch.classLoader, DummyMap.of());
                 LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader, new ResourceCache());
                 LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "negativeResourceCache").invokeExact(Launch.classLoader, DummyMap.asSet());
                 LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "EMPTY").invoke(null);
@@ -68,17 +69,11 @@ public class LoliASM {
     @Mod.EventHandler
     @SuppressWarnings("deprecation")
     public void preInit(FMLPreInitializationEvent event) {
-        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(manager -> {
-            CanonicalConditions.destroyCache();
-            // MultipartBakedModelCache.destroyCache();
-        });
+        proxy.preInit(event);
     }
 
     @Mod.EventHandler
-    public void loadComplete(FMLLoadCompleteEvent event) throws IOException {
-        // Map<ResourceLocation, IModel> cache = (Map<ResourceLocation, IModel>) LoliReflector.resolveFieldGetter(ModelLoaderRegistry.class, "cache").invokeExact();
-        // ProgressManager.ProgressBar bar = ProgressManager.push("Optimizing Models", cache.size(), true);
-        // deduplicator = null; // Free the deduplicator
+    public void loadComplete(FMLLoadCompleteEvent event) {
         LoliLogger.instance.info("Trimming simple registries");
         HttpUtil.DOWNLOADER_EXECUTOR.execute(() -> {
             simpleRegistryInstances.forEach(RegistrySimpleExtender::trim);

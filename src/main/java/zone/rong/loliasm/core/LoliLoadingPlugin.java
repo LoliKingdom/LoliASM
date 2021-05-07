@@ -1,5 +1,7 @@
 package zone.rong.loliasm.core;
 
+import net.minecraft.launchwrapper.ITweaker;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -9,6 +11,7 @@ import zone.rong.loliasm.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -19,8 +22,10 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
     public static final boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
     public static final boolean isVMOpenJ9 = System.getProperty("java.vm.name").toLowerCase(Locale.ROOT).contains("openj9");
+    public static final boolean isClient = ((List<ITweaker>) Launch.blackboard.get("Tweaks")).stream().anyMatch(t -> t.getClass().getName().endsWith(".common.launcher.FMLTweaker"));
 
     public LoliLoadingPlugin() {
+        LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
         LoliLogger.instance.info("Lolis are loading in some mixins since Rongmario's too lazy to write pure ASM all the time despite the mod being called 'LoliASM'");
         MixinBootstrap.init();
         LoliConfig.Data data = LoliConfig.getConfig();
