@@ -4,7 +4,6 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import zone.rong.loliasm.LoliConfig;
-import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.core.classfactories.BakedQuadRedirectorFactory;
 
 import java.util.List;

@@ -28,11 +28,11 @@ public class LoliConfig {
         public final String[] bakedQuadPatchClasses;
 
         @Config.Ignore
-        final String cleanupLaunchClassLoaderComment = "Experimental: Saves memory from cleaning out redundant maps and collections in Mojang's LaunchClassLoader.";
+        final String cleanupLaunchClassLoaderComment = "Experimental: Saves memory from cleaning out redundant caches in Mojang's LaunchClassLoader. Will impact loading time by a bit.";
         public final boolean cleanupLaunchClassLoader;
 
         @Config.Ignore
-        final String remapperMemorySaverComment = "Experimental: Saves memory by canonizing strings cached in the remapper. May impact loading time by a small amount.";
+        final String remapperMemorySaverComment = "Experimental: Saves memory by canonizing strings cached in the remapper. May impact loading time by a little.";
         public final boolean remapperMemorySaver;
 
         @Config.Ignore

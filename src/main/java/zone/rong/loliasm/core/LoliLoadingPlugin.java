@@ -1,8 +1,5 @@
 package zone.rong.loliasm.core;
 
-import com.google.common.cache.CacheBuilder;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -11,8 +8,6 @@ import org.spongepowered.asm.mixin.Mixins;
 import zone.rong.loliasm.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.api.datastructures.DummyMap;
-import zone.rong.loliasm.api.datastructures.ResourceCache;
 
 import java.util.Locale;
 import java.util.Map;
@@ -35,9 +30,6 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         }
         if (data.optimizeFurnaceRecipes) {
             Mixins.addConfiguration("mixins.recipes.json");
-        }
-        if (data.cleanupLaunchClassLoader) {
-            replaceLaunchClassLoaderFields();
         }
         Mixins.addConfiguration("mixins.renderers.json");
         Mixins.addConfiguration("mixins.bakedquadsquasher.json");
@@ -65,18 +57,5 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
     @Override
     public String getAccessTransformerClass() {
         return "zone.rong.loliasm.core.LoliTransformer";
-    }
-
-    void replaceLaunchClassLoaderFields() {
-        try {
-            LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader, CacheBuilder.newBuilder().concurrencyLevel(2).weakValues().build().asMap());
-            LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "invalidClasses").invokeExact(Launch.classLoader, DummyMap.asSet());
-            LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "packageManifests").invoke(Launch.classLoader, DummyMap.of());
-            LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader, new ResourceCache());
-            LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "negativeResourceCache").invokeExact(Launch.classLoader, DummyMap.asSet());
-            LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "EMPTY").invoke(null);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
     }
 }

@@ -1,11 +1,16 @@
 package zone.rong.loliasm;
 
+import com.google.common.cache.CacheBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.HttpUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import zone.rong.loliasm.api.datastructures.DummyMap;
+import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
 import zone.rong.loliasm.client.models.MultipartBakedModelCache;
 import zone.rong.loliasm.client.models.conditions.CanonicalConditions;
@@ -23,6 +28,22 @@ public class LoliASM {
     public static final String VERSION = "2.1";
 
     public static List<RegistrySimpleExtender> simpleRegistryInstances = new ArrayList<>();
+
+    public LoliASM() {
+        if (LoliConfig.getConfig().cleanupLaunchClassLoader) {
+            try {
+                LoliLogger.instance.info("Cleaning up LaunchClassLoader");
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader, CacheBuilder.newBuilder().concurrencyLevel(2).weakValues().build().asMap());
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "invalidClasses").invokeExact(Launch.classLoader, DummyMap.asSet());
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "packageManifests").invoke(Launch.classLoader, DummyMap.of());
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader, new ResourceCache());
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "negativeResourceCache").invokeExact(Launch.classLoader, DummyMap.asSet());
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "EMPTY").invoke(null);
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
+    }
 
     /*
     private static Deduplicator deduplicator;
