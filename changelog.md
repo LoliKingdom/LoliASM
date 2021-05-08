@@ -1,9 +1,12 @@
 # LoliASM Changelog
 
+## 2.2.1
+- Fixed crashing when RegistrySimples are created in-world.
+
 ## 2.2
-- Fixed client classes from being loaded on the server
-- Fixed DummyMap's ClassCircularityError
-- Prevented harmless errors from being logged when mixins aren't being added in certain configurations
+- Fixed client classes from being loaded on the server.
+- Fixed DummyMap's ClassCircularityError.
+- Prevented harmless errors from being logged when mixins aren't being added in certain configurations.
 
 ## 2.1
 - WIP: Dynamic Model Baking.
