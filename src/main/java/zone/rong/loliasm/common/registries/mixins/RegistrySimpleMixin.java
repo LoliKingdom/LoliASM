@@ -26,8 +26,10 @@ public class RegistrySimpleMixin<K, V> implements RegistrySimpleExtender {
      */
     @Overwrite
     protected Map<K, V> createUnderlyingMap() {
-        LoliASM.simpleRegistryInstances.add(this);
-        return new Object2ReferenceOpenHashMap<>(64);
+        if (LoliASM.simpleRegistryInstances != null) {
+            LoliASM.simpleRegistryInstances.add(this);
+        }
+        return new Object2ReferenceOpenHashMap<>();
     }
 
     /**

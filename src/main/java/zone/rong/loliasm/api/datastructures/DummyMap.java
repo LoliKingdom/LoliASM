@@ -24,15 +24,27 @@ public class DummyMap<K, V> implements Map<K, V> {
     }
 
     public int size() { return 0; }
+
     public boolean isEmpty() { return true; }
+
     public boolean containsKey(Object key) { return false; }
+
     public boolean containsValue(Object value) { return false; }
+
     public V get(Object key) { return null; }
+
     public V put(K key, V value) { return value; }
+
     public V remove(Object key) { return null; }
+
     public void putAll(Map m) { }
+
     public void clear() { }
+
     public Set keySet() { return Collections.emptySet(); }
+
     public Collection values() { return Collections.emptySet(); }
+
     public Set entrySet() { return Collections.emptySet(); }
+
 }
