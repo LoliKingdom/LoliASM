@@ -11,19 +11,16 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import zone.rong.loliasm.api.datastructures.DummyMap;
 import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
+import zone.rong.loliasm.core.LoliLoadingPlugin;
 import zone.rong.loliasm.proxy.CommonProxy;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static zone.rong.loliasm.LoliASM.VERSION;
-
-@Mod(modid = "loliasm", name = "LoliASM", version = VERSION)
+@Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION)
 @Mod.EventBusSubscriber
 public class LoliASM {
-
-    public static final String VERSION = "2.2";
 
     @SidedProxy(modId = "loliasm", clientSide = "zone.rong.loliasm.proxy.ClientProxy", serverSide = "zone.rong.loliasm.proxy.CommonProxy")
     public static CommonProxy proxy;
