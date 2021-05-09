@@ -1,7 +1,7 @@
 package zone.rong.loliasm.core.classfactories;
 
 import org.objectweb.asm.*;
-import zone.rong.loliasm.LoliConfig;
+import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.bakedquad.BakedQuadClassFactory;
 import zone.rong.loliasm.core.LoliTransformer;

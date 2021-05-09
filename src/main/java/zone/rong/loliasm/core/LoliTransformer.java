@@ -5,7 +5,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
-import zone.rong.loliasm.LoliConfig;
+import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.patches.*;
 
@@ -51,9 +51,13 @@ public class LoliTransformer implements IClassTransformer {
             }
             addTransformation("net.minecraft.util.registry.RegistrySimple", this::removeValuesArrayFromRegistrySimple);
             addTransformation("net.minecraft.nbt.NBTTagCompound", this::nbtTagCompound$replaceDefaultHashMap);
+            addTransformation("net.minecraftforge.fml.common.discovery.ModCandidate", this::removePackageField);
         }
         if (data.optimizeFurnaceRecipes) {
             addTransformation("net.minecraft.item.crafting.FurnaceRecipes", this::improveFurnaceRecipes);
+        }
+        if (data.optimizeBitsOfRendering) {
+            addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, isDeobf ? "setupTerrain" : "func_174970_a"));
         }
     }
 
@@ -348,6 +352,67 @@ public class LoliTransformer implements IClassTransformer {
                         iter.add(new InsnNode(DUP));
                         iter.add(new MethodInsnNode(INVOKESPECIAL, "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap", "<init>", "()V", false));
                         break;
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] fixEnumFacingValuesClone(byte[] bytes, String methodMatch) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals(methodMatch)) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == INVOKESTATIC) {
+                        MethodInsnNode methodInsnNode = (MethodInsnNode) instruction;
+                        if (methodInsnNode.name.equals("values") && methodInsnNode.desc.equals("()[Lnet/minecraft/util/EnumFacing;")) {
+                            LoliLogger.instance.info("Transforming EnumFacing::values() to EnumFacing::VALUES in {}", node.name);
+                            iter.set(new FieldInsnNode(GETSTATIC, "net/minecraft/util/EnumFacing", isDeobf ? "VALUES" : "field_82609_l", "[Lnet/minecraft/util/EnumFacing;"));
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] removePackageField(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        node.fields.removeIf(f -> f.name.equals("packages"));
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>") && method.desc.equals("(Ljava/io/File;Ljava/io/File;Lnet/minecraftforge/fml/common/discovery/ContainerType;ZZ)V")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == PUTFIELD) {
+                        FieldInsnNode fieldNode = (FieldInsnNode) instruction;
+                        if (fieldNode.name.equals("packages")) {
+                            iter.remove(); // PUTFIELD
+                            iter.previous();
+                            iter.remove(); // INVOKESTATIC
+                            iter.previous();
+                            iter.remove(); // ALOAD
+                            iter.previous();
+                            iter.remove(); // LINENUMBER
+                            iter.previous();
+                            iter.remove(); // LABEL
+                        }
                     }
                 }
             }

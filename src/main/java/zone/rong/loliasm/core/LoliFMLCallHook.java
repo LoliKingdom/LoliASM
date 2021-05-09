@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableBiMap;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLCallHook;
-import zone.rong.loliasm.LoliConfig;
+import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.api.datastructures.DummyMap;
 import zone.rong.loliasm.api.datastructures.canonical.AutoCanonizingSet;

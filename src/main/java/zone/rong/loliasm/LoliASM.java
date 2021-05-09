@@ -1,20 +1,24 @@
 package zone.rong.loliasm;
 
+import codechicken.asm.ClassHierarchyManager;
 import com.google.common.cache.CacheBuilder;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.HttpUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import zone.rong.loliasm.api.datastructures.DummyMap;
 import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
+import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.core.LoliLoadingPlugin;
 import zone.rong.loliasm.proxy.CommonProxy;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +44,19 @@ public class LoliASM {
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
             }
+        }
+    }
+
+    @Mod.EventHandler
+    public void onConstruct(FMLConstructionEvent event) {
+        if (LoliConfig.getConfig().optimizeDataStructures && LoliReflector.doesClassExist("codechicken.asm.ClassHierarchyManager")) {
+            // EXPERIMENTAL: As far as I know, this functionality of ChickenASM isn't actually used by any coremods that depends on ChickenASM
+            ClassHierarchyManager.superclasses = new HashMap() {
+                @Override
+                public Object put(Object key, Object value) {
+                    return value;
+                }
+            };
         }
     }
 

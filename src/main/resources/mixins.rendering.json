@@ -1,10 +1,12 @@
 {
-  "package": "zone.rong.loliasm.client.models.mixins",
+  "package": "zone.rong.loliasm.client.rendering.mixins",
+  "plugin": "zone.rong.loliasm.core.LoliMixinPlugin",
   "refmap": "mixins.loliasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "VisGraphMixin"
   ],
   "injectors": {
     "defaultRequire": 1

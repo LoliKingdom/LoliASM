@@ -1,7 +1,7 @@
 package zone.rong.loliasm.patches;
 
 import org.objectweb.asm.*;
-import zone.rong.loliasm.LoliConfig;
+import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.core.LoliTransformer;
 
 import static org.objectweb.asm.Opcodes.*;
