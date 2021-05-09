@@ -1,5 +1,13 @@
 # LoliASM Changelog
 
+## 2.3
+- Reworked config boilerplate, in the worse possible way possible. (thank you `DefaultArtifactVersion`)
+- `ModCandidateMixin`: addresses large amounts of duplicate package Strings created by `ModCandidate#addClassEntry`, now it is internally backed by a Set instead and strings are added to the StringPool. `getContainedPackages` return a List constructed from the Set each time.
+- New config option: optimizeBitsOfRendering.
+- `VisGraphMixin`: removes unboxing business from `floodFill`, and made it use `EnumFacing::values` => `EnumFacing::VALUES`.
+- ASM change to `RenderGlobal` => fixes `setupTerrain` using `EnumFacing::values` as opposed to `EnumFacing::VALUES`.
+- When ChickenASM is loaded, LoliASM fixes ChickenASM caching a shit ton of superclasses and whatnot in `ClassHierarchyManager`. This isn't used in any ASMing from what I can observe. This change is EXPERIMENTAL!
+
 ## 2.2.1
 - Fixed crashing when RegistrySimples are created in-world.
 
