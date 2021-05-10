@@ -17,7 +17,7 @@ import java.util.Map;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class LoliLoadingPlugin implements IFMLLoadingPlugin {
 
-    public static final String VERSION = "2.3";
+    public static final String VERSION = "2.3.1";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
     public static final boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
@@ -36,9 +36,13 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         if (data.optimizeFurnaceRecipes) {
             Mixins.addConfiguration("mixins.recipes.json");
         }
-        Mixins.addConfiguration("mixins.bakedquadsquasher.json");
+        if (isClient && data.optimizeBitsOfRendering) {
+            Mixins.addConfiguration("mixins.rendering.json");
+        }
+        if (data.miscOptimizations) {
+            Mixins.addConfiguration("mixins.misc.json");
+        }
         Mixins.addConfiguration("mixins.vanities.json");
-        Mixins.addConfiguration("mixins.rendering.json");
     }
 
     @Override

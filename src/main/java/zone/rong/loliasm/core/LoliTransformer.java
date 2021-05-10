@@ -2,7 +2,6 @@ package zone.rong.loliasm.core;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 import zone.rong.loliasm.config.LoliConfig;
@@ -17,7 +16,6 @@ import static org.objectweb.asm.Opcodes.*;
 
 public class LoliTransformer implements IClassTransformer {
 
-    public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
     public static final boolean squashBakedQuads = LoliLoadingPlugin.isClient && LoliConfig.getConfig().bakedQuadsSquasher && !LoliLoadingPlugin.isOptifineInstalled;
 
     final Map<String, Function<byte[], byte[]>> transformations;
@@ -56,8 +54,8 @@ public class LoliTransformer implements IClassTransformer {
         if (data.optimizeFurnaceRecipes) {
             addTransformation("net.minecraft.item.crafting.FurnaceRecipes", this::improveFurnaceRecipes);
         }
-        if (data.optimizeBitsOfRendering) {
-            addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, isDeobf ? "setupTerrain" : "func_174970_a"));
+        if (LoliLoadingPlugin.isClient && data.optimizeBitsOfRendering) {
+            addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, LoliLoadingPlugin.isDeobf ? "setupTerrain" : "func_174970_a"));
         }
     }
 
@@ -136,11 +134,11 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        final String getPredicate = isDeobf ? "getPredicate" : "func_188118_a";
+        final String getPredicate = LoliLoadingPlugin.isDeobf ? "getPredicate" : "func_188118_a";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(getPredicate)) {
-                final String conditions = isDeobf ? "conditions" : or ? "field_188127_c" : "field_188121_c";
+                final String conditions = LoliLoadingPlugin.isDeobf ? "conditions" : or ? "field_188127_c" : "field_188121_c";
                 LoliLogger.instance.info("Transforming {}::getPredicate to canonize different IConditions", node.name);
                 method.instructions.clear();
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
@@ -162,7 +160,7 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        final String getPredicate = isDeobf ? "getPredicate" : "func_188118_a";
+        final String getPredicate = LoliLoadingPlugin.isDeobf ? "getPredicate" : "func_188118_a";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(getPredicate)) {
@@ -170,10 +168,10 @@ public class LoliTransformer implements IClassTransformer {
                 method.instructions.clear();
                 method.instructions.add(new VarInsnNode(ALOAD, 1));
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
-                method.instructions.add(new FieldInsnNode(GETFIELD, node.name, isDeobf ? "key" : "field_188125_d", "Ljava/lang/String;"));
+                method.instructions.add(new FieldInsnNode(GETFIELD, node.name, LoliLoadingPlugin.isDeobf ? "key" : "field_188125_d", "Ljava/lang/String;"));
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
-                method.instructions.add(new FieldInsnNode(GETFIELD, node.name, isDeobf ? "value" : "field_188126_e", "Ljava/lang/String;"));
-                method.instructions.add(new FieldInsnNode(GETSTATIC, node.name, isDeobf ? "SPLITTER" : "field_188124_c", "Lcom/google/common/base/Splitter;"));
+                method.instructions.add(new FieldInsnNode(GETFIELD, node.name, LoliLoadingPlugin.isDeobf ? "value" : "field_188126_e", "Ljava/lang/String;"));
+                method.instructions.add(new FieldInsnNode(GETSTATIC, node.name, LoliLoadingPlugin.isDeobf ? "SPLITTER" : "field_188124_c", "Lcom/google/common/base/Splitter;"));
                 method.instructions.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/client/models/conditions/CanonicalConditions", "propertyValueCache", "(Lnet/minecraft/block/state/BlockStateContainer;Ljava/lang/String;Ljava/lang/String;Lcom/google/common/base/Splitter;)Lcom/google/common/base/Predicate;", false));
                 method.instructions.add(new InsnNode(ARETURN));
                 // method.localVariables.remove(0);
@@ -192,12 +190,12 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        final String makeMultipartModel = isDeobf ? "makeMultipartModel" : "func_188647_a";
+        final String makeMultipartModel = LoliLoadingPlugin.isDeobf ? "makeMultipartModel" : "func_188647_a";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(makeMultipartModel)) {
                 LoliLogger.instance.info("Transforming {}::makeMultipartModel", node.name);
-                final String builderSelectors = isDeobf ? "builderSelectors" : "field_188649_a";
+                final String builderSelectors = LoliLoadingPlugin.isDeobf ? "builderSelectors" : "field_188649_a";
                 method.instructions.clear();
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
                 method.instructions.add(new FieldInsnNode(GETFIELD, node.name, builderSelectors, "Ljava/util/Map;"));
@@ -216,7 +214,7 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        final String values = isDeobf ? "values" : "field_186802_b";
+        final String values = LoliLoadingPlugin.isDeobf ? "values" : "field_186802_b";
 
         node.fields.removeIf(f -> f.name.equals(values));
 
@@ -230,7 +228,7 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        final String soundRegistry = isDeobf ? "soundRegistry" : "field_148764_a";
+        final String soundRegistry = LoliLoadingPlugin.isDeobf ? "soundRegistry" : "field_148764_a";
 
         node.fields.removeIf(f -> f.name.equals(soundRegistry));
 
@@ -267,7 +265,7 @@ public class LoliTransformer implements IClassTransformer {
                                 iter.add(new MethodInsnNode(INVOKESPECIAL, "it/unimi/dsi/fastutil/objects/Object2FloatArrayMap", "<init>", "()V", false));
                                 iter.next();
                                 iter.add(new VarInsnNode(ALOAD, 0));
-                                iter.add(new FieldInsnNode(GETFIELD, "net/minecraft/item/crafting/FurnaceRecipes", isDeobf ? "experienceList" : "field_77605_c", "Ljava/util/Map;"));
+                                iter.add(new FieldInsnNode(GETFIELD, "net/minecraft/item/crafting/FurnaceRecipes", LoliLoadingPlugin.isDeobf ? "experienceList" : "field_77605_c", "Ljava/util/Map;"));
                                 iter.add(new TypeInsnNode(CHECKCAST, "it/unimi/dsi/fastutil/objects/Object2FloatFunction"));
                                 iter.add(new LdcInsnNode(1F));
                                 iter.add(new MethodInsnNode(INVOKEINTERFACE, "it/unimi/dsi/fastutil/objects/Object2FloatFunction", "defaultReturnValue", "(F)V", true));
@@ -311,7 +309,7 @@ public class LoliTransformer implements IClassTransformer {
                         }
                     }
                 }
-            } else if (method.name.equals(isDeobf ? "cloneEntry" : "func_148720_g")) {
+            } else if (method.name.equals(LoliLoadingPlugin.isDeobf ? "cloneEntry" : "func_148720_g")) {
                 ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
@@ -376,7 +374,7 @@ public class LoliTransformer implements IClassTransformer {
                         MethodInsnNode methodInsnNode = (MethodInsnNode) instruction;
                         if (methodInsnNode.name.equals("values") && methodInsnNode.desc.equals("()[Lnet/minecraft/util/EnumFacing;")) {
                             LoliLogger.instance.info("Transforming EnumFacing::values() to EnumFacing::VALUES in {}", node.name);
-                            iter.set(new FieldInsnNode(GETSTATIC, "net/minecraft/util/EnumFacing", isDeobf ? "VALUES" : "field_82609_l", "[Lnet/minecraft/util/EnumFacing;"));
+                            iter.set(new FieldInsnNode(GETSTATIC, "net/minecraft/util/EnumFacing", LoliLoadingPlugin.isDeobf ? "VALUES" : "field_82609_l", "[Lnet/minecraft/util/EnumFacing;"));
                         }
                     }
                 }

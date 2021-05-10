@@ -1,6 +1,7 @@
 package zone.rong.loliasm.core.classfactories;
 
 import org.objectweb.asm.*;
+import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.bakedquad.BakedQuadClassFactory;
@@ -16,6 +17,7 @@ public class BakedQuadRedirectorFactory {
         final String className = "ifuckinglovelolis.mixins.NewBakedQuadCallsRedirector";
 
         if (!LoliTransformer.squashBakedQuads) {
+            LoliLogger.instance.info("Defining a mock NewBakedQuadCallsRedirector Mixin.");
             writer.visit(V1_8, ACC_PUBLIC | ACC_SUPER, className.replace('.', '/'), null, "java/lang/Object", null);
             AnnotationVisitor mixinVisitor = writer.visitAnnotation("Lorg/spongepowered/asm/mixin/Mixin;", false);
             AnnotationVisitor valueVisitor = mixinVisitor.visitArray("value");
@@ -26,6 +28,8 @@ public class BakedQuadRedirectorFactory {
             BakedQuadClassFactory.predefineBakedQuadClasses();
 
             String[] targetNames = LoliConfig.getConfig().bakedQuadPatchClasses;
+
+            LoliLogger.instance.info("Defining NewBakedQuadCallsRedirector Mixin. With these mixin targets: {}", (Object) targetNames);
 
             writer.visit(V1_8, ACC_PUBLIC | ACC_SUPER, className.replace('.', '/'), null, "java/lang/Object", null);
 

@@ -4,6 +4,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import zone.rong.loliasm.core.LoliLoadingPlugin;
 import zone.rong.loliasm.core.LoliTransformer;
 
 import static org.objectweb.asm.Opcodes.*;
@@ -60,7 +61,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitLineNumber(20, l0);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitVarInsn(ALOAD, 6);
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliTransformer.isDeobf ? "getSize" : "func_177338_f", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliLoadingPlugin.isDeobf ? "getSize" : "func_177338_f", "()I", false);
             methodVisitor.visitIntInsn(NEWARRAY, T_INT);
             methodVisitor.visitVarInsn(ALOAD, 4);
             methodVisitor.visitVarInsn(ALOAD, 6);
@@ -113,7 +114,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliTransformer.isDeobf ? "getVertexData" : "func_178209_a", "()[I", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getVertexData" : "func_178209_a", "()[I", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
@@ -150,7 +151,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitVarInsn(ILOAD, 2);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", "format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliTransformer.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliLoadingPlugin.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
             Label l7 = new Label();
             methodVisitor.visitJumpInsn(IF_ICMPGE, l7);
             Label l8 = new Label();
@@ -163,7 +164,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitVarInsn(ILOAD, 2);
             methodVisitor.visitInsn(AALOAD);
             methodVisitor.visitVarInsn(ALOAD, 0);
-            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", LoliTransformer.isDeobf ? "vertexData" : "field_178215_a", "[I");
+            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", "format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
             methodVisitor.visitVarInsn(ILOAD, 1);
@@ -183,7 +184,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitLineNumber(37, l1);
             methodVisitor.visitFrame(F_CHOP, 1, null, 0, null);
             methodVisitor.visitVarInsn(ALOAD, 0);
-            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", LoliTransformer.isDeobf ? "vertexData" : "field_178215_a", "[I");
+            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
             methodVisitor.visitInsn(ARETURN);
             Label l10 = new Label();
             methodVisitor.visitLabel(l10);
@@ -209,7 +210,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitLabel(l1);
             methodVisitor.visitLineNumber(43, l1);
             methodVisitor.visitVarInsn(ALOAD, 0);
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", LoliTransformer.isDeobf ? "hasTintIndex" : "func_178212_b", "()Z", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", LoliLoadingPlugin.isDeobf ? "hasTintIndex" : "func_178212_b", "()Z", false);
             Label l2 = new Label();
             methodVisitor.visitJumpInsn(IFEQ, l2);
             Label l3 = new Label();
@@ -217,14 +218,14 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitLineNumber(44, l3);
             methodVisitor.visitVarInsn(ALOAD, 1);
             methodVisitor.visitVarInsn(ALOAD, 0);
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", LoliTransformer.isDeobf ? "getTintIndex" : "func_178211_c", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", LoliLoadingPlugin.isDeobf ? "getTintIndex" : "func_178211_c", "()I", false);
             methodVisitor.visitMethodInsn(INVOKEINTERFACE, "net/minecraftforge/client/model/pipeline/IVertexConsumer", "setQuadTint", "(I)V", true);
             methodVisitor.visitLabel(l2);
             methodVisitor.visitLineNumber(46, l2);
             methodVisitor.visitFrame(F_APPEND, 1, new Object[]{"[I"}, 0, null);
             methodVisitor.visitVarInsn(ALOAD, 1);
             methodVisitor.visitVarInsn(ALOAD, 0);
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", LoliTransformer.isDeobf ? "getSprite" : "func_187508_a", "()Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", LoliLoadingPlugin.isDeobf ? "getSprite" : "func_187508_a", "()Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", false);
             methodVisitor.visitMethodInsn(INVOKEINTERFACE, "net/minecraftforge/client/model/pipeline/IVertexConsumer", "setTexture", "(Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;)V", true);
             Label l4 = new Label();
             methodVisitor.visitLabel(l4);
@@ -263,7 +264,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitVarInsn(ILOAD, 4);
             methodVisitor.visitVarInsn(ALOAD, 1);
             methodVisitor.visitMethodInsn(INVOKEINTERFACE, "net/minecraftforge/client/model/pipeline/IVertexConsumer", "getVertexFormat", "()Lnet/minecraft/client/renderer/vertex/VertexFormat;", true);
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliTransformer.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliLoadingPlugin.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
             Label l11 = new Label();
             methodVisitor.visitJumpInsn(IF_ICMPGE, l11);
             Label l12 = new Label();
@@ -274,7 +275,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitInsn(IALOAD);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad", "format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliTransformer.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliLoadingPlugin.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
             Label l13 = new Label();
             methodVisitor.visitJumpInsn(IF_ICMPEQ, l13);
             Label l14 = new Label();
@@ -326,7 +327,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliTransformer.isDeobf ? "hasTintIndex" : "func_178212_b", "()Z", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "hasTintIndex" : "func_178212_b", "()Z", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
@@ -352,7 +353,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliTransformer.isDeobf ? "getTintIndex" : "func_178211_c", "()I", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getTintIndex" : "func_178211_c", "()I", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
@@ -367,7 +368,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliTransformer.isDeobf ? "getFace" : "func_178210_d", "()Lnet/minecraft/util/EnumFacing;", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getFace" : "func_178210_d", "()Lnet/minecraft/util/EnumFacing;", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
@@ -518,7 +519,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitInsn(ICONST_4);
             methodVisitor.visitVarInsn(ALOAD, 1);
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliTransformer.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliLoadingPlugin.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
             methodVisitor.visitInsn(ICONST_4);
             methodVisitor.visitMultiANewArrayInsn("[[[F", 3);
             methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "unpackedData", "[[[F");
@@ -722,7 +723,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "elements", "I");
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliTransformer.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliLoadingPlugin.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
             Label l8 = new Label();
             methodVisitor.visitJumpInsn(IF_ICMPNE, l8);
             Label l9 = new Label();
@@ -812,14 +813,14 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitLineNumber(159, l6);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "texture", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliTransformer.isDeobf ? "getIconWidth" : "func_94211_a", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliLoadingPlugin.isDeobf ? "getIconWidth" : "func_94211_a", "()I", false);
             methodVisitor.visitInsn(I2F);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "texture", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliTransformer.isDeobf ? "getMaxU" : "func_94212_f", "()F", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliLoadingPlugin.isDeobf ? "getMaxU" : "func_94212_f", "()F", false);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "texture", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliTransformer.isDeobf ? "getMinU" : "func_94209_e", "()F", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliLoadingPlugin.isDeobf ? "getMinU" : "func_94209_e", "()F", false);
             methodVisitor.visitInsn(FSUB);
             methodVisitor.visitInsn(FDIV);
             methodVisitor.visitVarInsn(FSTORE, 1);
@@ -828,14 +829,14 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitLineNumber(160, l7);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "texture", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliTransformer.isDeobf ? "getIconHeight" : "func_94216_b", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliLoadingPlugin.isDeobf ? "getIconHeight" : "func_94216_b", "()I", false);
             methodVisitor.visitInsn(I2F);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "texture", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliTransformer.isDeobf ? "getMaxV" : "func_94210_h", "()F", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliLoadingPlugin.isDeobf ? "getMaxV" : "func_94210_h", "()F", false);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "texture", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliTransformer.isDeobf ? "getMinV" : "func_94206_g", "()F", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/texture/TextureAtlasSprite", LoliLoadingPlugin.isDeobf ? "getMinV" : "func_94206_g", "()F", false);
             methodVisitor.visitInsn(FSUB);
             methodVisitor.visitInsn(FDIV);
             methodVisitor.visitVarInsn(FSTORE, 2);
@@ -877,7 +878,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitVarInsn(ILOAD, 5);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliTransformer.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliLoadingPlugin.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
             Label l14 = new Label();
             methodVisitor.visitJumpInsn(IF_ICMPGE, l14);
             Label l15 = new Label();
@@ -886,18 +887,18 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
             methodVisitor.visitVarInsn(ILOAD, 5);
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliTransformer.isDeobf ? "getElement" : "func_177348_c", "(I)Lnet/minecraft/client/renderer/vertex/VertexFormatElement;", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliLoadingPlugin.isDeobf ? "getElement" : "func_177348_c", "(I)Lnet/minecraft/client/renderer/vertex/VertexFormatElement;", false);
             methodVisitor.visitVarInsn(ASTORE, 6);
             Label l16 = new Label();
             methodVisitor.visitLabel(l16);
             methodVisitor.visitLineNumber(166, l16);
             methodVisitor.visitVarInsn(ALOAD, 6);
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormatElement", LoliTransformer.isDeobf ? "getUsage" : "func_177375_c", "()Lnet/minecraft/client/renderer/vertex/VertexFormatElement$EnumUsage;", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormatElement", LoliLoadingPlugin.isDeobf ? "getUsage" : "func_177375_c", "()Lnet/minecraft/client/renderer/vertex/VertexFormatElement$EnumUsage;", false);
             methodVisitor.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/vertex/VertexFormatElement$EnumUsage", "UV", "Lnet/minecraft/client/renderer/vertex/VertexFormatElement$EnumUsage;");
             Label l17 = new Label();
             methodVisitor.visitJumpInsn(IF_ACMPNE, l17);
             methodVisitor.visitVarInsn(ALOAD, 6);
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormatElement", LoliTransformer.isDeobf ? "getIndex" : "func_177369_e", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormatElement", LoliLoadingPlugin.isDeobf ? "getIndex" : "func_177369_e", "()I", false);
             methodVisitor.visitJumpInsn(IFNE, l17);
             Label l18 = new Label();
             methodVisitor.visitLabel(l18);
@@ -917,7 +918,7 @@ public final class UnpackedBakedQuadPatch {
             methodVisitor.visitVarInsn(ILOAD, 5);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitFieldInsn(GETFIELD, "net/minecraftforge/client/model/pipeline/UnpackedBakedQuad$Builder", "format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
-            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliTransformer.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
+            methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/vertex/VertexFormat", LoliLoadingPlugin.isDeobf ? "getElementCount" : "func_177345_h", "()I", false);
             Label l20 = new Label();
             methodVisitor.visitJumpInsn(IF_ICMPNE, l20);
             Label l21 = new Label();

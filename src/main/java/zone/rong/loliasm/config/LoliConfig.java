@@ -53,6 +53,9 @@ public class LoliConfig {
         @Ignore final String optimizeBitsOfRenderingComment = "Optimizes certain aspects of the Client/Rendering Thread.";
         @Since("2.3") public final boolean optimizeBitsOfRendering;
 
+        @Ignore final String miscOptimizationsComment = "Other optimization tweaks. Nothing that is experimental or has breaking changes would be classed under this.";
+        @Since("2.3.1") public final boolean miscOptimizations;
+
         public Data(String version,
                     boolean bakedQuadsSquasher,
                     boolean logClassesThatNeedPatching,
@@ -62,7 +65,8 @@ public class LoliConfig {
                     boolean canonizeObjects,
                     boolean optimizeDataStructures,
                     boolean optimizeFurnaceRecipes,
-                    boolean optimizeBitsOfRendering) {
+                    boolean optimizeBitsOfRendering,
+                    boolean miscOptimizations) {
             this.VERSION = version;
             this.bakedQuadsSquasher = bakedQuadsSquasher;
             this.logClassesThatNeedPatching = logClassesThatNeedPatching;
@@ -73,6 +77,7 @@ public class LoliConfig {
             this.optimizeDataStructures = optimizeDataStructures;
             this.optimizeFurnaceRecipes = optimizeFurnaceRecipes;
             this.optimizeBitsOfRendering = optimizeBitsOfRendering;
+            this.miscOptimizations = miscOptimizations;
         }
     }
 
@@ -99,7 +104,7 @@ public class LoliConfig {
             try {
                 configFile.createNewFile();
                 try (FileWriter writer = new FileWriter(configFile)) {
-                    config = new Data(LoliLoadingPlugin.VERSION, true, true, new String[] { "net.minecraft.client.renderer.block.model.FaceBakery" }, true, true, true, true, true, true);
+                    config = new Data(LoliLoadingPlugin.VERSION, true, true, new String[] { "net.minecraft.client.renderer.block.model.FaceBakery" }, true, true, true, true, true, true, true);
                     gson.toJson(config, writer);
                 }
             } catch (IOException e) {
@@ -119,33 +124,30 @@ public class LoliConfig {
                             config.canonizeObjects,
                             config.optimizeDataStructures,
                             config.optimizeFurnaceRecipes,
+                            true,
                             true);
                     try (FileWriter writer = new FileWriter(configFile)) {
                         gson.toJson(config, writer);
                     }
                 } else if (isVersionOutdated(config.VERSION, LoliLoadingPlugin.VERSION)) {
                     LoliLogger.instance.info("Config outdated, updating config from version {} to {}.", config.VERSION, LoliLoadingPlugin.VERSION);
-                    try {
-                        MethodHandle dataCtor = LoliReflector.resolveCtor(Data.class, String.class, boolean.class, boolean.class, String[].class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class);
-                        List<Object> args = new ArrayList<>();
-                        args.add(LoliLoadingPlugin.VERSION);
-                        for (Field field : Data.class.getFields()) {
-                            String sinceVersion = field.getAnnotation(Since.class).value();
-                            if (field.getName().equals("bakedQuadPatchClasses")) { // Special case is ugly
-                                args.add(isVersionOutdated(config.VERSION, sinceVersion) ? new String[] { "net.minecraft.client.renderer.block.model.FaceBakery" } : field.get(config));
-                            } else {
-                                args.add(isVersionOutdated(config.VERSION, sinceVersion) ? true : field.get(config)); // Default to true if version is outdated
-                            }
+                    MethodHandle dataCtor = LoliReflector.resolveCtor(Data.class, String.class, boolean.class, boolean.class, String[].class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class);
+                    List<Object> args = new ArrayList<>();
+                    args.add(LoliLoadingPlugin.VERSION);
+                    for (Field field : Data.class.getFields()) {
+                        String sinceVersion = field.getAnnotation(Since.class).value();
+                        if (field.getName().equals("bakedQuadPatchClasses")) { // Special case is ugly
+                            args.add(isVersionOutdated(config.VERSION, sinceVersion) ? new String[] { "net.minecraft.client.renderer.block.model.FaceBakery" } : field.get(config));
+                        } else {
+                            args.add(isVersionOutdated(config.VERSION, sinceVersion) ? true : field.get(config)); // Default to true if version is outdated
                         }
-                        config = (Data) dataCtor.invokeWithArguments(args);
-                        try (FileWriter writer = new FileWriter(configFile)) {
-                            gson.toJson(config, writer);
-                        }
-                    } catch (Throwable e) {
-                        e.printStackTrace();
+                    }
+                    config = (Data) dataCtor.invokeWithArguments(args);
+                    try (FileWriter writer = new FileWriter(configFile)) {
+                        gson.toJson(config, writer);
                     }
                 }
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }

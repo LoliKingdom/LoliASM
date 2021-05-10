@@ -2,6 +2,7 @@ package zone.rong.loliasm.patches;
 
 import org.objectweb.asm.*;
 import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.loliasm.core.LoliLoadingPlugin;
 import zone.rong.loliasm.core.LoliTransformer;
 
 import static org.objectweb.asm.Opcodes.*;
@@ -51,11 +52,11 @@ public final class BakedQuadPatch {
             annotationVisitor.visitEnd();
         }
         {
-            fieldVisitor = writer.visitField(ACC_PROTECTED | ACC_FINAL, LoliTransformer.isDeobf ? "vertexData" : "field_178215_a", "[I", null, null);
+            fieldVisitor = writer.visitField(ACC_PROTECTED | ACC_FINAL, LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I", null, null);
             fieldVisitor.visitEnd();
         }
         {
-            fieldVisitor = writer.visitField(ACC_PROTECTED | ACC_FINAL, LoliTransformer.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, null);
+            fieldVisitor = writer.visitField(ACC_PROTECTED | ACC_FINAL, LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, null);
             fieldVisitor.visitEnd();
         }
         {
@@ -78,7 +79,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitVarInsn(ALOAD, 3);
             methodVisitor.visitVarInsn(ALOAD, 4);
             methodVisitor.visitInsn(ICONST_1);
-            methodVisitor.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/vertex/DefaultVertexFormats", LoliTransformer.isDeobf ? "ITEM" : "field_176599_b", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
+            methodVisitor.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/vertex/DefaultVertexFormats", LoliLoadingPlugin.isDeobf ? "ITEM" : "field_176599_b", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
             methodVisitor.visitMethodInsn(INVOKESPECIAL, "net/minecraft/client/renderer/block/model/BakedQuad", "<init>", "([IILnet/minecraft/util/EnumFacing;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;ZLnet/minecraft/client/renderer/vertex/VertexFormat;)V", false);
             Label l1 = new Label();
             methodVisitor.visitLabel(l1);
@@ -117,13 +118,13 @@ public final class BakedQuadPatch {
             methodVisitor.visitLineNumber(42, l2);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitVarInsn(ALOAD, 1);
-            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliTransformer.isDeobf ? "vertexData" : "field_178215_a", "[I");
+            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
             Label l3 = new Label();
             methodVisitor.visitLabel(l3);
             methodVisitor.visitLineNumber(43, l3);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitVarInsn(ALOAD, 4);
-            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliTransformer.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
+            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
             Label l4 = new Label();
             methodVisitor.visitLabel(l4);
             methodVisitor.visitLineNumber(44, l4);
@@ -270,13 +271,13 @@ public final class BakedQuadPatch {
             methodVisitor.visitLineNumber(48, l1);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitVarInsn(ALOAD, 1);
-            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliTransformer.isDeobf ? "vertexData" : "field_178215_a", "[I");
+            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
             Label l2 = new Label();
             methodVisitor.visitLabel(l2);
             methodVisitor.visitLineNumber(49, l2);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitVarInsn(ALOAD, 2);
-            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliTransformer.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
+            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
             Label l3 = new Label();
             methodVisitor.visitLabel(l3);
             methodVisitor.visitLineNumber(50, l3);
@@ -290,8 +291,8 @@ public final class BakedQuadPatch {
             Label l5 = new Label();
             methodVisitor.visitLabel(l5);
             methodVisitor.visitLocalVariable("this", "Lnet/minecraft/client/renderer/block/model/BakedQuad;", null, l0, l5, 0);
-            methodVisitor.visitLocalVariable(LoliTransformer.isDeobf ? "vertexData" : "field_178215_a", "[I", null, l0, l5, 1);
-            methodVisitor.visitLocalVariable(LoliTransformer.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, l0, l5, 2);
+            methodVisitor.visitLocalVariable(LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I", null, l0, l5, 1);
+            methodVisitor.visitLocalVariable(LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, l0, l5, 2);
             methodVisitor.visitLocalVariable("format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;", null, l0, l5, 3);
             methodVisitor.visitMaxs(2, 4);
             methodVisitor.visitEnd();
@@ -316,13 +317,13 @@ public final class BakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliTransformer.isDeobf ? "getSprite" : "func_187508_a", "()Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getSprite" : "func_187508_a", "()Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
             methodVisitor.visitLineNumber(58, l0);
             methodVisitor.visitVarInsn(ALOAD, 0);
-            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliTransformer.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
+            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
             methodVisitor.visitInsn(ARETURN);
             Label l1 = new Label();
             methodVisitor.visitLabel(l1);
@@ -331,13 +332,13 @@ public final class BakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliTransformer.isDeobf ? "getVertexData" : "func_178209_a", "()[I", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getVertexData" : "func_178209_a", "()[I", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
             methodVisitor.visitLineNumber(62, l0);
             methodVisitor.visitVarInsn(ALOAD, 0);
-            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliTransformer.isDeobf ? "vertexData" : "field_178215_a", "[I");
+            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
             methodVisitor.visitInsn(ARETURN);
             Label l1 = new Label();
             methodVisitor.visitLabel(l1);
@@ -346,7 +347,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliTransformer.isDeobf ? "hasTintIndex" : "func_178212_b", "()Z", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "hasTintIndex" : "func_178212_b", "()Z", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
@@ -359,7 +360,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliTransformer.isDeobf ? "getTintIndex" : "func_178211_c", "()I", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getTintIndex" : "func_178211_c", "()I", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
@@ -372,7 +373,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliTransformer.isDeobf ? "getFace" : "func_178210_d", "()Lnet/minecraft/util/EnumFacing;", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getFace" : "func_178210_d", "()Lnet/minecraft/util/EnumFacing;", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
