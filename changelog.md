@@ -1,5 +1,11 @@
 # LoliASM Changelog
 
+## 2.3.1
+- Fixes `bakedQuadPatchClasses` not being properly targetted by mixins. This means, LoliASM now requires MixinBooter. It was going to some time down the line anyways.
+- Added `miscOptimizations` => aims to optimize smaller areas of the game, nothing game-breaking will be introduced under this.
+- `FluidRegistryMixin` => first of `miscOptimizations`, quicker check @ `FluidRegistry::enableUniversalBucket`
+- Some more logging
+
 ## 2.3
 - Reworked config boilerplate, in the worse possible way possible. (thank you `DefaultArtifactVersion`)
 - `ModCandidateMixin`: addresses large amounts of duplicate package Strings created by `ModCandidate#addClassEntry`, now it is internally backed by a Set instead and strings are added to the StringPool. `getContainedPackages` return a List constructed from the Set each time.
