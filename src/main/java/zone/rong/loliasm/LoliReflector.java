@@ -5,6 +5,7 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.objectweb.asm.Type;
+import zone.rong.loliasm.api.datastructures.CaptureSet;
 import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.core.LoliLoadingPlugin;
 
@@ -16,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Helper class for Reflection nonsense.
@@ -25,6 +27,7 @@ public class LoliReflector {
     private static final MethodHandles.Lookup lookup = MethodHandles.lookup();
 
     private static final MethodHandle classLoader$DefineClass = resolveMethod(ClassLoader.class, "defineClass", String.class, byte[].class, int.class, int.class);
+    private static final CaptureSet<String> transformerExclusions;
 
     /*
     static {
@@ -37,6 +40,21 @@ public class LoliReflector {
         defineClass(classLoader, FastMapStateHolder.class);
     }
      */
+
+    static {
+        CaptureSet<String> captureSet = new CaptureSet<>();
+        try {
+            captureSet = new CaptureSet<>(((Set<String>) resolveFieldGetter(LaunchClassLoader.class, "transformerExceptions").invokeExact(Launch.classLoader)));
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        transformerExclusions = captureSet;
+        try {
+            resolveFieldSetter(LaunchClassLoader.class, "transformerExceptions").invoke(Launch.classLoader, transformerExclusions);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
 
     public static Class defineMixinClass(String className, byte[] classBytes) {
         try {
@@ -167,6 +185,16 @@ public class LoliReflector {
             return true;
         } catch (ClassNotFoundException ignored) { }
         return false;
+    }
+
+    public static void removeTransformerExclusion(String transformerExclusion) {
+        if (!transformerExclusions.remove(transformerExclusion)) {
+            transformerExclusions.addCapture(transformerExclusion);
+        }
+    }
+
+    public static void addTransformerExclusion(String transformerExclusion) {
+        transformerExclusions.put(transformerExclusion);
     }
 
     private static void fixOpenJ9PrivateStaticFinalRestraint(Field field) throws Throwable {

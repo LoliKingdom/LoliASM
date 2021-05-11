@@ -18,7 +18,7 @@ public class FluidRegistryMixin {
      * @author Rongmario
      * @reason Disables the hasReachedState check if {@link FluidRegistryMixin#universalBucketEnabled} is already true
      */
-    @Overwrite(remap = false)
+    @Overwrite
     public static void enableUniversalBucket() {
         if (universalBucketEnabled) {
             return;
