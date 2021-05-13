@@ -1,7 +1,12 @@
 # LoliASM Changelog
 
+## 2.4
+- Added new module `modFixes`.
+- Prevent `ArrayIndexOutOfBoundsException` from occurring in `BlockIEBase#getPushReaction` with special cases.
+- Fixes incompatibility with *Wings* because Wings' coremod loads some Forge classes too early for us to mixin into.
+
 ## 2.3.1
-- Fixes `bakedQuadPatchClasses` not being properly targetted by mixins. This means, LoliASM now requires MixinBooter. It was going to some time down the line anyways.
+- Fixes `bakedQuadPatchClasses` not being properly targeted by mixins. This means, LoliASM now requires MixinBooter. It was going to some time down the line anyways.
 - Added `miscOptimizations` => aims to optimize smaller areas of the game, nothing game-breaking will be introduced under this.
 - `FluidRegistryMixin` => first of `miscOptimizations`, quicker check @ `FluidRegistry::enableUniversalBucket`
 - Some more logging

@@ -8,8 +8,12 @@ import zone.rong.mixinbooter.MixinLoader;
 public class LoliMixinLoader {
 
     {
-        if (LoliConfig.getConfig().bakedQuadsSquasher) {
+        LoliConfig.Data data = LoliConfig.getConfig();
+        if (data.bakedQuadsSquasher) {
             Mixins.addConfiguration("mixins.bakedquadsquasher.json");
+        }
+        if (data.modFixes) {
+            Mixins.addConfiguration("mixins.modfixes.json");
         }
     }
 

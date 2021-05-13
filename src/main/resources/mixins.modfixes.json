@@ -1,11 +1,11 @@
 {
-  "package": "zone.rong.loliasm.common.memory.mixins",
+  "package": "zone.rong.loliasm.common.modfixes.mixins",
   "refmap": "mixins.loliasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "LockCodeMixin"
+    "BlockIEBaseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

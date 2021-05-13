@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "2.3.1"
+version = "2.4"
 group = "zone.rong.loliasm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "loliasm"
 
@@ -55,6 +55,10 @@ repositories {
         url "http://chickenbones.net/maven"
     }
 
+    maven {
+        url "https://modmaven.k-4u.nl/"
+    }
+
     // maven {
         // url = "http://maven.bluexin.be/repository/snapshots/"
     // }
@@ -79,6 +83,8 @@ dependencies {
     }
 
     compile 'codechicken:ChickenASM:1.12-1.0.2.9'
+
+    deobfCompile "blusunrize:ImmersiveEngineering:0.12-92-+"
 
     // compile "com.teamwizardry.librarianlib:librarianlib-1.12:4.0-SNAPSHOT:deobf"
 

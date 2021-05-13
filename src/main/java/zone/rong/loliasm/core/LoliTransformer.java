@@ -391,7 +391,10 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        node.fields.removeIf(f -> f.name.equals("packages"));
+        node.fields.stream().filter(f -> f.name.equals("packages")).findFirst().ifPresent(f -> {
+            f.desc = "Ljava/util/Set;";
+            f.signature = "Ljava/util/Set<Ljava/lang/String;>;";
+        });
 
         for (MethodNode method : node.methods) {
             if (method.name.equals("<init>") && method.desc.equals("(Ljava/io/File;Ljava/io/File;Lnet/minecraftforge/fml/common/discovery/ContainerType;ZZ)V")) {
@@ -401,16 +404,35 @@ public class LoliTransformer implements IClassTransformer {
                     if (instruction.getOpcode() == PUTFIELD) {
                         FieldInsnNode fieldNode = (FieldInsnNode) instruction;
                         if (fieldNode.name.equals("packages")) {
-                            iter.remove(); // PUTFIELD
+                            fieldNode.desc = "Ljava/util/Set;";
                             iter.previous();
-                            iter.remove(); // INVOKESTATIC
                             iter.previous();
-                            iter.remove(); // ALOAD
-                            iter.previous();
-                            iter.remove(); // LINENUMBER
-                            iter.previous();
-                            iter.remove(); // LABEL
+                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "createHashSet", "()Lit/unimi/dsi/fastutil/objects/ObjectOpenHashSet;", false));
+                            break;
                         }
+                    }
+                }
+            } else if (method.name.equals("addClassEntry")) { // see: LoliHooks::modCandidate$override$addClassEntry
+                method.instructions.clear();
+                method.instructions.add(new VarInsnNode(ALOAD, 0));
+                method.instructions.add(new VarInsnNode(ALOAD, 1));
+                method.instructions.add(new VarInsnNode(ALOAD, 0));
+                method.instructions.add(new FieldInsnNode(GETFIELD, "net/minecraftforge/fml/common/discovery/ModCandidate", "foundClasses", "Ljava/util/Set;"));
+                method.instructions.add(new VarInsnNode(ALOAD, 0));
+                method.instructions.add(new FieldInsnNode(GETFIELD, "net/minecraftforge/fml/common/discovery/ModCandidate", "packages", "Ljava/util/Set;"));
+                method.instructions.add(new VarInsnNode(ALOAD, 0));
+                method.instructions.add(new FieldInsnNode(GETFIELD, "net/minecraftforge/fml/common/discovery/ModCandidate", "table", "Lnet/minecraftforge/fml/common/discovery/ASMDataTable;"));
+                method.instructions.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "modCandidate$override$addClassEntry", "(Lnet/minecraftforge/fml/common/discovery/ModCandidate;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Lnet/minecraftforge/fml/common/discovery/ASMDataTable;)V", false));
+                method.instructions.add(new InsnNode(RETURN));
+            } else if (method.name.equals("getContainedPackages")) { // Return ArrayList with Set elements
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == GETFIELD) {
+                        FieldInsnNode fieldNode = (FieldInsnNode) instruction;
+                        fieldNode.desc = "Ljava/util/Set;";
+                        iter.add(new MethodInsnNode(INVOKESTATIC, "com/google/common/collect/Lists", "newArrayList", "(Ljava/lang/Iterable;)Ljava/util/ArrayList;", false));
+                        break;
                     }
                 }
             }

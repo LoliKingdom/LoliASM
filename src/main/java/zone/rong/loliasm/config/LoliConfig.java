@@ -56,6 +56,9 @@ public class LoliConfig {
         @Ignore final String miscOptimizationsComment = "Other optimization tweaks. Nothing that is experimental or has breaking changes would be classed under this.";
         @Since("2.3.1") public final boolean miscOptimizations;
 
+        @Ignore final String modFixesComment = "Various mod fixes and optimizations.";
+        @Since("2.4") public final boolean modFixes;
+
         public Data(String version,
                     boolean bakedQuadsSquasher,
                     boolean logClassesThatNeedPatching,
@@ -66,7 +69,8 @@ public class LoliConfig {
                     boolean optimizeDataStructures,
                     boolean optimizeFurnaceRecipes,
                     boolean optimizeBitsOfRendering,
-                    boolean miscOptimizations) {
+                    boolean miscOptimizations,
+                    boolean modFixes) {
             this.VERSION = version;
             this.bakedQuadsSquasher = bakedQuadsSquasher;
             this.logClassesThatNeedPatching = logClassesThatNeedPatching;
@@ -78,6 +82,7 @@ public class LoliConfig {
             this.optimizeFurnaceRecipes = optimizeFurnaceRecipes;
             this.optimizeBitsOfRendering = optimizeBitsOfRendering;
             this.miscOptimizations = miscOptimizations;
+            this.modFixes = modFixes;
         }
     }
 
@@ -104,7 +109,7 @@ public class LoliConfig {
             try {
                 configFile.createNewFile();
                 try (FileWriter writer = new FileWriter(configFile)) {
-                    config = new Data(LoliLoadingPlugin.VERSION, true, true, new String[] { "net.minecraft.client.renderer.block.model.FaceBakery" }, true, true, true, true, true, true, true);
+                    config = new Data(LoliLoadingPlugin.VERSION, true, true, new String[] { "net.minecraft.client.renderer.block.model.FaceBakery" }, true, true, true, true, true, true, true, true);
                     gson.toJson(config, writer);
                 }
             } catch (IOException e) {
@@ -125,13 +130,14 @@ public class LoliConfig {
                             config.optimizeDataStructures,
                             config.optimizeFurnaceRecipes,
                             true,
+                            true,
                             true);
                     try (FileWriter writer = new FileWriter(configFile)) {
                         gson.toJson(config, writer);
                     }
                 } else if (isVersionOutdated(config.VERSION, LoliLoadingPlugin.VERSION)) {
                     LoliLogger.instance.info("Config outdated, updating config from version {} to {}.", config.VERSION, LoliLoadingPlugin.VERSION);
-                    MethodHandle dataCtor = LoliReflector.resolveCtor(Data.class, String.class, boolean.class, boolean.class, String[].class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class);
+                    MethodHandle dataCtor = LoliReflector.resolveCtor(Data.class, String.class, boolean.class, boolean.class, String[].class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class);
                     List<Object> args = new ArrayList<>();
                     args.add(LoliLoadingPlugin.VERSION);
                     for (Field field : Data.class.getFields()) {
