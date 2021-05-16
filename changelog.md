@@ -1,5 +1,8 @@
 # LoliASM Changelog
 
+## 2.4.1
+- Fixes static methods containing `BakedQuad::new` not targeted correctly therefore not being redirected.
+
 ## 2.4
 - Added new module `modFixes`.
 - Prevent `ArrayIndexOutOfBoundsException` from occurring in `BlockIEBase#getPushReaction` with special cases.
