@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import zone.rong.loliasm.api.datastructures.DummyMap;
 import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
@@ -21,7 +20,7 @@ import zone.rong.loliasm.proxy.CommonProxy;
 
 import java.util.*;
 
-@Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION)
+@Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION, dependencies = "required-after:mixinbooter")
 @Mod.EventBusSubscriber
 public class LoliASM {
 
