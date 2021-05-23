@@ -129,7 +129,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitLabel(l4);
             methodVisitor.visitLineNumber(44, l4);
             Label startingLabel = null;
-            if (LoliConfig.getConfig().logClassesThatNeedPatching) {
+            if (LoliConfig.instance.logClassesThatCallBakedQuadCtor) {
                 methodVisitor.visitFieldInsn(GETSTATIC, "me/nallar/whocalled/WhoCalled", "$", "Lme/nallar/whocalled/WhoCalled;");
                 methodVisitor.visitInsn(ICONST_1);
                 methodVisitor.visitMethodInsn(INVOKEINTERFACE, "me/nallar/whocalled/WhoCalled", "getCallingClass", "(I)Ljava/lang/Class;", true);
@@ -170,7 +170,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitLocalVariable("spriteIn", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, l0, finalLabel, 4);
             methodVisitor.visitLocalVariable("applyDiffuseLighting", "Z", null, l0, finalLabel, 5);
             methodVisitor.visitLocalVariable("format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;", null, l0, finalLabel, 6);
-            if (LoliConfig.getConfig().logClassesThatNeedPatching) {
+            if (LoliConfig.instance.logClassesThatCallBakedQuadCtor) {
                 methodVisitor.visitLocalVariable("callee", "Ljava/lang/Class;", null, startingLabel, finalLabel, 7);
                 methodVisitor.visitMaxs(3, 8);
             } else {

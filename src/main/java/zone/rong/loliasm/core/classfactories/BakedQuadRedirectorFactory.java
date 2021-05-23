@@ -15,7 +15,7 @@ public class BakedQuadRedirectorFactory {
     public static String generateRedirectorClass() {
 
         ClassWriter writer = new ClassWriter(0);
-        final String className = "ifuckinglovelolis.mixins.NewBakedQuadCallsRedirector";
+        final String className = "zone.rong.loliasm.client.models.bakedquad.mixins.NewBakedQuadCallsRedirector";
 
         writer.visit(V1_8, ACC_PUBLIC | ACC_SUPER, className.replace('.', '/'), null, "java/lang/Object", null);
         AnnotationVisitor mixinVisitor = writer.visitAnnotation("Lorg/spongepowered/asm/mixin/Mixin;", false);
@@ -29,7 +29,7 @@ public class BakedQuadRedirectorFactory {
             mixinVisitor.visitEnd();
         } else {
             BakedQuadClassFactory.predefineBakedQuadClasses();
-            String[] targetNames = LoliConfig.getConfig().bakedQuadPatchClasses;
+            String[] targetNames = LoliConfig.instance.classesThatCallBakedQuadCtor;
 
             LoliLogger.instance.info("Defining NewBakedQuadCallsRedirector Mixin. With these mixin targets: {}", (Object) targetNames);
 

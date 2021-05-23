@@ -10,6 +10,7 @@ import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
 
+import java.lang.management.ManagementFactory;
 import java.util.Locale;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class LoliLoadingPlugin implements IFMLLoadingPlugin {
 
-    public static final String VERSION = "2.4.1";
+    public static final String VERSION = "2.5";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
     public static final boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
@@ -28,18 +29,24 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
         LoliLogger.instance.info("Lolis are loading in some mixins since Rongmario's too lazy to write pure ASM all the time despite the mod being called 'LoliASM'");
         MixinBootstrap.init();
-        LoliConfig.Data data = LoliConfig.getConfig();
-        if (data.optimizeDataStructures) {
+        if (LoliConfig.instance.resourceLocationCanonicalization || LoliConfig.instance.optimizeFMLRemapper || LoliConfig.instance.optimizeDataStructures) {
+            for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
+                if (arg.equals("-XX:+UseStringDeduplication")) {
+                    LoliLogger.instance.error("LoliASM encourages you to remove -XX:+UseStringDeduplication from your JVM arguments as it would have little purpose with LoliASM installed, and may actually degrade performance.");
+                }
+            }
+        }
+        if (LoliConfig.instance.optimizeDataStructures) {
             Mixins.addConfiguration("mixins.registries.json");
             Mixins.addConfiguration("mixins.memory.json");
         }
-        if (data.optimizeFurnaceRecipes) {
+        if (LoliConfig.instance.optimizeFurnaceRecipeStore) {
             Mixins.addConfiguration("mixins.recipes.json");
         }
-        if (isClient && data.optimizeBitsOfRendering) {
+        if (isClient && LoliConfig.instance.optimizeSomeRendering) {
             Mixins.addConfiguration("mixins.rendering.json");
         }
-        if (data.miscOptimizations) {
+        if (LoliConfig.instance.optimizeMiscellaneous) {
             Mixins.addConfiguration("mixins.misc.json");
         }
         Mixins.addConfiguration("mixins.vanities.json");

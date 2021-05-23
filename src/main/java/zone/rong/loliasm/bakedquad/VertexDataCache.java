@@ -8,7 +8,7 @@ public class VertexDataCache {
 
     private static final ObjectOpenCustomHashSet<int[]> KNOWN_VERTEX_DATA = new ObjectOpenCustomHashSet<>(4096, IntArrays.HASH_STRATEGY);
 
-    public static int[] canonize(int[] vertexData) {
+    public static int[] canonicalize(int[] vertexData) {
         return KNOWN_VERTEX_DATA.addOrGet(vertexData);
     }
 

@@ -9,7 +9,7 @@ import zone.rong.loliasm.api.StringPool;
 import java.util.Map;
 
 /**
- * This replaces the fieldDescriptions map in the remapper, it canonizes the inner maps and the inner maps' strings
+ * This replaces the fieldDescriptions map in the remapper, it canonicalizes the inner maps and the inner maps' strings
  */
 public class FieldDescriptionsMap extends Object2ObjectOpenHashMap<String, Map<String, String>> {
 
@@ -22,7 +22,7 @@ public class FieldDescriptionsMap extends Object2ObjectOpenHashMap<String, Map<S
 
     @Override
     public Map<String, String> put(String s, Map<String, String> innerMap) {
-        s = StringPool.canonize(s);
+        s = StringPool.canonicalize(s);
         if (!(innerMap instanceof Object2ObjectArrayMap)) {
             innerMap = innerMapCanonicalCache.addOrGet(new AutoCanonizingArrayMap<>(innerMap));
         }

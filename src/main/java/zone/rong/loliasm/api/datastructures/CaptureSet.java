@@ -1,7 +1,5 @@
 package zone.rong.loliasm.api.datastructures;
 
-import zone.rong.loliasm.LoliLogger;
-
 import java.util.HashSet;
 import java.util.Set;
 

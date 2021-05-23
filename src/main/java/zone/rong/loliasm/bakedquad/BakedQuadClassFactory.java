@@ -17,7 +17,7 @@ import static org.objectweb.asm.Opcodes.*;
  * This is the class that handles the creation of BakedQuad classes.
  *
  * Right now there are 24 variants.
- * EnumFacings are patched in directly with no field ref, along with shouldApplyDiffuseLighting and tintIndex
+ * EnumFacings are patched in directly with no field ref, along with shouldApplyDiffuseLighting and hasTintIndex
  */
 public final class BakedQuadClassFactory {
 
@@ -62,7 +62,7 @@ public final class BakedQuadClassFactory {
                         // Load into the ctor!
                         methodVisitor.visitVarInsn(ALOAD, 0); // Load this
                         methodVisitor.visitVarInsn(ALOAD, 1); // Load int[]
-                        methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/bakedquad/VertexDataCache", "canonize", "([I)[I", false);
+                        // methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/bakedquad/VertexDataCache", "canonicalize", "([I)[I", false);
                         methodVisitor.visitVarInsn(ALOAD, hasTint ? 3 : 2); // Load TextureAtlasSprite (order shifted if hasTint)
                         methodVisitor.visitVarInsn(ALOAD, hasTint ? 4 : 3); // Load VertexFormat (order shifted if hasTint)
                         // Call super(); <= this is a must need as the ClassWriter won't pass the JVM class verification

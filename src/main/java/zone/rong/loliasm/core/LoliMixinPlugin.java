@@ -30,7 +30,7 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (isRenderingPackage) {
-            return LoliConfig.getConfig().optimizeBitsOfRendering;
+            return LoliConfig.instance.optimizeSomeRendering;
         }
         return LoliTransformer.squashBakedQuads;
     }

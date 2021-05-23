@@ -21,7 +21,7 @@ import java.util.*;
  * Improvements:
  * - In 1.12, concurrency isn't needed; hence normal fastutils structures are used rather than ConcurrentMaps
  * - Arrays are used rather than Lists
- * - Also canonized TRUE/FALSE IConditions' inner predicates
+ * - Also canonicalized TRUE/FALSE IConditions' inner predicates
  */
 @SuppressWarnings({"unused", "Guava"})
 public class CanonicalConditions {
@@ -43,7 +43,7 @@ public class CanonicalConditions {
     }
 
     public static Predicate<IBlockState> orCache(Iterable<? extends ICondition> conditions, BlockStateContainer stateContainer) {
-        return OR_CACHE.computeIfAbsent(canonize(conditions, stateContainer), CanonicalConditions::orChain);
+        return OR_CACHE.computeIfAbsent(canonicalize(conditions, stateContainer), CanonicalConditions::orChain);
     }
 
     public static Predicate<IBlockState> orCache(Predicate<IBlockState>[] array) {
@@ -51,7 +51,7 @@ public class CanonicalConditions {
     }
 
     public static Predicate<IBlockState> andCache(Iterable<? extends ICondition> conditions, BlockStateContainer stateContainer) {
-        return AND_CACHE.computeIfAbsent(canonize(conditions, stateContainer), CanonicalConditions::andChain);
+        return AND_CACHE.computeIfAbsent(canonicalize(conditions, stateContainer), CanonicalConditions::andChain);
     }
 
     @SuppressWarnings({"unchecked", "UnstableApiUsage"})
@@ -106,7 +106,7 @@ public class CanonicalConditions {
     }
 
     @SuppressWarnings("unchecked")
-    private static Predicate<IBlockState>[] canonize(Iterable<? extends ICondition> conditions, BlockStateContainer stateContainer) {
+    private static Predicate<IBlockState>[] canonicalize(Iterable<? extends ICondition> conditions, BlockStateContainer stateContainer) {
         ArrayList<Predicate<IBlockState>> list = new ArrayList<>();
         for (ICondition cond : conditions) {
             list.add(cond.getPredicate(stateContainer));

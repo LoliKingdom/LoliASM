@@ -8,7 +8,23 @@ import zone.rong.loliasm.api.StringPool;
 
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class LoliHooks {
+
+    /*
+    private static final MethodHandle STRING_BACKING_CHAR_ARRAY_GETTER = LoliReflector.resolveFieldGetter(String.class, "value");
+    private static final char[] EMPTY_CHAR_ARRAY;
+
+    static {
+        char[] array;
+        try {
+            array = (char[]) STRING_BACKING_CHAR_ARRAY_GETTER.invokeExact("");
+        } catch (Throwable throwable) {
+            array = new char[0];
+        }
+        EMPTY_CHAR_ARRAY = array;
+    }
+     */
 
     public static <K> ObjectArraySet<K> createArraySet() {
         return new ObjectArraySet<>();
@@ -24,10 +40,27 @@ public class LoliHooks {
         className = className.replace('/','.');
         int pkgIdx = className.lastIndexOf('.');
         if (pkgIdx > -1) {
-            String pkg = StringPool.canonize(className.substring(0, pkgIdx));
+            String pkg = StringPool.canonicalize(className.substring(0, pkgIdx));
             packages.add(pkg);
             table.registerPackage(modCandidate, pkg);
         }
+    }
+
+    public static /*char[]*/ String nbtTagString$override$ctor(String data) {
+        /*
+        if (data == null) {
+            throw new NullPointerException("Null string not allowed");
+        }
+         */
+        return StringPool.canonicalize(data);
+        /*
+        try {
+            return (char[]) STRING_BACKING_CHAR_ARRAY_GETTER.invokeExact(data);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            return EMPTY_CHAR_ARRAY;
+        }
+         */
     }
 
 }

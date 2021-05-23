@@ -16,13 +16,12 @@ import static org.objectweb.asm.Opcodes.*;
 
 public class LoliTransformer implements IClassTransformer {
 
-    public static final boolean squashBakedQuads = LoliLoadingPlugin.isClient && LoliConfig.getConfig().bakedQuadsSquasher && !LoliLoadingPlugin.isOptifineInstalled;
+    public static final boolean squashBakedQuads = LoliLoadingPlugin.isClient && LoliConfig.instance.squashBakedQuads && !LoliLoadingPlugin.isOptifineInstalled;
 
     final Map<String, Function<byte[], byte[]>> transformations;
 
     public LoliTransformer() {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
-        LoliConfig.Data data = LoliConfig.getConfig();
         transformations = new Object2ObjectOpenHashMap<>();
         if (squashBakedQuads) {
             addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", BakedQuadPatch::rewriteBakedQuad);
@@ -31,18 +30,20 @@ public class LoliTransformer implements IClassTransformer {
             addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad$Builder", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad$Builder);
             addTransformation("zone.rong.loliasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
         }
-        if (data.canonizeObjects) {
-            addTransformation("net.minecraft.util.ResourceLocation", this::canonizeResourceLocationStrings);
+        if (LoliConfig.instance.resourceLocationCanonicalization) {
+            addTransformation("net.minecraft.util.ResourceLocation", this::canonicalizeResourceLocationStrings);
             if (LoliLoadingPlugin.isClient) {
-                addTransformation("net.minecraft.client.renderer.block.model.ModelResourceLocation", this::canonizeResourceLocationStrings);
-                addTransformation("net.minecraft.client.renderer.block.model.multipart.ICondition", this::canonicalBoolConditions);
-                addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionOr", bytes -> canonicalPredicatedConditions(bytes, true));
-                addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionAnd", bytes -> canonicalPredicatedConditions(bytes, false));
-                addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionPropertyValue", this::canonicalPropertyValueConditions);
-                // addTransformation("net.minecraft.client.renderer.block.model.MultipartBakedModel$Builder", this::cacheMultipartBakedModels); TODO
+                addTransformation("net.minecraft.client.renderer.block.model.ModelResourceLocation", this::canonicalizeResourceLocationStrings);
+                if (LoliConfig.instance.modelConditionCanonicalization) {
+                    addTransformation("net.minecraft.client.renderer.block.model.multipart.ICondition", this::canonicalBoolConditions);
+                    addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionOr", bytes -> canonicalPredicatedConditions(bytes, true));
+                    addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionAnd", bytes -> canonicalPredicatedConditions(bytes, false));
+                    addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionPropertyValue", this::canonicalPropertyValueConditions);
+                    // addTransformation("net.minecraft.client.renderer.block.model.MultipartBakedModel$Builder", this::cacheMultipartBakedModels); TODO
+                }
             }
         }
-        if (data.optimizeDataStructures) {
+        if (LoliConfig.instance.optimizeDataStructures) {
             if (LoliLoadingPlugin.isClient) {
                 addTransformation("net.minecraft.client.audio.SoundRegistry", this::removeDupeMapFromSoundRegistry);
                 addTransformation("net.minecraft.client.audio.SoundEventAccessor", this::removeInstancedRandom);
@@ -50,11 +51,12 @@ public class LoliTransformer implements IClassTransformer {
             addTransformation("net.minecraft.util.registry.RegistrySimple", this::removeValuesArrayFromRegistrySimple);
             addTransformation("net.minecraft.nbt.NBTTagCompound", this::nbtTagCompound$replaceDefaultHashMap);
             addTransformation("net.minecraftforge.fml.common.discovery.ModCandidate", this::removePackageField);
+            addTransformation("net.minecraft.nbt.NBTTagString", this::nbtTagStringRevamp);
         }
-        if (data.optimizeFurnaceRecipes) {
+        if (LoliConfig.instance.optimizeFurnaceRecipeStore) {
             addTransformation("net.minecraft.item.crafting.FurnaceRecipes", this::improveFurnaceRecipes);
         }
-        if (LoliLoadingPlugin.isClient && data.optimizeBitsOfRendering) {
+        if (LoliLoadingPlugin.isClient && LoliConfig.instance.optimizeSomeRendering) {
             addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, LoliLoadingPlugin.isDeobf ? "setupTerrain" : "func_174970_a"));
         }
     }
@@ -73,7 +75,7 @@ public class LoliTransformer implements IClassTransformer {
         return bytes;
     }
 
-    private byte[] canonizeResourceLocationStrings(byte[] bytes) {
+    private byte[] canonicalizeResourceLocationStrings(byte[] bytes) {
         ClassReader reader = new ClassReader(bytes);
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
@@ -84,7 +86,7 @@ public class LoliTransformer implements IClassTransformer {
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction.getOpcode() == GETSTATIC) {
-                        LoliLogger.instance.info("Injecting calls in {} to canonize strings", node.name);
+                        LoliLogger.instance.info("Injecting calls in {} to canonicalize strings", node.name);
                         iter.remove(); // Remove GETSTATIC
                         iter.next(); // Move to INVOKEVIRTUAL, set replaces it
                         iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/api/StringPool", "lowerCaseAndCanonize", "(Ljava/lang/String;)Ljava/lang/String;", false));
@@ -139,7 +141,7 @@ public class LoliTransformer implements IClassTransformer {
         for (MethodNode method : node.methods) {
             if (method.name.equals(getPredicate)) {
                 final String conditions = LoliLoadingPlugin.isDeobf ? "conditions" : or ? "field_188127_c" : "field_188121_c";
-                LoliLogger.instance.info("Transforming {}::getPredicate to canonize different IConditions", node.name);
+                LoliLogger.instance.info("Transforming {}::getPredicate to canonicalize different IConditions", node.name);
                 method.instructions.clear();
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
                 method.instructions.add(new FieldInsnNode(GETFIELD, node.name, conditions, "Ljava/lang/Iterable;"));
@@ -164,7 +166,7 @@ public class LoliTransformer implements IClassTransformer {
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(getPredicate)) {
-                LoliLogger.instance.info("Transforming {}::getPredicate to canonize different PropertyValueConditions", node.name);
+                LoliLogger.instance.info("Transforming {}::getPredicate to canonicalize different PropertyValueConditions", node.name);
                 method.instructions.clear();
                 method.instructions.add(new VarInsnNode(ALOAD, 1));
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
@@ -439,6 +441,30 @@ public class LoliTransformer implements IClassTransformer {
         }
 
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] nbtTagStringRevamp(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        // node.fields.removeIf(f -> f.name.equals(LoliLoadingPlugin.isDeobf ? "data" : "field_74751_a"));
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>") && method.desc.equals("(Ljava/lang/String;)V")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == PUTFIELD) {
+                        method.instructions.insertBefore(instruction, new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "nbtTagString$override$ctor", "(Ljava/lang/String;)Ljava/lang/String;", false));
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
         node.accept(writer);
         return writer.toByteArray();
     }

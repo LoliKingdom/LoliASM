@@ -101,7 +101,7 @@ public class Deduplicator {
                 try {
                     Object transforms = PERSPECTIVE_MAP_WRAPPER_TRANSFORMS_GETTER.invoke(o);
                     if (transforms != null) {
-                        Object newTransforms = canonize(transforms);
+                        Object newTransforms = canonicalize(transforms);
                         if (transforms != newTransforms) {
                             LoliLogger.instance.debug("Canonized PerspectiveMapWrapper#transforms successfully.");
                             PERSPECTIVE_MAP_WRAPPER_TRANSFORMS_SETTER.invoke((PerspectiveMapWrapper) o, newTransforms);
@@ -130,7 +130,7 @@ public class Deduplicator {
                 try {
                     Object transforms = PERSPECTIVE_MAP_WRAPPER_TRANSFORMS_GETTER.invokeExact((PerspectiveMapWrapper) o);
                     if (transforms != null) {
-                        Object newTransforms = canonize(transforms);
+                        Object newTransforms = canonicalize(transforms);
                         if (transforms != newTransforms) {
                             PERSPECTIVE_MAP_WRAPPER_TRANSFORMS_SETTER.invokeExact((PerspectiveMapWrapper) o, newTransforms);
                         }
@@ -142,7 +142,7 @@ public class Deduplicator {
                 try {
                     Object transforms = BAKED_ITEM_MODEL_TRANSFORMS_GETTER.invokeExact((BakedItemModel) o);
                     if (transforms != null) {
-                        Object newTransforms = canonize(transforms);
+                        Object newTransforms = canonicalize(transforms);
                         if (transforms != newTransforms) {
                             BAKED_ITEM_MODEL_TRANSFORMS_SETTER.invokeExact((BakedItemModel) o, newTransforms);
                         }
@@ -153,11 +153,11 @@ public class Deduplicator {
             }
         } else if (o instanceof BlockPartFace) { // Canonize String => StringPool
             BlockPartFace bpf = (BlockPartFace) o;
-            bpf.blockFaceUV.uvs = (float[]) canonize(bpf.blockFaceUV.uvs);
+            bpf.blockFaceUV.uvs = (float[]) canonicalize(bpf.blockFaceUV.uvs);
             try {
                 Object texture = BLOCK_PART_FACE_TEXTURE_GETTER.invokeExact(bpf);
                 if (texture != null) {
-                    Object newTexture = canonize(texture);
+                    Object newTexture = canonicalize(texture);
                     if (texture != newTexture) {
                         BLOCK_PART_FACE_TEXTURE_SETTER.invokeExact(bpf, newTexture);
                     }
@@ -168,13 +168,13 @@ public class Deduplicator {
             return o;
         } else if (o instanceof UnpackedBakedQuad) {
             try {
-                canonize(UNPACKED_DATA_GETTER.invokeExact((UnpackedBakedQuad) o));
+                canonicalize(UNPACKED_DATA_GETTER.invokeExact((UnpackedBakedQuad) o));
             } catch (Throwable t) {
                 t.printStackTrace();
             }
             return o;
         } else if (o instanceof ResourceLocation || o instanceof TRSRTransformation || o instanceof Vec3d || o instanceof Vec3i || o instanceof ItemCameraTransforms) {
-            return canonize(o);
+            return canonicalize(o);
         } else if (o instanceof ItemOverrideList && o != ItemOverrideList.NONE) {
             try {
                 List list = (List) ITEM_OVERRIDE_LIST_OVERRIDES_GETTER.invokeExact((ItemOverrideList) o);
@@ -291,7 +291,7 @@ public class Deduplicator {
     }
      */
 
-    private Object canonize(Object o) {
+    private Object canonicalize(Object o) {
         Object n = o;
         if (o instanceof float[]) {
             n = floatArrayCache.addOrGet((float[]) o);
@@ -299,7 +299,7 @@ public class Deduplicator {
             float[][] o2 = float2dArrayCache.addOrGet((float[][]) o);
             if (o == o2) {
                 for (int i = 0; i < o2.length; i++) {
-                    o2[i] = (float[]) canonize(o2[i]);
+                    o2[i] = (float[]) canonicalize(o2[i]);
                 }
             } else {
                 n = o2;
@@ -307,7 +307,7 @@ public class Deduplicator {
         } else if (o instanceof float[][][]) {
             float[][][] o2 = (float[][][]) o;
             for (int i = 0; i < o2.length; i++) {
-                o2[i] = (float[][]) canonize(o2[i]);
+                o2[i] = (float[][]) canonicalize(o2[i]);
             }
         } else if (o instanceof Map) {
             if (o instanceof ImmutableMap && ((Map) o).isEmpty() && n != ImmutableMap.of()) {
@@ -320,7 +320,7 @@ public class Deduplicator {
         } else if (o instanceof ItemCameraTransforms) {
             n = itemCameraTransformsCache.addOrGet((ItemCameraTransforms) o);
         } else if (o instanceof String) {
-            n = StringPool.canonize((String) o);
+            n = StringPool.canonicalize((String) o);
         }
         if (n != o) {
             LoliLogger.instance.info("Deduplicated {}@{} => {}@{} successfully", o.getClass().getName(), Integer.toHexString(o.hashCode()), n.getClass().getName(), Integer.toHexString(n.hashCode()));

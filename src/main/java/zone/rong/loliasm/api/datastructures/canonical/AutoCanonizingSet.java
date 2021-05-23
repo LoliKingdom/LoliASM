@@ -15,7 +15,7 @@ public class AutoCanonizingSet<K> extends ObjectOpenHashSet<K> {
     @Override
     public boolean add(K k) {
         if (k instanceof String) {
-            k = (K) StringPool.canonize((String) k);
+            k = (K) StringPool.canonicalize((String) k);
         }
         return super.add(k);
     }

@@ -1,27 +1,146 @@
 package zone.rong.loliasm.config;
 
-import com.google.common.base.Strings;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.launchwrapper.Launch;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import zone.rong.loliasm.config.annotation.*;
-import zone.rong.loliasm.core.LoliLoadingPlugin;
 
 import java.io.*;
-import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class LoliConfig {
 
-    private static Data config;
+    public static final LoliConfig instance = new LoliConfig();
 
+    static {
+        instance.initialize();
+        File oldConfigFile = new File(Launch.minecraftHome, "config" + File.separator + "loliasm.json");
+        if (oldConfigFile.exists()) {
+            Gson gson = new GsonBuilder()
+                    .disableHtmlEscaping()
+                    .setPrettyPrinting()
+                    .addDeserializationExclusionStrategy(new ExclusionStrategy() {
+                        @Override
+                        public boolean shouldSkipField(FieldAttributes f) {
+                            return f.getAnnotation(Ignore.class) != null;
+                        }
+                        @Override
+                        public boolean shouldSkipClass(Class<?> clazz) {
+                            return false;
+                        }
+                    })
+                    .create();
+            try (FileReader reader = new FileReader(oldConfigFile)) {
+                Data oldConfig = gson.fromJson(reader, Data.class);
+                instance.squashBakedQuads = instance.setBoolean("squashBakedQuads", "bakedquad", oldConfig.bakedQuadsSquasher);
+                instance.classesThatCallBakedQuadCtor = instance.setStringArray("classesThatCallBakedQuadCtor", "bakedquad", oldConfig.bakedQuadPatchClasses);
+                instance.logClassesThatCallBakedQuadCtor = instance.setBoolean("logClassesThatCallBakedQuadCtor", "bakedquad", oldConfig.logClassesThatNeedPatching);
+                instance.cleanupLaunchClassLoaderLate = instance.setBoolean("cleanupLaunchClassLoaderLate", "launchwrapper", oldConfig.cleanupLaunchClassLoader);
+                instance.cleanupLaunchClassLoaderLate = instance.setBoolean("cleanupLaunchClassLoaderLate", "launchwrapper", oldConfig.cleanupLaunchClassLoader);
+                instance.optimizeFMLRemapper = instance.setBoolean("optimizeFMLRemapper", "remapper", oldConfig.remapperMemorySaver);
+                instance.optimizeDataStructures = instance.setBoolean("optimizeDataStructures", "datastructures", oldConfig.optimizeDataStructures);
+                instance.optimizeFurnaceRecipeStore = instance.setBoolean("optimizeFurnaceRecipeStore", "datastructures", oldConfig.optimizeFurnaceRecipes);
+                instance.optimizeSomeRendering = instance.setBoolean("optimizeSomeRendering", "rendering", oldConfig.optimizeBitsOfRendering);
+                instance.optimizeMiscellaneous = instance.setBoolean("optimizeMiscellaneous", "misc", oldConfig.miscOptimizations);
+                instance.fixBlockIEBaseArrayIndexOutOfBoundsException = instance.setBoolean("fixBlockIEBaseArrayIndexOutOfBoundsException", "modfixes", oldConfig.modFixes);
+                instance.configuration.save();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            oldConfigFile.delete();
+        }
+    }
+
+    private Configuration configuration;
+
+    public boolean squashBakedQuads, logClassesThatCallBakedQuadCtor;
+    public String[] classesThatCallBakedQuadCtor;
+    public boolean cleanupLaunchClassLoaderEarly, cleanupLaunchClassLoaderLate, noResourceCache, noClassCache, weakResourceCache, weakClassCache, disablePackageManifestMap, cleanCachesOnGameLoad/*, cleanCachesOnWorldLoad*/;
+    public boolean resourceLocationCanonicalization, modelConditionCanonicalization;
+    public boolean optimizeFMLRemapper;
+    public boolean optimizeDataStructures;
+    public boolean optimizeFurnaceRecipeStore;
+    public boolean optimizeSomeRendering;
+    public boolean optimizeMiscellaneous;
+    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager;
+
+    public void initialize() {
+        if (configuration == null) {
+            configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
+            load();
+        }
+    }
+
+    public void load() {
+        squashBakedQuads = getBoolean("squashBakedQuads", "bakedquad", "Saves RAM by removing BakedQuad instance variables, redirecting BakedQuad creation to specific BakedQuad child classes. This will be forcefully turned off when Optifine is installed as it is incompatible", true);
+        classesThatCallBakedQuadCtor = getStringArray("classesThatCallBakedQuadCtor", "bakedquad", "Classes where BakedQuad::new calls need to be redirected", "net.minecraft.client.renderer.block.model.FaceBakery");
+        logClassesThatCallBakedQuadCtor = getBoolean("logClassesThatCallBakedQuadCtor", "bakedquad", "Log classes that need their BakedQuad::new calls redirected", true);
+
+        cleanupLaunchClassLoaderEarly = getBoolean("cleanupLaunchClassLoaderEarly", "launchwrapper", "Cleanup some redundant data structures in LaunchClassLoader at the earliest point possible (when LoliASM is loaded). Helpful for those that don't have enough RAM to load into the game. This can induce slowdowns while loading the game in exchange for more available RAM", false);
+        cleanupLaunchClassLoaderLate = getBoolean("cleanupLaunchClassLoaderLate", "launchwrapper", "Cleanup some redundant data structures in LaunchClassLoader at the latest point possible (when the game reaches the Main Screen). This is for those that have enough RAM to load the game and do not want any slowdowns while loading. Note: if 'cleanupLaunchClassLoaderEarly' is 'true', this option will be ignored", true);
+        noResourceCache = getBoolean("noResourceCache", "launchwrapper", "Disabling caching of resources (Class Bytes). This will induce slowdowns to game/world loads in exchange for more available RAM", false);
+        noClassCache = getBoolean("noClassCache", "launchwrapper", "Disabling caching of classes. This will induce major slowdowns to game/world loads in exchange for more available RAM", false);
+        weakResourceCache = getBoolean("weakResourceCache", "launchwrapper", "Weaken the caching of resources (Class Bytes). This allows the GC to free up more space when the caches are no longer needed. If 'noResourceCache' is 'true', this option will be ignored. This option coincides with Foamfix's 'weakenResourceCache' option", true);
+        weakClassCache = getBoolean("weakClassCache", "launchwrapper", "Weaken the caching of classes. This allows the GC to free up more space when the caches are no longer needed. If 'noClassCache' is 'true', this option will be ignored", true);
+        disablePackageManifestMap = getBoolean("disablePackageManifestMap", "launchwrapper", "Disable the unusused Package Manifest map. This option coincides with Foamfix's 'removePackageManifestMap' option", true);
+        cleanCachesOnGameLoad = getBoolean("cleanCachesOnGameLoad", "launchwrapper", "Invalidate and clean cache entries when the game finishes loading (onto the main screen). Loading into the first world may take longer. This option wouldn't do anything if 'cleanupLaunchClassLoaderLate' is 'true'", false);
+        // cleanCachesOnWorldLoad = getBoolean("cleanCachesOnWorldLoad", "launchwrapper", "Invalidate and clean cache entries when you load into a world, whether that be loading into a singleplayer world or a multiplayer server.", true);
+
+        resourceLocationCanonicalization = getBoolean("resourceLocationCanonicalization", "canonicalization", "Deduplicate ResourceLocation and ModelResourceLocation instances", true);
+        modelConditionCanonicalization = getBoolean("modelConditionCanonicalization", "canonicalization", "Deduplicate Model Conditions. Enable this if you do not have Foamfix installed", false);
+
+        optimizeFMLRemapper = getBoolean("optimizeFMLRemapper", "remapper", "Optimizing Forge's Remapper for not storing redundant entries", true);
+
+        optimizeDataStructures = getBoolean("optimizeDataStructures", "datastructures", "Optimizing various data structures around Minecraft", true);
+        optimizeFurnaceRecipeStore = getBoolean("optimizeFurnaceRecipeStore", "datastructures", "Optimizing FurnaceRecipes. FastFurnace will see very little benefit when this option is turned on", true);
+
+        optimizeSomeRendering = getBoolean("optimizeSomeRendering", "rendering", "Optimizes some rendering features, not game-breaking; however, negligible at times", true);
+
+        optimizeMiscellaneous = getBoolean("optimizeMiscellaneous", "misc", "Optimizes miscellaneous things that cannot be categorized specifically", true);
+
+        fixBlockIEBaseArrayIndexOutOfBoundsException = getBoolean("fixBlockIEBaseArrayIndexOutOfBoundsException", "modfixes", "When Immersive Engineering is installed, sometimes it or it's addons can induce an ArrayIndexOutOfBoundsException in BlockIEBase#getPushReaction. This option will be ignored when IE isn't installed", true);
+        cleanupChickenASMClassHierarchyManager = getBoolean("cleanupChickenASMClassHierarchyManager", "modfixes", "EXPERIMENTAL: When ChickenASM (Library of CodeChickenLib and co.) is installed, ClassHierarchyManager can cache a lot of Strings and seem to be unused in any transformation purposes. This clears ClassHierarchyManager of those redundant strings. This option will be ignored when ChickenASM isn't installed", true);
+
+        configuration.save();
+    }
+
+    private boolean setBoolean(String name, String category, boolean newValue) {
+        Property prop = configuration.getCategory(category).get(name);
+        prop.set(newValue);
+        return newValue;
+    }
+
+    private String[] setStringArray(String name, String category, String... newValues) {
+        Property prop = configuration.getCategory(category).get(name);
+        prop.set(newValues);
+        return newValues;
+    }
+
+    private boolean getBoolean(String name, String category, String description, boolean defaultValue) {
+        Property prop = configuration.get(category, name, defaultValue);
+        prop.setDefaultValue(defaultValue);
+        prop.setComment(description + " - <default: " + defaultValue + ">");
+        prop.setRequiresMcRestart(true);
+        prop.setShowInGui(true);
+        prop.setLanguageKey("loliasm.config." + name);
+        return prop.getBoolean(defaultValue);
+    }
+
+    private String[] getStringArray(String name, String category, String description, String... defaultValue) {
+        Property prop = configuration.get(category, name, defaultValue);
+        prop.setDefaultValues(defaultValue);
+        prop.setComment(description + " - <default: " + Arrays.toString(defaultValue) + ">");
+        prop.setRequiresMcRestart(true);
+        prop.setShowInGui(true);
+        prop.setLanguageKey("loliasm.config." + name);
+        return prop.getStringList();
+    }
+
+    @Deprecated
     public static class Data {
 
         final String VERSION;
@@ -41,8 +160,8 @@ public class LoliConfig {
         @Ignore final String remapperMemorySaverComment = "Experimental: Saves memory by canonizing strings cached in the remapper. May impact loading time by a little.";
         @Since("2.0") public final boolean remapperMemorySaver;
 
-        @Ignore final String canonizeObjectsComment = "Experimental: Saves memory by pooling different Object instances and deduplicating them from different locations such as ResourceLocations, IBakedModels.";
-        @Since("2.0") public final boolean canonizeObjects;
+        @Ignore final String canonicalizeObjectsComment = "Experimental: Saves memory by pooling different Object instances and deduplicating them from different locations such as ResourceLocations, IBakedModels.";
+        @Since("2.0") public final boolean canonicalizeObjects;
 
         @Ignore final String optimizeDataStructuresComment = "Saves memory by optimizing various data structures around Minecraft, MinecraftForge and mods.";
         @Since("2.0") public final boolean optimizeDataStructures;
@@ -65,7 +184,7 @@ public class LoliConfig {
                     String[] bakedQuadPatchClasses,
                     boolean cleanupLaunchClassLoader,
                     boolean remapperMemorySaver,
-                    boolean canonizeObjects,
+                    boolean canonicalizeObjects,
                     boolean optimizeDataStructures,
                     boolean optimizeFurnaceRecipes,
                     boolean optimizeBitsOfRendering,
@@ -77,7 +196,7 @@ public class LoliConfig {
             this.bakedQuadPatchClasses = bakedQuadPatchClasses;
             this.cleanupLaunchClassLoader = cleanupLaunchClassLoader;
             this.remapperMemorySaver = remapperMemorySaver;
-            this.canonizeObjects = canonizeObjects;
+            this.canonicalizeObjects = canonicalizeObjects;
             this.optimizeDataStructures = optimizeDataStructures;
             this.optimizeFurnaceRecipes = optimizeFurnaceRecipes;
             this.optimizeBitsOfRendering = optimizeBitsOfRendering;
@@ -86,81 +205,4 @@ public class LoliConfig {
         }
     }
 
-    public static Data getConfig() {
-        if (config != null) {
-            return config;
-        }
-        Gson gson = new GsonBuilder()
-                .disableHtmlEscaping()
-                .setPrettyPrinting()
-                .addDeserializationExclusionStrategy(new ExclusionStrategy() {
-                    @Override
-                    public boolean shouldSkipField(FieldAttributes f) {
-                        return f.getAnnotation(Ignore.class) != null;
-                    }
-                    @Override
-                    public boolean shouldSkipClass(Class<?> clazz) {
-                        return false;
-                    }
-                })
-                .create();
-        File configFile = new File(Launch.minecraftHome, "config" + File.separator + "loliasm.json");
-        if (!configFile.exists()) {
-            try {
-                configFile.createNewFile();
-                try (FileWriter writer = new FileWriter(configFile)) {
-                    config = new Data(LoliLoadingPlugin.VERSION, true, true, new String[] { "net.minecraft.client.renderer.block.model.FaceBakery" }, true, true, true, true, true, true, true, true);
-                    gson.toJson(config, writer);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try (FileReader reader = new FileReader(configFile)) {
-                config = gson.fromJson(reader, Data.class);
-                if (Strings.isNullOrEmpty(config.VERSION)) {
-                    LoliLogger.instance.info("Config missing VERSION, writing current LoliASM version {} to config.", LoliLoadingPlugin.VERSION);
-                    config = new Data(LoliLoadingPlugin.VERSION,
-                            config.bakedQuadsSquasher,
-                            config.logClassesThatNeedPatching,
-                            config.bakedQuadPatchClasses,
-                            config.cleanupLaunchClassLoader,
-                            config.remapperMemorySaver,
-                            config.canonizeObjects,
-                            config.optimizeDataStructures,
-                            config.optimizeFurnaceRecipes,
-                            true,
-                            true,
-                            true);
-                    try (FileWriter writer = new FileWriter(configFile)) {
-                        gson.toJson(config, writer);
-                    }
-                } else if (isVersionOutdated(config.VERSION, LoliLoadingPlugin.VERSION)) {
-                    LoliLogger.instance.info("Config outdated, updating config from version {} to {}.", config.VERSION, LoliLoadingPlugin.VERSION);
-                    MethodHandle dataCtor = LoliReflector.resolveCtor(Data.class, String.class, boolean.class, boolean.class, String[].class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class);
-                    List<Object> args = new ArrayList<>();
-                    args.add(LoliLoadingPlugin.VERSION);
-                    for (Field field : Data.class.getFields()) {
-                        String sinceVersion = field.getAnnotation(Since.class).value();
-                        if (field.getName().equals("bakedQuadPatchClasses")) { // Special case is ugly
-                            args.add(isVersionOutdated(config.VERSION, sinceVersion) ? new String[] { "net.minecraft.client.renderer.block.model.FaceBakery" } : field.get(config));
-                        } else {
-                            args.add(isVersionOutdated(config.VERSION, sinceVersion) ? true : field.get(config)); // Default to true if version is outdated
-                        }
-                    }
-                    config = (Data) dataCtor.invokeWithArguments(args);
-                    try (FileWriter writer = new FileWriter(configFile)) {
-                        gson.toJson(config, writer);
-                    }
-                }
-            } catch (Throwable e) {
-                e.printStackTrace();
-            }
-        }
-        return config;
-    }
-
-    private static boolean isVersionOutdated(String configVersion, String targetVersion) {
-        return new DefaultArtifactVersion(configVersion).compareTo(new DefaultArtifactVersion(targetVersion)) < 0;
-    }
 }
