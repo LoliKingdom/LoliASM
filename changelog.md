@@ -1,5 +1,12 @@
 # LoliASM Changelog
 
+## 2.6
+- Separate out `mixins.modfixes.json` to separate jsons to accompany config values.
+- Change BakedQuad logging message to fit current context.
+- EXPERIMENTAL: Injecting/Stripping of forge capabilities within the 'dispatcher' of capable classes. This will help in cases where certain capability providers do not need to be attached to the object at all times.
+- EXPERIMENTAL: new Astral Sorcery patch `fixAmuletHolderCapability`; uses the previous point to inject and strip AmuletHolderCapability accordingly. This will save RAM depending on how many ItemStacks are present in-world.
+- EXPERIMENTAL: new Astral Sorcery patch `optimizeAmuletRelatedFunctions`; now amulet related operations will only run on every tick when the amulet is equipped.
+
 ## 2.5
 - Cleanups.
 - Canonicalize strings by using Java's String#intern. This utilizes Java's own implementation and as of Java 7 through 8, it has gotten better. Where using it is probably better than a custom structure.

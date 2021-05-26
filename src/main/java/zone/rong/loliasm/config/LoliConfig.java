@@ -66,7 +66,8 @@ public class LoliConfig {
     public boolean optimizeFurnaceRecipeStore;
     public boolean optimizeSomeRendering;
     public boolean optimizeMiscellaneous;
-    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager;
+    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions;
+    public boolean fixAmuletHolderCapability;
 
     public void initialize() {
         if (configuration == null) {
@@ -104,6 +105,9 @@ public class LoliConfig {
 
         fixBlockIEBaseArrayIndexOutOfBoundsException = getBoolean("fixBlockIEBaseArrayIndexOutOfBoundsException", "modfixes", "When Immersive Engineering is installed, sometimes it or it's addons can induce an ArrayIndexOutOfBoundsException in BlockIEBase#getPushReaction. This option will be ignored when IE isn't installed", true);
         cleanupChickenASMClassHierarchyManager = getBoolean("cleanupChickenASMClassHierarchyManager", "modfixes", "EXPERIMENTAL: When ChickenASM (Library of CodeChickenLib and co.) is installed, ClassHierarchyManager can cache a lot of Strings and seem to be unused in any transformation purposes. This clears ClassHierarchyManager of those redundant strings. This option will be ignored when ChickenASM isn't installed", true);
+        optimizeAmuletRelatedFunctions = getBoolean("optimizeAmuletRelatedFunctions", "modfixes", "Optimizes Astral Sorcery's Resplendent Prism related functions. This option will be ignored when Astral Sorcery isn't installed", true);
+
+        fixAmuletHolderCapability = getBoolean("fixAmuletHolderCapability", "capability", "Fixes Astral Sorcery applying AmuletHolderCapability to large amount of ItemStacks when it isn't needed. This option will be ignored when Astral Sorcery isn't installed", true);
 
         configuration.save();
     }

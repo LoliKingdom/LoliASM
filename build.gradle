@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "2.5"
+version = "2.6"
 group = "zone.rong.loliasm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "loliasm"
 
@@ -44,25 +44,25 @@ configurations {
 }
 
 repositories {
-
     jcenter()
-
+    maven {
+        url "https://www.cursemaven.com"
+    }
     maven {
         url "https://repo.spongepowered.org/maven"
     }
-
     maven {
         url "http://chickenbones.net/maven"
     }
-
     maven {
         url "https://modmaven.k-4u.nl/"
     }
-
     maven {
         url "https://maven.blamejared.com"
     }
-
+    maven {
+        url "https://maven.thiakil.com"
+    }
     // maven {
         // url = "http://maven.bluexin.be/repository/snapshots/"
     // }
@@ -70,11 +70,7 @@ repositories {
 }
 
 dependencies {
-
-    embed 'me.nallar.whocalled:WhoCalled:1.1'
-
-    compile files("./libs/mixinbooter-1.0.jar")
-
+    embed "me.nallar.whocalled:WhoCalled:1.1"
     // implementation ("org.spongepowered:mixin:0.8.3-SNAPSHOT") {
     embed ("org.spongepowered:mixin:0.8") {
         exclude module: "asm-commons"
@@ -85,15 +81,13 @@ dependencies {
         exclude module: "gson"
         exclude module: "commons-io"
     }
-
-    compile 'codechicken:ChickenASM:1.12-1.0.2.9'
-
-    deobfCompile "blusunrize:ImmersiveEngineering:0.12-92-+"
-
+    compile "codechicken:ChickenASM:1.12-1.0.2.9"
     compile "epicsquid.mysticallib:mysticallib:1.12.2-+"
-
+    deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
+    deobfCompile "blusunrize:ImmersiveEngineering:0.12-92-+"
+    deobfCompile "curse.maven:astral-sorcery-241721:3044416"
+    deobfCompile "curse.maven:mixin-booter-419286:3321174"
     // compile "com.teamwizardry.librarianlib:librarianlib-1.12:4.0-SNAPSHOT:deobf"
-
 }
 
 processResources {

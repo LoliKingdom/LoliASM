@@ -8,6 +8,7 @@ import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.patches.*;
 
+import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.function.Function;
@@ -58,6 +59,9 @@ public class LoliTransformer implements IClassTransformer {
         }
         if (LoliLoadingPlugin.isClient && LoliConfig.instance.optimizeSomeRendering) {
             addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, LoliLoadingPlugin.isDeobf ? "setupTerrain" : "func_174970_a"));
+        }
+        if (LoliConfig.instance.fixAmuletHolderCapability) {
+            addTransformation("hellfirepvp.astralsorcery.common.enchantment.amulet.PlayerAmuletHandler", bytes -> stripSubscribeEventAnnotation(bytes, "attachAmuletItemCapability"));
         }
     }
 
@@ -463,6 +467,23 @@ public class LoliTransformer implements IClassTransformer {
                 }
             }
         }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] stripSubscribeEventAnnotation(byte[] bytes, String methodName) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        node.methods.stream()
+                .filter(m -> m.name.equals(methodName))
+                .findFirst()
+                .map(m -> m.visibleAnnotations)
+                .orElseGet(ArrayList::new)
+                .removeIf(a -> a.desc.equals("Lnet/minecraftforge/fml/common/eventhandler/SubscribeEvent;"));
 
         ClassWriter writer = new ClassWriter(0);
         node.accept(writer);

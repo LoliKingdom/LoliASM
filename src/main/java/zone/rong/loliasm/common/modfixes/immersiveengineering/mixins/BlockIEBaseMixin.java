@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.mixins;
+package zone.rong.loliasm.common.modfixes.immersiveengineering.mixins;
 
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import net.minecraft.block.material.EnumPushReaction;

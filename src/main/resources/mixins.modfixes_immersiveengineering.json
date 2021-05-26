@@ -1,0 +1,13 @@
+{
+  "package": "zone.rong.loliasm.common.modfixes.immersiveengineering.mixins",
+  "refmap": "mixins.loliasm.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BlockIEBaseMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
