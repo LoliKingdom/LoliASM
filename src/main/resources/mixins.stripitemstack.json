@@ -1,11 +1,11 @@
 {
-  "package": "zone.rong.loliasm.common.misc.mixins",
+  "package": "zone.rong.loliasm.common.stripitemstack.mixins",
   "refmap": "mixins.loliasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "FluidRegistryMixin"
+    "ItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -29,7 +29,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
         LoliLogger.instance.info("Lolis are loading in some mixins since Rongmario's too lazy to write pure ASM all the time despite the mod being called 'LoliASM'");
         MixinBootstrap.init();
-        if (LoliConfig.instance.resourceLocationCanonicalization || LoliConfig.instance.optimizeFMLRemapper || LoliConfig.instance.optimizeDataStructures) {
+        if (LoliConfig.instance.resourceLocationCanonicalization || LoliConfig.instance.optimizeFMLRemapper) {
             for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
                 if (arg.equals("-XX:+UseStringDeduplication")) {
                     LoliLogger.instance.error("LoliASM encourages you to remove -XX:+UseStringDeduplication from your JVM arguments as it would have little purpose with LoliASM installed, and may actually degrade performance.");
@@ -37,9 +37,14 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
             }
         }
         Mixins.addConfiguration("mixins.internal.json");
-        if (LoliConfig.instance.optimizeDataStructures) {
+        if (LoliConfig.instance.optimizeRegistries) {
             Mixins.addConfiguration("mixins.registries.json");
-            Mixins.addConfiguration("mixins.memory.json");
+        }
+        if (LoliConfig.instance.stripNearUselessItemStackFields) {
+            Mixins.addConfiguration("mixins.stripitemstack.json");
+        }
+        if (LoliConfig.instance.lockCodeCanonicalization) {
+            Mixins.addConfiguration("mixins.lockcode.json");
         }
         if (LoliConfig.instance.optimizeFurnaceRecipeStore) {
             Mixins.addConfiguration("mixins.recipes.json");
@@ -47,8 +52,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         if (isClient && LoliConfig.instance.optimizeSomeRendering) {
             Mixins.addConfiguration("mixins.rendering.json");
         }
-        if (LoliConfig.instance.optimizeMiscellaneous) {
-            Mixins.addConfiguration("mixins.misc.json");
+        if (LoliConfig.instance.quickerEnableUniversalBucketCheck) {
+            Mixins.addConfiguration("mixins.misc_fluidregistry.json");
         }
         Mixins.addConfiguration("mixins.vanities.json");
     }

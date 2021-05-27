@@ -42,10 +42,11 @@ public class LoliConfig {
                 instance.cleanupLaunchClassLoaderLate = instance.setBoolean("cleanupLaunchClassLoaderLate", "launchwrapper", oldConfig.cleanupLaunchClassLoader);
                 instance.cleanupLaunchClassLoaderLate = instance.setBoolean("cleanupLaunchClassLoaderLate", "launchwrapper", oldConfig.cleanupLaunchClassLoader);
                 instance.optimizeFMLRemapper = instance.setBoolean("optimizeFMLRemapper", "remapper", oldConfig.remapperMemorySaver);
-                instance.optimizeDataStructures = instance.setBoolean("optimizeDataStructures", "datastructures", oldConfig.optimizeDataStructures);
+                instance.optimizeRegistries = instance.setBoolean("optimizeRegistries", "datastructures", oldConfig.optimizeDataStructures);
                 instance.optimizeFurnaceRecipeStore = instance.setBoolean("optimizeFurnaceRecipeStore", "datastructures", oldConfig.optimizeFurnaceRecipes);
                 instance.optimizeSomeRendering = instance.setBoolean("optimizeSomeRendering", "rendering", oldConfig.optimizeBitsOfRendering);
-                instance.optimizeMiscellaneous = instance.setBoolean("optimizeMiscellaneous", "misc", oldConfig.miscOptimizations);
+                instance.quickerEnableUniversalBucketCheck = instance.setBoolean("quickerEnableUniversalBucketCheck", "misc", oldConfig.miscOptimizations);
+                instance.stripInstancedRandomFromSoundEventAccessor = instance.setBoolean("stripInstancedRandomFromSoundEventAccessor", "misc", oldConfig.miscOptimizations);
                 instance.fixBlockIEBaseArrayIndexOutOfBoundsException = instance.setBoolean("fixBlockIEBaseArrayIndexOutOfBoundsException", "modfixes", oldConfig.modFixes);
                 instance.configuration.save();
             } catch (Exception e) {
@@ -60,20 +61,17 @@ public class LoliConfig {
     public boolean squashBakedQuads, logClassesThatCallBakedQuadCtor;
     public String[] classesThatCallBakedQuadCtor;
     public boolean cleanupLaunchClassLoaderEarly, cleanupLaunchClassLoaderLate, noResourceCache, noClassCache, weakResourceCache, weakClassCache, disablePackageManifestMap, cleanCachesOnGameLoad/*, cleanCachesOnWorldLoad*/;
-    public boolean resourceLocationCanonicalization, modelConditionCanonicalization;
+    public boolean resourceLocationCanonicalization, modelConditionCanonicalization, nbtTagStringBackingStringCanonicalization, packageStringCanonicalization, lockCodeCanonicalization;
     public boolean optimizeFMLRemapper;
-    public boolean optimizeDataStructures;
-    public boolean optimizeFurnaceRecipeStore;
+    public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields;
     public boolean optimizeSomeRendering;
-    public boolean optimizeMiscellaneous;
+    public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor;
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions;
     public boolean fixAmuletHolderCapability;
 
-    public void initialize() {
-        if (configuration == null) {
-            configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
-            load();
-        }
+    private void initialize() {
+        configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
+        load();
     }
 
     public void load() {
@@ -93,15 +91,22 @@ public class LoliConfig {
 
         resourceLocationCanonicalization = getBoolean("resourceLocationCanonicalization", "canonicalization", "Deduplicate ResourceLocation and ModelResourceLocation instances", true);
         modelConditionCanonicalization = getBoolean("modelConditionCanonicalization", "canonicalization", "Deduplicate Model Conditions. Enable this if you do not have Foamfix installed", false);
+        nbtTagStringBackingStringCanonicalization = getBoolean("nbtTagStringBackingStringCanonicalization", "canonicalization", "Deduplicate Strings in NBTTagString", true);
+        packageStringCanonicalization = getBoolean("packageStringCanonicalization", "canonicalization", "Deduplicate package strings when Forge gathers them when mod candidates are loaded", true);
+        lockCodeCanonicalization = getBoolean("lockCodeCanonicalization", "canonicalization", "Deduplicate LockCode when reading from NBT", true);
 
         optimizeFMLRemapper = getBoolean("optimizeFMLRemapper", "remapper", "Optimizing Forge's Remapper for not storing redundant entries", true);
 
-        optimizeDataStructures = getBoolean("optimizeDataStructures", "datastructures", "Optimizing various data structures around Minecraft", true);
+        // optimizeDataStructures = getBoolean("optimizeDataStructures", "datastructures", "Optimizes various data structures around Minecraft", true);
+        optimizeRegistries = getBoolean("optimizeRegistries", "datastructures", "Optimizes registries", true);
+        optimizeNBTTagCompoundBackingMap = getBoolean("optimizeNBTTagCompoundBackingMap", "datastructures", "Optimize NBTTagCompound's backing map structure", true);
         optimizeFurnaceRecipeStore = getBoolean("optimizeFurnaceRecipeStore", "datastructures", "Optimizing FurnaceRecipes. FastFurnace will see very little benefit when this option is turned on", true);
+        stripNearUselessItemStackFields = getBoolean("stripNearUselessItemStackFields", "datastructures", "EXPERIMENTAL: Strips ItemStack of some of its fields as it stores some near-useless references", true);
 
         optimizeSomeRendering = getBoolean("optimizeSomeRendering", "rendering", "Optimizes some rendering features, not game-breaking; however, negligible at times", true);
 
-        optimizeMiscellaneous = getBoolean("optimizeMiscellaneous", "misc", "Optimizes miscellaneous things that cannot be categorized specifically", true);
+        quickerEnableUniversalBucketCheck = getBoolean("quickerEnableUniversalBucketCheck", "misc", "Optimizes FluidRegistry::enableUniversalBucket check", true);
+        stripInstancedRandomFromSoundEventAccessor = getBoolean("stripInstancedRandomFromSoundEventAccessor", "misc", "Strips the boring instanced Random object from SoundEventAccessors and uses ThreadLocalRandom instead", true);
 
         fixBlockIEBaseArrayIndexOutOfBoundsException = getBoolean("fixBlockIEBaseArrayIndexOutOfBoundsException", "modfixes", "When Immersive Engineering is installed, sometimes it or it's addons can induce an ArrayIndexOutOfBoundsException in BlockIEBase#getPushReaction. This option will be ignored when IE isn't installed", true);
         cleanupChickenASMClassHierarchyManager = getBoolean("cleanupChickenASMClassHierarchyManager", "modfixes", "EXPERIMENTAL: When ChickenASM (Library of CodeChickenLib and co.) is installed, ClassHierarchyManager can cache a lot of Strings and seem to be unused in any transformation purposes. This clears ClassHierarchyManager of those redundant strings. This option will be ignored when ChickenASM isn't installed", true);

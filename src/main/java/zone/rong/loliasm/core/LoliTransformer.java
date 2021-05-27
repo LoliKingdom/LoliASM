@@ -2,6 +2,7 @@ package zone.rong.loliasm.core;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.launchwrapper.IClassTransformer;
+import org.apache.commons.lang3.ArrayUtils;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 import zone.rong.loliasm.config.LoliConfig;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -19,7 +21,7 @@ public class LoliTransformer implements IClassTransformer {
 
     public static final boolean squashBakedQuads = LoliLoadingPlugin.isClient && LoliConfig.instance.squashBakedQuads && !LoliLoadingPlugin.isOptifineInstalled;
 
-    final Map<String, Function<byte[], byte[]>> transformations;
+    Map<String, Function<byte[], byte[]>> transformations;
 
     public LoliTransformer() {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
@@ -31,34 +33,47 @@ public class LoliTransformer implements IClassTransformer {
             addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad$Builder", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad$Builder);
             addTransformation("zone.rong.loliasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
         }
-        if (LoliConfig.instance.resourceLocationCanonicalization) {
-            addTransformation("net.minecraft.util.ResourceLocation", this::canonicalizeResourceLocationStrings);
-            if (LoliLoadingPlugin.isClient) {
-                addTransformation("net.minecraft.client.renderer.block.model.ModelResourceLocation", this::canonicalizeResourceLocationStrings);
-                if (LoliConfig.instance.modelConditionCanonicalization) {
-                    addTransformation("net.minecraft.client.renderer.block.model.multipart.ICondition", this::canonicalBoolConditions);
-                    addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionOr", bytes -> canonicalPredicatedConditions(bytes, true));
-                    addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionAnd", bytes -> canonicalPredicatedConditions(bytes, false));
-                    addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionPropertyValue", this::canonicalPropertyValueConditions);
-                    // addTransformation("net.minecraft.client.renderer.block.model.MultipartBakedModel$Builder", this::cacheMultipartBakedModels); TODO
-                }
+        if (LoliLoadingPlugin.isClient) {
+            if (LoliConfig.instance.modelConditionCanonicalization) {
+                addTransformation("net.minecraft.client.renderer.block.model.multipart.ICondition", this::canonicalBoolConditions);
+                addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionOr", bytes -> canonicalPredicatedConditions(bytes, true));
+                addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionAnd", bytes -> canonicalPredicatedConditions(bytes, false));
+                addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionPropertyValue", this::canonicalPropertyValueConditions);
+                // addTransformation("net.minecraft.client.renderer.block.model.MultipartBakedModel$Builder", this::cacheMultipartBakedModels); TODO
             }
-        }
-        if (LoliConfig.instance.optimizeDataStructures) {
-            if (LoliLoadingPlugin.isClient) {
-                addTransformation("net.minecraft.client.audio.SoundRegistry", this::removeDupeMapFromSoundRegistry);
+            if (LoliConfig.instance.resourceLocationCanonicalization) {
+                addTransformation("net.minecraft.client.renderer.block.model.ModelResourceLocation", this::canonicalizeResourceLocationStrings);
+            }
+            if (LoliConfig.instance.stripInstancedRandomFromSoundEventAccessor) {
                 addTransformation("net.minecraft.client.audio.SoundEventAccessor", this::removeInstancedRandom);
             }
+            if (LoliConfig.instance.optimizeRegistries) {
+                addTransformation("net.minecraft.client.audio.SoundRegistry", this::removeDupeMapFromSoundRegistry);
+            }
+            if (LoliConfig.instance.optimizeSomeRendering) {
+                addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, LoliLoadingPlugin.isDeobf ? "setupTerrain" : "func_174970_a"));
+            }
+        }
+        if (LoliConfig.instance.resourceLocationCanonicalization) {
+            addTransformation("net.minecraft.util.ResourceLocation", this::canonicalizeResourceLocationStrings);
+        }
+        if (LoliConfig.instance.optimizeRegistries) {
             addTransformation("net.minecraft.util.registry.RegistrySimple", this::removeValuesArrayFromRegistrySimple);
+        }
+        if (LoliConfig.instance.optimizeNBTTagCompoundBackingMap) {
             addTransformation("net.minecraft.nbt.NBTTagCompound", this::nbtTagCompound$replaceDefaultHashMap);
-            addTransformation("net.minecraftforge.fml.common.discovery.ModCandidate", this::removePackageField);
+        }
+        if (LoliConfig.instance.nbtTagStringBackingStringCanonicalization) {
             addTransformation("net.minecraft.nbt.NBTTagString", this::nbtTagStringRevamp);
+        }
+        if (LoliConfig.instance.packageStringCanonicalization) {
+            addTransformation("net.minecraftforge.fml.common.discovery.ModCandidate", this::removePackageField);
+        }
+        if (LoliConfig.instance.stripNearUselessItemStackFields) {
+            addTransformation("net.minecraft.item.ItemStack", this::stripItemStackFields);
         }
         if (LoliConfig.instance.optimizeFurnaceRecipeStore) {
             addTransformation("net.minecraft.item.crafting.FurnaceRecipes", this::improveFurnaceRecipes);
-        }
-        if (LoliLoadingPlugin.isClient && LoliConfig.instance.optimizeSomeRendering) {
-            addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, LoliLoadingPlugin.isDeobf ? "setupTerrain" : "func_174970_a"));
         }
         if (LoliConfig.instance.fixAmuletHolderCapability) {
             addTransformation("hellfirepvp.astralsorcery.common.enchantment.amulet.PlayerAmuletHandler", bytes -> stripSubscribeEventAnnotation(bytes, "attachAmuletItemCapability"));
@@ -484,6 +499,25 @@ public class LoliTransformer implements IClassTransformer {
                 .map(m -> m.visibleAnnotations)
                 .orElseGet(ArrayList::new)
                 .removeIf(a -> a.desc.equals("Lnet/minecraftforge/fml/common/eventhandler/SubscribeEvent;"));
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] stripItemStackFields(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        String[] fields = new String[5];
+        fields[0] = !LoliLoadingPlugin.isDeobf ? "field_82843_f" : "itemFrame";
+        fields[1] = !LoliLoadingPlugin.isDeobf ? "field_179552_h" : "canDestroyCacheBlock";
+        fields[2] = !LoliLoadingPlugin.isDeobf ? "field_179553_i" : "canDestroyCacheResult";
+        fields[3] = !LoliLoadingPlugin.isDeobf ? "field_179550_j" : "canPlaceOnCacheBlock";
+        fields[4] = !LoliLoadingPlugin.isDeobf ? "field_179551_k" : "canPlaceOnCacheResult";
+
+        node.fields.removeIf(f -> ArrayUtils.contains(fields, f.name));
 
         ClassWriter writer = new ClassWriter(0);
         node.accept(writer);

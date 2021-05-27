@@ -11,7 +11,6 @@ import zone.rong.loliasm.api.ICapabilityDispatcherResolver;
 import zone.rong.loliasm.api.IDelayCapabilityDispatcher;
 
 import java.util.Collections;
-import java.util.function.Supplier;
 
 @Mixin(value = ItemStack.class, remap = false)
 public class ItemStackMixin implements ICapabilityDispatcherResolver {

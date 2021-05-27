@@ -15,12 +15,8 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
         BakedQuadRedirectorFactory.generateRedirectorClass();
     }
 
-    boolean isRenderingPackage;
-
     @Override
-    public void onLoad(String mixinPackage) {
-        this.isRenderingPackage = mixinPackage.contains("rendering");
-    }
+    public void onLoad(String mixinPackage) { }
 
     @Override
     public String getRefMapperConfig() {
@@ -29,10 +25,7 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (isRenderingPackage) {
-            return LoliConfig.instance.optimizeSomeRendering;
-        }
-        return LoliTransformer.squashBakedQuads;
+        return true;
     }
 
     @Override

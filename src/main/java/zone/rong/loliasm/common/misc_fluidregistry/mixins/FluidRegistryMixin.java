@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.misc.mixins;
+package zone.rong.loliasm.common.misc_fluidregistry.mixins;
 
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLLog;
