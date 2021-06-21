@@ -45,14 +45,17 @@ configurations {
 
 repositories {
     jcenter()
+    // maven {
+        // url "http://chickenbones.net/maven"
+    // }
+    // maven {
+        // url "http://maven.covers1624.net"
+    // }
     maven {
         url "https://www.cursemaven.com"
     }
     maven {
         url "https://repo.spongepowered.org/maven"
-    }
-    maven {
-        url "http://chickenbones.net/maven"
     }
     maven {
         url "https://modmaven.k-4u.nl/"
@@ -63,10 +66,12 @@ repositories {
     maven {
         url "https://maven.thiakil.com"
     }
+    maven {
+        url "https://repo.codemc.io/repository/maven-public/"
+    }
     // maven {
         // url = "http://maven.bluexin.be/repository/snapshots/"
     // }
-
 }
 
 dependencies {
@@ -83,10 +88,13 @@ dependencies {
     }
     compile "codechicken:ChickenASM:1.12-1.0.2.9"
     compile "epicsquid.mysticallib:mysticallib:1.12.2-+"
+    deobfCompile "codechicken:CodeChickenLib:1.12.2-3.1.7.+:universal"
     deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
     deobfCompile "blusunrize:ImmersiveEngineering:0.12-92-+"
     deobfCompile "curse.maven:astral-sorcery-241721:3044416"
+    deobfCompile "curse.maven:tfcraft-302973:3268988"
     deobfCompile "curse.maven:mixin-booter-419286:3321174"
+    // deobfCompile "cofh:CoFHCore:1.12.2-+:universal"
     // compile "com.teamwizardry.librarianlib:librarianlib-1.12:4.0-SNAPSHOT:deobf"
 }
 

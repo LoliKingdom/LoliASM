@@ -30,16 +30,19 @@ public class CanonicalConditions {
     public static final ICondition FALSE = state -> Predicates.alwaysFalse();
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static final Map<Predicate<IBlockState>[], Predicate<IBlockState>> OR_CACHE = new Object2ObjectOpenCustomHashMap<>(32, ObjectArrays.HASH_STRATEGY);
+    private static final Object2ObjectOpenCustomHashMap<Predicate<IBlockState>[], Predicate<IBlockState>> OR_CACHE = new Object2ObjectOpenCustomHashMap<>(32, ObjectArrays.HASH_STRATEGY);
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static final Map<Predicate<IBlockState>[], Predicate<IBlockState>> AND_CACHE = new Object2ObjectOpenCustomHashMap<>(32, ObjectArrays.HASH_STRATEGY);
+    private static final Object2ObjectOpenCustomHashMap<Predicate<IBlockState>[], Predicate<IBlockState>> AND_CACHE = new Object2ObjectOpenCustomHashMap<>(32, ObjectArrays.HASH_STRATEGY);
 
-    private static final Map<Pair<IProperty<?>, Comparable<?>>, Predicate<IBlockState>> STATE_HAS_PROPERTY_CACHE = new Object2ObjectOpenHashMap<>(32);
+    private static final Object2ObjectOpenHashMap<Pair<IProperty<?>, Comparable<?>>, Predicate<IBlockState>> STATE_HAS_PROPERTY_CACHE = new Object2ObjectOpenHashMap<>(32);
 
-    public static void destroyCache() {
+    public static void clear() {
         OR_CACHE.clear();
+        OR_CACHE.trim();
         AND_CACHE.clear();
+        AND_CACHE.trim();
         STATE_HAS_PROPERTY_CACHE.clear();
+        STATE_HAS_PROPERTY_CACHE.trim();
     }
 
     public static Predicate<IBlockState> orCache(Iterable<? extends ICondition> conditions, BlockStateContainer stateContainer) {

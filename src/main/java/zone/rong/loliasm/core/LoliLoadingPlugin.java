@@ -25,6 +25,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
     public static final boolean isVMOpenJ9 = System.getProperty("java.vm.name").toLowerCase(Locale.ROOT).contains("openj9");
     public static final boolean isClient = ((Map) Launch.blackboard.get("launchArgs")).containsKey("--assetIndex");
 
+    public static final boolean squashBakedQuads = LoliConfig.instance.squashBakedQuads && !isOptifineInstalled;
+
     public LoliLoadingPlugin() {
         LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
         LoliLogger.instance.info("Lolis are loading in some mixins since Rongmario's too lazy to write pure ASM all the time despite the mod being called 'LoliASM'");
@@ -49,12 +51,17 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         if (LoliConfig.instance.optimizeFurnaceRecipeStore) {
             Mixins.addConfiguration("mixins.recipes.json");
         }
-        if (isClient && LoliConfig.instance.optimizeSomeRendering) {
-            Mixins.addConfiguration("mixins.rendering.json");
+        if (isClient) {
+            // Mixins.addConfiguration("mixins.bucket.json");
+            // Mixins.addConfiguration("mixins.sprite.json");
+            if (LoliConfig.instance.optimizeSomeRendering) {
+                Mixins.addConfiguration("mixins.rendering.json");
+            }
         }
         if (LoliConfig.instance.quickerEnableUniversalBucketCheck) {
             Mixins.addConfiguration("mixins.misc_fluidregistry.json");
         }
+        Mixins.addConfiguration("mixins.particles.json");
         Mixins.addConfiguration("mixins.vanities.json");
     }
 

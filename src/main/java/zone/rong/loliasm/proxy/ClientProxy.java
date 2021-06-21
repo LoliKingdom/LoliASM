@@ -13,7 +13,7 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
         if (LoliConfig.instance.modelConditionCanonicalization) {
             ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(manager -> {
-                CanonicalConditions.destroyCache();
+                CanonicalConditions.clear();
                 // MultipartBakedModelCache.destroyCache();
             });
         }

@@ -9,6 +9,7 @@ import net.minecraft.util.HttpUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import zone.rong.loliasm.api.datastructures.DummyMap;
@@ -48,29 +49,14 @@ public class LoliASM {
         }
     }
 
-    /*
-    private static Deduplicator deduplicator;
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onModelBake(ModelBakeEvent event) {
-        if (deduplicator == null) {
-            deduplicator = new Deduplicator();
-        }
-        IRegistry<ModelResourceLocation, IBakedModel> bakedModels = event.getModelRegistry();
-        Set<ModelResourceLocation> keys = bakedModels.getKeys();
-        ProgressManager.ProgressBar bar = ProgressManager.push("LoliASM: Optimizing IBakedModels", keys.size());
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        for (ModelResourceLocation mrl : keys) {
-            bar.step(mrl.toString());
-            deduplicator.deduplicate(bakedModels.getObject(mrl));
-        }
-        LoliLogger.instance.info("It took {} to optimize IBakedModels", stopwatch.stop());
-    }
-     */
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         proxy.preInit(event);
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+        proxy.init(event);
     }
 
     @Mod.EventHandler

@@ -64,7 +64,7 @@ public class LoliConfig {
     public boolean resourceLocationCanonicalization, modelConditionCanonicalization, nbtTagStringBackingStringCanonicalization, packageStringCanonicalization, lockCodeCanonicalization;
     public boolean optimizeFMLRemapper;
     public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields;
-    public boolean optimizeSomeRendering;
+    public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor;
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions;
     public boolean fixAmuletHolderCapability;
@@ -94,6 +94,7 @@ public class LoliConfig {
         nbtTagStringBackingStringCanonicalization = getBoolean("nbtTagStringBackingStringCanonicalization", "canonicalization", "Deduplicate Strings in NBTTagString", true);
         packageStringCanonicalization = getBoolean("packageStringCanonicalization", "canonicalization", "Deduplicate package strings when Forge gathers them when mod candidates are loaded", true);
         lockCodeCanonicalization = getBoolean("lockCodeCanonicalization", "canonicalization", "Deduplicate LockCode when reading from NBT", true);
+        // bakedQuadVertexDataCanonicalization = getBoolean("bakedQuadVertexDataCanonicalization", "canonicalization", "EXPERIMENTAL: Deduplicate BakedQuad vertexData integer arrays, saves a LOT of memory", false);
 
         optimizeFMLRemapper = getBoolean("optimizeFMLRemapper", "remapper", "Optimizing Forge's Remapper for not storing redundant entries", true);
 
@@ -104,6 +105,7 @@ public class LoliConfig {
         stripNearUselessItemStackFields = getBoolean("stripNearUselessItemStackFields", "datastructures", "EXPERIMENTAL: Strips ItemStack of some of its fields as it stores some near-useless references", true);
 
         optimizeSomeRendering = getBoolean("optimizeSomeRendering", "rendering", "Optimizes some rendering features, not game-breaking; however, negligible at times", true);
+        stripUnnecessaryLocalsInRenderHelper = getBoolean("stripUnnecessaryLocalsInRenderHelper", "rendering", "Strip unnecessary locals in RenderHelper::enableStandardItemLighting, no idea why it's there", true);
 
         quickerEnableUniversalBucketCheck = getBoolean("quickerEnableUniversalBucketCheck", "misc", "Optimizes FluidRegistry::enableUniversalBucket check", true);
         stripInstancedRandomFromSoundEventAccessor = getBoolean("stripInstancedRandomFromSoundEventAccessor", "misc", "Strips the boring instanced Random object from SoundEventAccessors and uses ThreadLocalRandom instead", true);

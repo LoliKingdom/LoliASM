@@ -1,5 +1,7 @@
 package zone.rong.loliasm.core;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
@@ -32,6 +34,14 @@ public class LoliHooks {
 
     public static <K> ObjectOpenHashSet<K> createHashSet() {
         return new ObjectOpenHashSet<>();
+    }
+
+    public static <K, V> Object2ObjectArrayMap<K, V> createArrayMap() {
+        return new Object2ObjectArrayMap<>();
+    }
+
+    public static <K, V> Object2ObjectOpenHashMap<K, V> createHashMap() {
+        return new Object2ObjectOpenHashMap<>();
     }
 
     public static void modCandidate$override$addClassEntry(ModCandidate modCandidate, String name, Set<String> foundClasses, Set<String> packages, ASMDataTable table) {

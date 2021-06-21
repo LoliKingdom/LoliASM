@@ -62,7 +62,6 @@ public final class BakedQuadClassFactory {
                         // Load into the ctor!
                         methodVisitor.visitVarInsn(ALOAD, 0); // Load this
                         methodVisitor.visitVarInsn(ALOAD, 1); // Load int[]
-                        // methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/bakedquad/VertexDataCache", "canonicalize", "([I)[I", false);
                         methodVisitor.visitVarInsn(ALOAD, hasTint ? 3 : 2); // Load TextureAtlasSprite (order shifted if hasTint)
                         methodVisitor.visitVarInsn(ALOAD, hasTint ? 4 : 3); // Load VertexFormat (order shifted if hasTint)
                         // Call super(); <= this is a must need as the ClassWriter won't pass the JVM class verification

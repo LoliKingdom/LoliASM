@@ -10,6 +10,7 @@ import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.patches.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.function.Function;
@@ -19,21 +20,20 @@ import static org.objectweb.asm.Opcodes.*;
 
 public class LoliTransformer implements IClassTransformer {
 
-    public static final boolean squashBakedQuads = LoliLoadingPlugin.isClient && LoliConfig.instance.squashBakedQuads && !LoliLoadingPlugin.isOptifineInstalled;
-
     Map<String, Function<byte[], byte[]>> transformations;
 
     public LoliTransformer() {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
         transformations = new Object2ObjectOpenHashMap<>();
-        if (squashBakedQuads) {
-            addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", BakedQuadPatch::rewriteBakedQuad);
-            addTransformation("net.minecraft.client.renderer.block.model.BakedQuadRetextured", BakedQuadRetexturedPatch::patchBakedQuadRetextured);
-            addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad);
-            addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad$Builder", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad$Builder);
-            addTransformation("zone.rong.loliasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
-        }
         if (LoliLoadingPlugin.isClient) {
+            addTransformation("codechicken.lib.model.loader.blockstate.CCBlockStateLoader", bytes -> stripSubscribeEventAnnotation(bytes, "onModelBake", "onTextureStitchPre"));
+            if (LoliLoadingPlugin.squashBakedQuads) {
+                addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", BakedQuadPatch::rewriteBakedQuad);
+                addTransformation("net.minecraft.client.renderer.block.model.BakedQuadRetextured", BakedQuadRetexturedPatch::patchBakedQuadRetextured);
+                addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad);
+                addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad$Builder", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad$Builder);
+                addTransformation("zone.rong.loliasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
+            }
             if (LoliConfig.instance.modelConditionCanonicalization) {
                 addTransformation("net.minecraft.client.renderer.block.model.multipart.ICondition", this::canonicalBoolConditions);
                 addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionOr", bytes -> canonicalPredicatedConditions(bytes, true));
@@ -49,9 +49,14 @@ public class LoliTransformer implements IClassTransformer {
             }
             if (LoliConfig.instance.optimizeRegistries) {
                 addTransformation("net.minecraft.client.audio.SoundRegistry", this::removeDupeMapFromSoundRegistry);
+                addTransformation("net.minecraftforge.client.model.ModelLoader", this::optimizeModelLoaderDataStructures);
+                addTransformation("net.minecraft.client.renderer.block.statemap.StateMapperBase", this::optimizeStateMapperBaseBackingMap);
             }
             if (LoliConfig.instance.optimizeSomeRendering) {
                 addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, LoliLoadingPlugin.isDeobf ? "setupTerrain" : "func_174970_a"));
+            }
+            if (LoliConfig.instance.stripUnnecessaryLocalsInRenderHelper) {
+                addTransformation("net.minecraft.client.renderer.RenderHelper", this::stripLocalsInEnableStandardItemLighting);
             }
         }
         if (LoliConfig.instance.resourceLocationCanonicalization) {
@@ -277,18 +282,18 @@ public class LoliTransformer implements IClassTransformer {
                             if (!isExperienceList) {
                                 iter.add(new TypeInsnNode(NEW, "it/unimi/dsi/fastutil/objects/Object2ObjectOpenCustomHashMap"));
                                 iter.add(new InsnNode(DUP));
-                                iter.add(new FieldInsnNode(GETSTATIC, "zone/rong/loliasm/api/HashingStrategies", "ITEM_AND_META_HASH", "Lit/unimi/dsi/fastutil/Hash$Strategy;"));
+                                iter.add(new FieldInsnNode(GETSTATIC, "zone/rong/loliasm/api/HashingStrategies", "FURNACE_INPUT_HASH", "Lit/unimi/dsi/fastutil/Hash$Strategy;"));
                                 iter.add(new MethodInsnNode(INVOKESPECIAL, "it/unimi/dsi/fastutil/objects/Object2ObjectOpenCustomHashMap", "<init>", "(Lit/unimi/dsi/fastutil/Hash$Strategy;)V", false));
                                 isExperienceList = true;
                             } else {
-                                iter.add(new TypeInsnNode(NEW, "it/unimi/dsi/fastutil/objects/Object2FloatArrayMap"));
+                                iter.add(new TypeInsnNode(NEW, "it/unimi/dsi/fastutil/objects/Object2FloatOpenHashMap"));
                                 iter.add(new InsnNode(DUP));
-                                iter.add(new MethodInsnNode(INVOKESPECIAL, "it/unimi/dsi/fastutil/objects/Object2FloatArrayMap", "<init>", "()V", false));
+                                iter.add(new MethodInsnNode(INVOKESPECIAL, "it/unimi/dsi/fastutil/objects/Object2FloatOpenHashMap", "<init>", "()V", false));
                                 iter.next();
                                 iter.add(new VarInsnNode(ALOAD, 0));
                                 iter.add(new FieldInsnNode(GETFIELD, "net/minecraft/item/crafting/FurnaceRecipes", LoliLoadingPlugin.isDeobf ? "experienceList" : "field_77605_c", "Ljava/util/Map;"));
                                 iter.add(new TypeInsnNode(CHECKCAST, "it/unimi/dsi/fastutil/objects/Object2FloatFunction"));
-                                iter.add(new LdcInsnNode(1F));
+                                iter.add(new LdcInsnNode(0F));
                                 iter.add(new MethodInsnNode(INVOKEINTERFACE, "it/unimi/dsi/fastutil/objects/Object2FloatFunction", "defaultReturnValue", "(F)V", true));
                             }
                         }
@@ -488,17 +493,21 @@ public class LoliTransformer implements IClassTransformer {
         return writer.toByteArray();
     }
 
-    private byte[] stripSubscribeEventAnnotation(byte[] bytes, String methodName) {
+    private byte[] stripSubscribeEventAnnotation(byte[] bytes, String... methodNames) {
         ClassReader reader = new ClassReader(bytes);
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        node.methods.stream()
-                .filter(m -> m.name.equals(methodName))
-                .findFirst()
-                .map(m -> m.visibleAnnotations)
-                .orElseGet(ArrayList::new)
-                .removeIf(a -> a.desc.equals("Lnet/minecraftforge/fml/common/eventhandler/SubscribeEvent;"));
+        for (MethodNode method : node.methods) {
+            for (String methodName : methodNames) {
+                if (method.name.equals(methodName)) {
+                    List<AnnotationNode> annotations = method.visibleAnnotations;
+                    if (annotations != null) {
+                        annotations.removeIf(a -> a.desc.equals("Lnet/minecraftforge/fml/common/eventhandler/SubscribeEvent;"));
+                    }
+                }
+            }
+        }
 
         ClassWriter writer = new ClassWriter(0);
         node.accept(writer);
@@ -520,6 +529,82 @@ public class LoliTransformer implements IClassTransformer {
         node.fields.removeIf(f -> ArrayUtils.contains(fields, f.name));
 
         ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] stripLocalsInEnableStandardItemLighting(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals(LoliLoadingPlugin.isDeobf ? "enableStandardItemLighting" : "func_74519_b")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == FSTORE) {
+                        iter.remove(); // FSTORE
+                        iter.previous();
+                        iter.remove(); // LDC
+                        method.localVariables = null;
+                        break;
+                    }
+                }
+
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] optimizeModelLoaderDataStructures(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == INVOKESTATIC) {
+                        MethodInsnNode methodInsnNode = (MethodInsnNode) instruction;
+                        if (methodInsnNode.desc.equals("()Ljava/util/HashMap;")) {
+                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "createHashMap", "()Lit/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap;", false));
+                        } else if (methodInsnNode.desc.equals("()Ljava/util/HashSet;")) {
+                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "createHashSet", "()Lit/unimi/dsi/fastutil/objects/ObjectOpenHashSet;", false));
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] optimizeStateMapperBaseBackingMap(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == INVOKESTATIC && ((MethodInsnNode) instruction).name.equals("newLinkedHashMap")) {
+                        iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "createArrayMap", "()Lit/unimi/dsi/fastutil/objects/Object2ObjectArrayMap;", false));
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         node.accept(writer);
         return writer.toByteArray();
     }

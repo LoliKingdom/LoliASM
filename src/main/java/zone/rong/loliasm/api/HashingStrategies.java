@@ -71,20 +71,18 @@ public class HashingStrategies {
         return hash * 31 + ((Float.floatToIntBits(vector.translation.getX())) * 31 + Float.floatToIntBits(vector.translation.getY())) * 31 + Float.floatToIntBits(vector.translation.getZ());
     }
 
-    public static final Hash.Strategy<ItemStack> ITEM_AND_META_HASH = new Hash.Strategy<ItemStack>() {
+    // TODO: For OreDictionary mapping as well, as both uses metadata wildcards (this is so cancer)
+    public static final Hash.Strategy<ItemStack> FURNACE_INPUT_HASH = new Hash.Strategy<ItemStack>() {
         @Override
         public int hashCode(ItemStack o) {
-            int hash = 1;
-            hash = hash * 31 + o.getItem().hashCode();
-            int metadata = o.getMetadata();
-            return (metadata == Short.MAX_VALUE || metadata == 0) ? hash : hash * 31 + metadata;
+            return 31 * o.getItem().hashCode(); // Purposefully allow certain hash collisions
         }
         @Override
         public boolean equals(ItemStack a, ItemStack b) {
             if (a == null || b == null) {
                 return false;
             }
-            return a.getItem() == b.getItem() && (a.getMetadata() == Short.MAX_VALUE || b.getMetadata() == Short.MAX_VALUE || a.getMetadata() == b.getMetadata());
+            return a.getItem() == b.getItem() && (a.getMetadata() == b.getMetadata() || b.getMetadata() == Short.MAX_VALUE);
         }
     };
 
