@@ -4,6 +4,7 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import org.apache.commons.lang3.SystemUtils;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
 import zone.rong.loliasm.config.LoliConfig;
@@ -22,7 +23,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
     public static final boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
-    public static final boolean isVMOpenJ9 = System.getProperty("java.vm.name").toLowerCase(Locale.ROOT).contains("openj9");
+    public static final boolean isVMOpenJ9 = SystemUtils.JAVA_VM_NAME.toLowerCase(Locale.ROOT).contains("openj9");
     public static final boolean isClient = ((Map) Launch.blackboard.get("launchArgs")).containsKey("--assetIndex");
 
     public static final boolean squashBakedQuads = LoliConfig.instance.squashBakedQuads && !isOptifineInstalled;
@@ -31,12 +32,22 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
         LoliLogger.instance.info("Lolis are loading in some mixins since Rongmario's too lazy to write pure ASM all the time despite the mod being called 'LoliASM'");
         MixinBootstrap.init();
-        if (LoliConfig.instance.resourceLocationCanonicalization || LoliConfig.instance.optimizeFMLRemapper) {
-            for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
-                if (arg.equals("-XX:+UseStringDeduplication")) {
-                    LoliLogger.instance.error("LoliASM encourages you to remove -XX:+UseStringDeduplication from your JVM arguments as it would have little purpose with LoliASM installed, and may actually degrade performance.");
+        boolean needToDGSFFFF = isVMOpenJ9 && SystemUtils.IS_JAVA_1_8;
+        int buildAppendIndex = SystemUtils.JAVA_VERSION.indexOf("_");
+        if (needToDGSFFFF && buildAppendIndex != -1) {
+            needToDGSFFFF = Integer.parseInt(SystemUtils.JAVA_VERSION.substring(buildAppendIndex + 1)) < 265;
+        }
+        for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
+            if (arg.equals("-XX:+UseStringDeduplication")) {
+                if (LoliConfig.instance.resourceLocationCanonicalization || LoliConfig.instance.optimizeFMLRemapper) {
+                    LoliLogger.instance.fatal("LoliASM encourages you to remove -XX:+UseStringDeduplication from your java arguments as it would have little purpose with LoliASM installed, and may actually degrade performance.");
                 }
+            } else if (needToDGSFFFF && arg.equals("-Xjit:disableGuardedStaticFinalFieldFolding")) {
+                needToDGSFFFF = false;
             }
+        }
+        if (needToDGSFFFF) {
+            LoliLogger.instance.fatal("LoliASM notices that you're using Eclipse OpenJ9 {} which is outdated and contains a critical bug: {} that slows the game down a lot. Either append -Xjit:disableGuardedStaticFinalFieldFolding to your java arguments or update your Java!", SystemUtils.JAVA_VERSION, "https://github.com/eclipse-openj9/openj9/issues/8353");
         }
         Mixins.addConfiguration("mixins.internal.json");
         if (LoliConfig.instance.optimizeRegistries) {
@@ -61,7 +72,6 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         if (LoliConfig.instance.quickerEnableUniversalBucketCheck) {
             Mixins.addConfiguration("mixins.misc_fluidregistry.json");
         }
-        Mixins.addConfiguration("mixins.particles.json");
         Mixins.addConfiguration("mixins.vanities.json");
     }
 

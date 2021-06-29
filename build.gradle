@@ -45,12 +45,12 @@ configurations {
 
 repositories {
     jcenter()
-    // maven {
-        // url "http://chickenbones.net/maven"
-    // }
-    // maven {
-        // url "http://maven.covers1624.net"
-    // }
+    maven {
+        url "http://chickenbones.net/maven"
+    }
+    maven {
+        url "http://maven.covers1624.net"
+    }
     maven {
         url "https://www.cursemaven.com"
     }
