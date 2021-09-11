@@ -14,16 +14,16 @@ import javax.annotation.Nullable;
 @Mixin(LoadController.class)
 public abstract class LoadControllerMixin {
 
-    @Shadow private ModContainer activeContainer;
+    @Shadow(remap = false) private ModContainer activeContainer;
 
-    @Shadow @Nullable protected abstract ModContainer findActiveContainerFromStack();
+    @Shadow(remap = false) @Nullable protected abstract ModContainer findActiveContainerFromStack();
 
     /**
      * @author Rongmario
      * @reason Allow a faster lookup through ThreadContext first as some contexts submit modIds through this way
      */
-    @Overwrite
     @Nullable
+    @Overwrite(remap = false)
     public ModContainer activeContainer() {
         if (activeContainer == null) {
             String modId = ThreadContext.get("mod");

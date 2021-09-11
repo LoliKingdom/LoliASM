@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(EnchantmentUpgradeHelper.class)
 public interface EnchantmentUpgradeHelperInvoker {
 
-    @Invoker("removeAmuletOwner")
+    @Invoker(value = "removeAmuletOwner", remap = false)
     static void loliasm$removeAmuletOwner(ItemStack stack) { throw new AssertionError(); }
 
 }
