@@ -10,15 +10,14 @@ import zone.rong.loliasm.core.LoliTransformer;
 import static org.objectweb.asm.Opcodes.*;
 
 /**
- * TODO Commenting
- * 
+ *
  * This class contains class writers for patched UnpackedBakedQuad and UnpackedBakedQuad$Builder
  * defineClass not called here, pass raw byte[] back to {@link LoliTransformer#transform(String, String, byte[])}
  *
  * No optimizations here except for soft patching `int tintIndex` to `byte tintIndex` like other BakedQuad derivatives.
  * Essentially just patching for bytecode compatibility at the moment.
  *
- * Physical representation: {@link zone.rong.loliasm.patches.visualization.UnpackedBakedQuad}
+ * TODO: canonize float[][][] when getClass() == UnpackedBakedQuad.class, might be incompatible with MysticalLib
  */
 public final class UnpackedBakedQuadPatch {
 

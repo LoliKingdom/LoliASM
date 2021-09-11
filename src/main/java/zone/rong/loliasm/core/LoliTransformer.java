@@ -2,19 +2,20 @@ package zone.rong.loliasm.core;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.Launch;
 import org.apache.commons.lang3.ArrayUtils;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
+import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.patches.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -58,6 +59,9 @@ public class LoliTransformer implements IClassTransformer {
             if (LoliConfig.instance.stripUnnecessaryLocalsInRenderHelper) {
                 addTransformation("net.minecraft.client.renderer.RenderHelper", this::stripLocalsInEnableStandardItemLighting);
             }
+            if (LoliConfig.instance.spriteNameCanonicalization) {
+                addTransformation("net.minecraft.client.renderer.texture.TextureAtlasSprite", this::canonicalizeSpriteNames);
+            }
         }
         if (LoliConfig.instance.resourceLocationCanonicalization) {
             addTransformation("net.minecraft.util.ResourceLocation", this::canonicalizeResourceLocationStrings);
@@ -65,14 +69,14 @@ public class LoliTransformer implements IClassTransformer {
         if (LoliConfig.instance.optimizeRegistries) {
             addTransformation("net.minecraft.util.registry.RegistrySimple", this::removeValuesArrayFromRegistrySimple);
         }
-        if (LoliConfig.instance.optimizeNBTTagCompoundBackingMap) {
-            addTransformation("net.minecraft.nbt.NBTTagCompound", this::nbtTagCompound$replaceDefaultHashMap);
-        }
         if (LoliConfig.instance.nbtTagStringBackingStringCanonicalization) {
             addTransformation("net.minecraft.nbt.NBTTagString", this::nbtTagStringRevamp);
         }
         if (LoliConfig.instance.packageStringCanonicalization) {
             addTransformation("net.minecraftforge.fml.common.discovery.ModCandidate", this::removePackageField);
+        }
+        if (LoliConfig.instance.packageStringCanonicalization) {
+            addTransformation("net.minecraftforge.fml.common.discovery.ASMDataTable$ASMData", this::deduplicateASMDataStrings);
         }
         if (LoliConfig.instance.stripNearUselessItemStackFields) {
             addTransformation("net.minecraft.item.ItemStack", this::stripItemStackFields);
@@ -83,6 +87,10 @@ public class LoliTransformer implements IClassTransformer {
         if (LoliConfig.instance.fixAmuletHolderCapability) {
             addTransformation("hellfirepvp.astralsorcery.common.enchantment.amulet.PlayerAmuletHandler", bytes -> stripSubscribeEventAnnotation(bytes, "attachAmuletItemCapability"));
         }
+        if (LoliConfig.instance.labelCanonicalization) {
+            addTransformation("mezz.jei.suffixtree.Edge", this::deduplicateEdgeLabels);
+        }
+        addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.nbtBackingMapStringCanonicalization));
     }
 
     public void addTransformation(String key, Function<byte[], byte[]> value) {
@@ -109,18 +117,19 @@ public class LoliTransformer implements IClassTransformer {
                 ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
-                    if (instruction.getOpcode() == GETSTATIC) {
-                        LoliLogger.instance.info("Injecting calls in {} to canonicalize strings", node.name);
+                    if (instruction instanceof MethodInsnNode && instruction.getOpcode() == INVOKEVIRTUAL && ((MethodInsnNode) instruction).name.equals("toLowerCase")) {
+                        LoliLogger.instance.info("Injecting calls in {}{} to canonicalize strings", node.name, method.name);
+                        iter.previous();
+                        iter.previous(); // Move to GETSTATIC
                         iter.remove(); // Remove GETSTATIC
-                        iter.next(); // Move to INVOKEVIRTUAL, set replaces it
+                        iter.next(); // Replace INVOKEVIRTUAL with INVOKESTATIC
                         iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/api/StringPool", "lowerCaseAndCanonize", "(Ljava/lang/String;)Ljava/lang/String;", false));
-                        break;
                     }
                 }
             }
         }
 
-        ClassWriter writer = new ClassWriter(0);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         node.accept(writer);
         return writer.toByteArray();
     }
@@ -361,7 +370,10 @@ public class LoliTransformer implements IClassTransformer {
         return writer.toByteArray();
     }
 
-    private byte[] nbtTagCompound$replaceDefaultHashMap(byte[] bytes) {
+    private byte[] nbtTagCompound$replaceDefaultHashMap(byte[] bytes, boolean optimizeMap, boolean canonicalizeString) {
+        if (!optimizeMap && !canonicalizeString) {
+            return bytes;
+        }
         ClassReader reader = new ClassReader(bytes);
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
@@ -372,9 +384,9 @@ public class LoliTransformer implements IClassTransformer {
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction.getOpcode() == INVOKESTATIC) {
-                        iter.set(new TypeInsnNode(NEW, "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap"));
+                        iter.set(new TypeInsnNode(NEW, canonicalizeString ? "zone/rong/loliasm/api/datastructures/canonical/AutoCanonizingArrayMap" : "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap"));
                         iter.add(new InsnNode(DUP));
-                        iter.add(new MethodInsnNode(INVOKESPECIAL, "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap", "<init>", "()V", false));
+                        iter.add(new MethodInsnNode(INVOKESPECIAL, canonicalizeString ? "zone/rong/loliasm/api/datastructures/canonical/AutoCanonizingArrayMap" : "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap", "<init>", "()V", false));
                         break;
                     }
                 }
@@ -413,6 +425,17 @@ public class LoliTransformer implements IClassTransformer {
     }
 
     private byte[] removePackageField(byte[] bytes) {
+
+        // Canonicalize default ClassLoader packages strings first so any more of the same package strings uses those instances instead.
+
+        try {
+            Map<String, Package> packages = (Map<String, Package>)  LoliReflector.getField(ClassLoader.class, "packages").get(Launch.classLoader);
+            Set<String> packageStrings = packages.keySet();
+            packageStrings.forEach(String::intern);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
         ClassReader reader = new ClassReader(bytes);
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
@@ -608,4 +631,84 @@ public class LoliTransformer implements IClassTransformer {
         node.accept(writer);
         return writer.toByteArray();
     }
+
+    private byte[] deduplicateEdgeLabels(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>") || method.name.equals("setLabel")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == PUTFIELD && ((FieldInsnNode) instruction).name.equals("label")) {
+                        iter.previous();
+                        iter.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "intern", "()Ljava/lang/String;", false));
+                        iter.next();
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] deduplicateASMDataStrings(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == PUTFIELD) {
+                        FieldInsnNode fieldNode = (FieldInsnNode) instruction;
+                        if (fieldNode.name.equals("annotationName") || fieldNode.name.equals("className")) {
+                            iter.previous();
+                            iter.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "intern", "()Ljava/lang/String;", false));
+                            iter.next();
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] canonicalizeSpriteNames(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == PUTFIELD) {
+                        FieldInsnNode fieldNode = (FieldInsnNode) instruction;
+                        if (fieldNode.desc.equals("Ljava/lang/String")) {
+                            iter.previous();
+                            iter.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "intern", "()Ljava/lang/String;", false));
+                            iter.next();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
 }

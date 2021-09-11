@@ -8,10 +8,7 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.HttpUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLConstructionEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import zone.rong.loliasm.api.datastructures.DummyMap;
 import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
@@ -19,9 +16,10 @@ import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.core.LoliLoadingPlugin;
 import zone.rong.loliasm.proxy.CommonProxy;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
-@Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION, dependencies = "required-after:mixinbooter")
+@Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION, dependencies = "required-after:mixinbooter;after:jei")
 @Mod.EventBusSubscriber
 public class LoliASM {
 
@@ -34,12 +32,9 @@ public class LoliASM {
         if (LoliConfig.instance.cleanupLaunchClassLoaderEarly) {
             cleanupLaunchClassLoader();
         }
-    }
-
-    @Mod.EventHandler
-    public void onConstruct(FMLConstructionEvent event) {
         if (LoliConfig.instance.cleanupChickenASMClassHierarchyManager && LoliReflector.doesClassExist("codechicken.asm.ClassHierarchyManager")) {
             // EXPERIMENTAL: As far as I know, this functionality of ChickenASM isn't actually used by any coremods that depends on ChickenASM
+            LoliLogger.instance.info("Replacing ClassHierarchyManager::superclasses with a dummy map.");
             ClassHierarchyManager.superclasses = new HashMap() {
                 @Override
                 public Object put(Object key, Object value) {
@@ -60,13 +55,29 @@ public class LoliASM {
     }
 
     @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        if (LoliConfig.instance.skipCraftTweakerRecalculatingSearchTrees) {
+            LoliReflector.getClass("crafttweaker.mc1120.CraftTweaker").ifPresent(c -> {
+                try {
+                    Field alreadyChangedThePlayer = c.getDeclaredField("alreadyChangedThePlayer");
+                    alreadyChangedThePlayer.setAccessible(true);
+                    alreadyChangedThePlayer.setBoolean(null, true);
+                } catch (IllegalAccessException | NoSuchFieldException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    @Mod.EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
+        proxy.loadComplete(event);
         LoliLogger.instance.info("Trimming simple registries");
         HttpUtil.DOWNLOADER_EXECUTOR.execute(() -> {
             simpleRegistryInstances.forEach(RegistrySimpleExtender::trim);
             simpleRegistryInstances = null;
         });
-        if (LoliConfig.instance.cleanupLaunchClassLoaderEarly) {
+        if (LoliConfig.instance.cleanupLaunchClassLoaderEarly || LoliConfig.instance.cleanCachesOnGameLoad) {
             invalidateLaunchClassLoaderCaches();
         } else if (LoliConfig.instance.cleanupLaunchClassLoaderLate) {
             cleanupLaunchClassLoader();
@@ -92,10 +103,6 @@ public class LoliASM {
                 Cache<String, byte[]> newResourceCache = CacheBuilder.newBuilder().concurrencyLevel(2).weakValues().build();
                 newResourceCache.putAll(oldResourceCache);
                 LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader, newResourceCache.asMap());
-            }
-            if (LoliConfig.instance.disablePackageManifestMap) {
-                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "packageManifests").invokeExact(Launch.classLoader, DummyMap.of());
-                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "EMPTY").invoke(null);
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();

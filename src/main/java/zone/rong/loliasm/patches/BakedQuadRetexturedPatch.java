@@ -29,8 +29,6 @@ import static org.objectweb.asm.Opcodes.*;
  * => We remap the quad's vertexData within the ctor
  *
  * Only real 'downside' is delegating calls of some of the overriden methods to old BakedQuad, you all know that's nothing.
- *
- * Physical representation: {@link zone.rong.loliasm.patches.visualization.BakedQuadRetextured}
  */
 public final class BakedQuadRetexturedPatch {
     

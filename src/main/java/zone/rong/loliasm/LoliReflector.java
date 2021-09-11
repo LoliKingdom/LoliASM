@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -28,18 +29,6 @@ public class LoliReflector {
 
     private static final MethodHandle classLoader$DefineClass = resolveMethod(ClassLoader.class, "defineClass", String.class, byte[].class, int.class, int.class);
     private static final CaptureSet<String> transformerExclusions;
-
-    /*
-    static {
-        ClassLoader classLoader = ImmutableMap.class.getClassLoader();
-        // defineClass(classLoader, LoliEntrySet.class);
-        // defineClass(classLoader, LoliImmutableMap.class);
-        // defineClass(classLoader, LoliIterator.class);
-        defineClass(classLoader, StateAndIndex.class);
-        defineClass(classLoader, StateAndKey.class);
-        defineClass(classLoader, FastMapStateHolder.class);
-    }
-     */
 
     static {
         CaptureSet<String> captureSet = new CaptureSet<>();
@@ -107,6 +96,19 @@ public class LoliReflector {
         }
     }
 
+    public static <T> Constructor<T> getCtor(Class<T> clazz, Class<?>... args) {
+        try {
+            Constructor<T> ctor = clazz.getDeclaredConstructor(args);
+            if (!ctor.isAccessible()) {
+                ctor.setAccessible(true);
+            }
+            return ctor;
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static MethodHandle resolveMethod(Class<?> clazz, String methodName, Class<?>... args) {
         try {
             Method method = clazz.getDeclaredMethod(methodName, args);
@@ -120,6 +122,19 @@ public class LoliReflector {
         }
     }
 
+    public static Method getMethod(Class<?> clazz, String methodName, Class<?>... args) {
+        try {
+            Method method = clazz.getDeclaredMethod(methodName, args);
+            if (!method.isAccessible()) {
+                method.setAccessible(true);
+            }
+            return method;
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static MethodHandle resolveMethod(Class<?> clazz, String methodName, String obfMethodName, Class<?>... args) {
         try {
             return lookup.unreflect(ReflectionHelper.findMethod(clazz, methodName, obfMethodName, args));
@@ -127,6 +142,10 @@ public class LoliReflector {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static Method getMethod(Class<?> clazz, String methodName, String obfMethodName, Class<?>... args) {
+        return ReflectionHelper.findMethod(clazz, methodName, obfMethodName, args);
     }
 
     public static MethodHandle resolveFieldGetter(Class<?> clazz, String fieldName) {
@@ -179,12 +198,39 @@ public class LoliReflector {
         }
     }
 
+    public static Field getField(Class<?> clazz, String fieldName) {
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+            if (LoliLoadingPlugin.isVMOpenJ9) {
+                fixOpenJ9PrivateStaticFinalRestraint(field);
+            }
+            return field;
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Field getField(Class<?> clazz, String fieldName, String obfFieldName) {
+        return ReflectionHelper.findField(clazz, fieldName, obfFieldName);
+    }
+
     public static boolean doesClassExist(String className) {
         try {
             Class.forName(className);
             return true;
         } catch (ClassNotFoundException ignored) { }
         return false;
+    }
+
+    public static Optional<Class<?>> getClass(String className) {
+        try {
+            return Optional.of(Class.forName(className));
+        } catch (ClassNotFoundException ignored) { }
+        return Optional.empty();
     }
 
     public static void removeTransformerExclusion(String transformerExclusion) {

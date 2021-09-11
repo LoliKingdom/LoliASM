@@ -5,8 +5,11 @@ import zone.rong.loliasm.api.StringPool;
 
 import java.util.Map;
 
-// TODO: Hook Deduplicator's pools
 public class AutoCanonizingArrayMap<K, V> extends Object2ObjectArrayMap<K, V> {
+
+    public AutoCanonizingArrayMap() {
+        super();
+    }
 
     public AutoCanonizingArrayMap(Map<K, V> map) {
         super(map);

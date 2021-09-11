@@ -1,10 +1,11 @@
 buildscript {
     repositories {
+        maven { url = 'https://jitpack.io' }
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'com.github.GregTechCE:ForgeGradle:FG_2.3-SNAPSHOT'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
@@ -58,6 +59,9 @@ repositories {
         url "https://repo.spongepowered.org/maven"
     }
     maven {
+        url "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
         url "https://modmaven.k-4u.nl/"
     }
     maven {
@@ -94,6 +98,8 @@ dependencies {
     deobfCompile "curse.maven:astral-sorcery-241721:3044416"
     deobfCompile "curse.maven:tfcraft-302973:3268988"
     deobfCompile "curse.maven:mixin-booter-419286:3321174"
+
+    compile "mezz.jei:jei_1.12.2:4.15.0.293"
     // deobfCompile "cofh:CoFHCore:1.12.2-+:universal"
     // compile "com.teamwizardry.librarianlib:librarianlib-1.12:4.0-SNAPSHOT:deobf"
 }

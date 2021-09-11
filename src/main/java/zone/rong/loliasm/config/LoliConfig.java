@@ -58,15 +58,16 @@ public class LoliConfig {
 
     private Configuration configuration;
 
-    public boolean squashBakedQuads, logClassesThatCallBakedQuadCtor;
+    public boolean squashBakedQuads, logClassesThatCallBakedQuadCtor, reuseBucketQuads;
     public String[] classesThatCallBakedQuadCtor;
     public boolean cleanupLaunchClassLoaderEarly, cleanupLaunchClassLoaderLate, noResourceCache, noClassCache, weakResourceCache, weakClassCache, disablePackageManifestMap, cleanCachesOnGameLoad/*, cleanCachesOnWorldLoad*/;
-    public boolean resourceLocationCanonicalization, modelConditionCanonicalization, nbtTagStringBackingStringCanonicalization, packageStringCanonicalization, lockCodeCanonicalization;
+    public boolean resourceLocationCanonicalization, modelConditionCanonicalization, nbtTagStringBackingStringCanonicalization, nbtBackingMapStringCanonicalization, packageStringCanonicalization, lockCodeCanonicalization, spriteNameCanonicalization;
     public boolean optimizeFMLRemapper;
-    public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields;
+    public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields, moreModelManagerCleanup;
+    public boolean releaseSpriteFramesCache;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor;
-    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions;
+    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees;
     public boolean fixAmuletHolderCapability;
 
     private void initialize() {
@@ -78,6 +79,7 @@ public class LoliConfig {
         squashBakedQuads = getBoolean("squashBakedQuads", "bakedquad", "Saves RAM by removing BakedQuad instance variables, redirecting BakedQuad creation to specific BakedQuad child classes. This will be forcefully turned off when Optifine is installed as it is incompatible", true);
         classesThatCallBakedQuadCtor = getStringArray("classesThatCallBakedQuadCtor", "bakedquad", "Classes where BakedQuad::new calls need to be redirected", "net.minecraft.client.renderer.block.model.FaceBakery");
         logClassesThatCallBakedQuadCtor = getBoolean("logClassesThatCallBakedQuadCtor", "bakedquad", "Log classes that need their BakedQuad::new calls redirected", true);
+        reuseBucketQuads = getBoolean("reuseBucketQuads", "bakedquad", "Allows bucket models to re-use UnpackedBakedQuads", true);
 
         cleanupLaunchClassLoaderEarly = getBoolean("cleanupLaunchClassLoaderEarly", "launchwrapper", "Cleanup some redundant data structures in LaunchClassLoader at the earliest point possible (when LoliASM is loaded). Helpful for those that don't have enough RAM to load into the game. This can induce slowdowns while loading the game in exchange for more available RAM", false);
         cleanupLaunchClassLoaderLate = getBoolean("cleanupLaunchClassLoaderLate", "launchwrapper", "Cleanup some redundant data structures in LaunchClassLoader at the latest point possible (when the game reaches the Main Screen). This is for those that have enough RAM to load the game and do not want any slowdowns while loading. Note: if 'cleanupLaunchClassLoaderEarly' is 'true', this option will be ignored", true);
@@ -92,9 +94,11 @@ public class LoliConfig {
         resourceLocationCanonicalization = getBoolean("resourceLocationCanonicalization", "canonicalization", "Deduplicate ResourceLocation and ModelResourceLocation instances", true);
         modelConditionCanonicalization = getBoolean("modelConditionCanonicalization", "canonicalization", "Deduplicate Model Conditions. Enable this if you do not have Foamfix installed", false);
         nbtTagStringBackingStringCanonicalization = getBoolean("nbtTagStringBackingStringCanonicalization", "canonicalization", "Deduplicate Strings in NBTTagString", true);
+        nbtBackingMapStringCanonicalization = getBoolean("nbtBackingMapStringCanonicalization", "canonicalization", "Deduplicate String keys in NBTTagCompound", true);
         packageStringCanonicalization = getBoolean("packageStringCanonicalization", "canonicalization", "Deduplicate package strings when Forge gathers them when mod candidates are loaded", true);
         lockCodeCanonicalization = getBoolean("lockCodeCanonicalization", "canonicalization", "Deduplicate LockCode when reading from NBT", true);
         // bakedQuadVertexDataCanonicalization = getBoolean("bakedQuadVertexDataCanonicalization", "canonicalization", "EXPERIMENTAL: Deduplicate BakedQuad vertexData integer arrays, saves a LOT of memory", false);
+        spriteNameCanonicalization = getBoolean("spriteNameCanonicalization", "canonicalization", "Deduplicate TextureAtlasSprite's names", true);
 
         optimizeFMLRemapper = getBoolean("optimizeFMLRemapper", "remapper", "Optimizing Forge's Remapper for not storing redundant entries", true);
 
@@ -103,6 +107,9 @@ public class LoliConfig {
         optimizeNBTTagCompoundBackingMap = getBoolean("optimizeNBTTagCompoundBackingMap", "datastructures", "Optimize NBTTagCompound's backing map structure", true);
         optimizeFurnaceRecipeStore = getBoolean("optimizeFurnaceRecipeStore", "datastructures", "Optimizing FurnaceRecipes. FastFurnace will see very little benefit when this option is turned on", true);
         stripNearUselessItemStackFields = getBoolean("stripNearUselessItemStackFields", "datastructures", "EXPERIMENTAL: Strips ItemStack of some of its fields as it stores some near-useless references", true);
+        moreModelManagerCleanup = getBoolean("moreModelManagerCleanup", "datastructures", "Clears and trims ModelManager data structures after models are loaded and baked", true);
+
+        releaseSpriteFramesCache = getBoolean("releaseSpriteFramesCache", "textures", "Releases TextureAtlasSprite's framesTextureData. Won't touch custom TextureAtlasSprite implementations", true);
 
         optimizeSomeRendering = getBoolean("optimizeSomeRendering", "rendering", "Optimizes some rendering features, not game-breaking; however, negligible at times", true);
         stripUnnecessaryLocalsInRenderHelper = getBoolean("stripUnnecessaryLocalsInRenderHelper", "rendering", "Strip unnecessary locals in RenderHelper::enableStandardItemLighting, no idea why it's there", true);
@@ -113,6 +120,8 @@ public class LoliConfig {
         fixBlockIEBaseArrayIndexOutOfBoundsException = getBoolean("fixBlockIEBaseArrayIndexOutOfBoundsException", "modfixes", "When Immersive Engineering is installed, sometimes it or it's addons can induce an ArrayIndexOutOfBoundsException in BlockIEBase#getPushReaction. This option will be ignored when IE isn't installed", true);
         cleanupChickenASMClassHierarchyManager = getBoolean("cleanupChickenASMClassHierarchyManager", "modfixes", "EXPERIMENTAL: When ChickenASM (Library of CodeChickenLib and co.) is installed, ClassHierarchyManager can cache a lot of Strings and seem to be unused in any transformation purposes. This clears ClassHierarchyManager of those redundant strings. This option will be ignored when ChickenASM isn't installed", true);
         optimizeAmuletRelatedFunctions = getBoolean("optimizeAmuletRelatedFunctions", "modfixes", "Optimizes Astral Sorcery's Resplendent Prism related functions. This option will be ignored when Astral Sorcery isn't installed", true);
+        labelCanonicalization = getBoolean("labelCanonicalization", "modfixes", "When Just Enough Items is installed, it deduplicates strings in the generated generalized suffix trees' edge labels", true);
+        skipCraftTweakerRecalculatingSearchTrees = getBoolean("skipCraftTweakerRecalculatingSearchTrees", "modfixes", "When CraftTweaker is installed, large modpacks tend to stall in the last stage of loading, when CraftTweaker inexplicably recalculates search trees", true);
 
         fixAmuletHolderCapability = getBoolean("fixAmuletHolderCapability", "capability", "Fixes Astral Sorcery applying AmuletHolderCapability to large amount of ItemStacks when it isn't needed. This option will be ignored when Astral Sorcery isn't installed", true);
 

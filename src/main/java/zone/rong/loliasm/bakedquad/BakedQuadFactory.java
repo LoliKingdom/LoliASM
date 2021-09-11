@@ -1,5 +1,7 @@
 package zone.rong.loliasm.bakedquad;
 
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -16,12 +18,20 @@ public final class BakedQuadFactory {
     // The SwitchMap is literally just an int array or enum ordinal positions
     private static final int[] pseudoSwitchMap = new int[] { 0, 1, 2, 3, 4, 5 };
 
+    // TODO:
+    /*
+    private static final ObjectOpenCustomHashSet<int[]> DUPES = new ObjectOpenCustomHashSet<>(1024, IntArrays.HASH_STRATEGY);
+
+    public static BakedQuad canonize(int[] vertexDataIn, int tintIndexIn, EnumFacing faceIn, TextureAtlasSprite spriteIn, boolean applyDiffuseLighting, VertexFormat format) {
+        return create(DUPES.addOrGet(vertexDataIn), tintIndexIn, faceIn, spriteIn, applyDiffuseLighting, format);
+    }
+     */
+
     /**
-     * This method is here as a placeholder, it will be removed at runtime. Otherwise the class would like quite blank, wouldn't it?
-     * It gets replaced by a BakedQuadFactory::create that returns {@link net.minecraft.client.renderer.block.model.BakedQuad}
+     * This method is here as a placeholder. The contents of this method has to be dynamically written at runtime.
      */
     public static BakedQuad create(int[] vertexDataIn, int tintIndexIn, EnumFacing faceIn, TextureAtlasSprite spriteIn, boolean applyDiffuseLighting, VertexFormat format) {
-        throw new IllegalStateException("Lolis didn't come :(");
+        return new BakedQuad(vertexDataIn, tintIndexIn, faceIn, spriteIn, applyDiffuseLighting, format);
     }
 
     private BakedQuadFactory() { }

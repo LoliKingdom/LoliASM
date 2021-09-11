@@ -12,6 +12,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.multipart.ICondition;
 import org.apache.commons.lang3.tuple.Pair;
+import zone.rong.loliasm.proxy.ClientProxy;
 
 import java.util.*;
 
@@ -35,6 +36,10 @@ public class CanonicalConditions {
     private static final Object2ObjectOpenCustomHashMap<Predicate<IBlockState>[], Predicate<IBlockState>> AND_CACHE = new Object2ObjectOpenCustomHashMap<>(32, ObjectArrays.HASH_STRATEGY);
 
     private static final Object2ObjectOpenHashMap<Pair<IProperty<?>, Comparable<?>>, Predicate<IBlockState>> STATE_HAS_PROPERTY_CACHE = new Object2ObjectOpenHashMap<>(32);
+
+    static {
+        ClientProxy.refreshAfterModels.add(CanonicalConditions::clear);
+    }
 
     public static void clear() {
         OR_CACHE.clear();

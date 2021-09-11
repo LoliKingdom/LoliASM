@@ -32,7 +32,6 @@ import static org.objectweb.asm.Opcodes.*;
  *      => TODO: remove `VertexFormat format` field (most of these BakedQuads reference to {@link net.minecraft.client.renderer.vertex.DefaultVertexFormats#ITEM}!
  * => That reduces the shallow heap estimation from ~40b to ~24b (nearly half!), retained heap from ~168b to ~152b
  *
- * Physical representation: {@link zone.rong.loliasm.patches.visualization.BakedQuad}
  */
 public final class BakedQuadPatch {
 
