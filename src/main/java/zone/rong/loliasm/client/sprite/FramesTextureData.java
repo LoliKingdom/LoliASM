@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.proxy.ClientProxy;
 
@@ -17,6 +19,16 @@ import java.util.Set;
 public class FramesTextureData extends ArrayList<int[][]> {
 
     public static Set<TextureAtlasSprite> scheduledToReleaseCache;
+
+    @SubscribeEvent
+    public static void onRenderTick(TickEvent.RenderTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && FramesTextureData.scheduledToReleaseCache != null) {
+            for (TextureAtlasSprite sprite : scheduledToReleaseCache) {
+                sprite.clearFramesTextureData();
+            }
+            scheduledToReleaseCache = null;
+        }
+    }
 
     private final TextureAtlasSprite sprite;
 

@@ -6,10 +6,12 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.client.resource.VanillaResourceType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,13 +31,11 @@ public class ClientProxy extends CommonProxy {
 
     public static boolean canReload = false;
 
-    @SubscribeEvent
-    public static void onRenderTick(TickEvent.RenderTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && FramesTextureData.scheduledToReleaseCache != null) {
-            for (TextureAtlasSprite sprite : FramesTextureData.scheduledToReleaseCache) {
-                sprite.clearFramesTextureData();
-            }
-            FramesTextureData.scheduledToReleaseCache = null;
+    @Override
+    public void preInit(FMLPreInitializationEvent event) {
+        super.preInit(event);
+        if (LoliConfig.instance.releaseSpriteFramesCache) {
+            MinecraftForge.EVENT_BUS.register(FramesTextureData.class);
         }
     }
 
@@ -59,11 +59,9 @@ public class ClientProxy extends CommonProxy {
                 refreshAfterModels.forEach(Runnable::run);
                 if (LoliConfig.instance.releaseSpriteFramesCache) {
                     canReload = false;
-                    int count = 0;
                     try {
                         for (TextureAtlasSprite sprite : ((Map<String, TextureAtlasSprite>) LoliReflector.resolveFieldGetter(TextureMap.class, "mapRegisteredSprites", "field_110574_e").invoke(Minecraft.getMinecraft().getTextureMapBlocks())).values()) {
                             if (!sprite.hasAnimationMetadata() /* && sprite.getClass() == TextureAtlasSprite.class*/) {
-                                count++;
                                 sprite.setFramesTextureData(new FramesTextureData(sprite));
                             }
                         }

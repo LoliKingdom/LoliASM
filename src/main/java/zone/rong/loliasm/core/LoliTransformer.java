@@ -27,7 +27,7 @@ public class LoliTransformer implements IClassTransformer {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
         transformations = new Object2ObjectOpenHashMap<>();
         if (LoliLoadingPlugin.isClient) {
-            addTransformation("codechicken.lib.model.loader.blockstate.CCBlockStateLoader", bytes -> stripSubscribeEventAnnotation(bytes, "onModelBake", "onTextureStitchPre"));
+            // addTransformation("codechicken.lib.model.loader.blockstate.CCBlockStateLoader", bytes -> stripSubscribeEventAnnotation(bytes, "onModelBake", "onTextureStitchPre"));
             if (LoliLoadingPlugin.squashBakedQuads) {
                 addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", BakedQuadPatch::rewriteBakedQuad);
                 addTransformation("net.minecraft.client.renderer.block.model.BakedQuadRetextured", BakedQuadRetexturedPatch::patchBakedQuadRetextured);
