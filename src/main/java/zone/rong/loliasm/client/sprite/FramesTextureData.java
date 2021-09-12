@@ -67,7 +67,6 @@ public class FramesTextureData extends ArrayList<int[][]> {
     }
 
     private void load() {
-        LoliLogger.instance.error("Loading new texture data for: {}", sprite.getIconName());
         ResourceLocation location = getLocation();
         IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
         TextureMap textureMap = Minecraft.getMinecraft().getTextureMapBlocks();

@@ -33,7 +33,6 @@ public class ClientProxy extends CommonProxy {
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.END && FramesTextureData.scheduledToReleaseCache != null) {
             for (TextureAtlasSprite sprite : FramesTextureData.scheduledToReleaseCache) {
-                LoliLogger.instance.error("Releasing cache of {}", sprite.getIconName());
                 sprite.clearFramesTextureData();
             }
             FramesTextureData.scheduledToReleaseCache = null;
@@ -72,7 +71,6 @@ public class ClientProxy extends CommonProxy {
                         e.printStackTrace();
                     }
                     canReload = true;
-                    LoliLogger.instance.info("{} TextureAtlasSprites had their framesTextureData released", count);
                 }
             }
         });
