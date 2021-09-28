@@ -67,7 +67,7 @@ public class LoliConfig {
     public boolean releaseSpriteFramesCache;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor;
-    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees;
+    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization;
     public boolean fixAmuletHolderCapability;
 
     private void initialize() {
@@ -120,8 +120,9 @@ public class LoliConfig {
         fixBlockIEBaseArrayIndexOutOfBoundsException = getBoolean("fixBlockIEBaseArrayIndexOutOfBoundsException", "modfixes", "When Immersive Engineering is installed, sometimes it or it's addons can induce an ArrayIndexOutOfBoundsException in BlockIEBase#getPushReaction. This option will be ignored when IE isn't installed", true);
         cleanupChickenASMClassHierarchyManager = getBoolean("cleanupChickenASMClassHierarchyManager", "modfixes", "EXPERIMENTAL: When ChickenASM (Library of CodeChickenLib and co.) is installed, ClassHierarchyManager can cache a lot of Strings and seem to be unused in any transformation purposes. This clears ClassHierarchyManager of those redundant strings. This option will be ignored when ChickenASM isn't installed", true);
         optimizeAmuletRelatedFunctions = getBoolean("optimizeAmuletRelatedFunctions", "modfixes", "Optimizes Astral Sorcery's Resplendent Prism related functions. This option will be ignored when Astral Sorcery isn't installed", true);
-        labelCanonicalization = getBoolean("labelCanonicalization", "modfixes", "When Just Enough Items is installed, it deduplicates strings in the generated generalized suffix trees' edge labels", true);
-        skipCraftTweakerRecalculatingSearchTrees = getBoolean("skipCraftTweakerRecalculatingSearchTrees", "modfixes", "When CraftTweaker is installed, large modpacks tend to stall in the last stage of loading, when CraftTweaker inexplicably recalculates search trees", true);
+        labelCanonicalization = getBoolean("labelCanonicalization", "modfixes", "When Just Enough Items is installed, it deduplicates strings in the generated generalized suffix trees' edge labels. This option will be ignored when Just Enough Items isn't installed", true);
+        skipCraftTweakerRecalculatingSearchTrees = getBoolean("skipCraftTweakerRecalculatingSearchTrees", "modfixes", "When CraftTweaker is installed, large modpacks tend to stall in the last stage of loading, when CraftTweaker inexplicably recalculates search trees. This option will be ignored when CraftTweaker isn't installed", true);
+        bwmBlastingOilOptimization = getBoolean("bwmBlastingOilOptimization", "modfixes", "When Better with Mods is installed, optimize Blasting Oil related events. The original implementation harms server performance at any given moment. This option will be ignored when Better with Mods isn't installed", true);
 
         fixAmuletHolderCapability = getBoolean("fixAmuletHolderCapability", "capability", "Fixes Astral Sorcery applying AmuletHolderCapability to large amount of ItemStacks when it isn't needed. This option will be ignored when Astral Sorcery isn't installed", true);
 

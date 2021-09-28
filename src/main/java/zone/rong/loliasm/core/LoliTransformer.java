@@ -1,8 +1,13 @@
 package zone.rong.loliasm.core;
 
+import betterwithmods.module.ModuleLoader;
+import betterwithmods.module.gameplay.Gameplay;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.fml.common.Loader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
@@ -11,21 +16,18 @@ import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.patches.*;
 
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 import static org.objectweb.asm.Opcodes.*;
 
 public class LoliTransformer implements IClassTransformer {
 
-    Map<String, Function<byte[], byte[]>> transformations;
+    Multimap<String, Function<byte[], byte[]>> transformations;
 
     public LoliTransformer() {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
-        transformations = new Object2ObjectOpenHashMap<>();
+        transformations = MultimapBuilder.hashKeys(30).arrayListValues(1).build();
         if (LoliLoadingPlugin.isClient) {
             // addTransformation("codechicken.lib.model.loader.blockstate.CCBlockStateLoader", bytes -> stripSubscribeEventAnnotation(bytes, "onModelBake", "onTextureStitchPre"));
             if (LoliLoadingPlugin.squashBakedQuads) {
@@ -90,6 +92,10 @@ public class LoliTransformer implements IClassTransformer {
         if (LoliConfig.instance.labelCanonicalization) {
             addTransformation("mezz.jei.suffixtree.Edge", this::deduplicateEdgeLabels);
         }
+        if (LoliConfig.instance.bwmBlastingOilOptimization) {
+            addTransformation("betterwithmods.event.BlastingOilEvent", bytes -> stripSubscribeEventAnnotation(bytes, "onPlayerTakeDamage", "onHitGround"));
+            addTransformation("betterwithmods.common.items.ItemMaterial", this::injectBlastingOilEntityItemUpdate);
+        }
         addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.nbtBackingMapStringCanonicalization));
     }
 
@@ -100,10 +106,15 @@ public class LoliTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        Function<byte[], byte[]> getBytes = transformations.get(transformedName);
+        Collection<Function<byte[], byte[]>> getBytes = transformations.get(transformedName);
         if (getBytes != null) {
-            return getBytes.apply(bytes);
+            byte[] transformedByteArray = bytes;
+            for (Function<byte[], byte[]> func : getBytes) {
+                transformedByteArray = func.apply(transformedByteArray);
+            }
+            return transformedByteArray;
         }
+        // transformations.removeAll(transformedName);
         return bytes;
     }
 
@@ -709,6 +720,29 @@ public class LoliTransformer implements IClassTransformer {
         ClassWriter writer = new ClassWriter(0);
         node.accept(writer);
         return writer.toByteArray();
+    }
+
+    private byte[] injectBlastingOilEntityItemUpdate(byte[] bytes) {
+        LoliLogger.instance.info(ModuleLoader.config);
+        if (!Gameplay.disableBlastingOilEvents) {
+            ClassReader reader = new ClassReader(bytes);
+            ClassNode node = new ClassNode();
+            reader.accept(node, 0);
+
+            ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+            node.accept(writer);
+            MethodVisitor methodVisitor = writer.visitMethod(ACC_PUBLIC, "onEntityItemUpdate", "(Lnet/minecraft/entity/item/EntityItem;)Z", null, null);
+            methodVisitor.visitCode();
+            methodVisitor.visitVarInsn(ALOAD, 1);
+            methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/common/modfixes/betterwithmods/BWMBlastingOilOptimization", "inject$ItemMaterial$onEntityItemUpdate", "(Lnet/minecraft/entity/item/EntityItem;)Z", false);
+            methodVisitor.visitInsn(IRETURN);
+            methodVisitor.visitMaxs(2, 2);
+            methodVisitor.visitEnd();
+            writer.visitEnd();
+
+            return writer.toByteArray();
+        }
+        return bytes;
     }
 
 }
