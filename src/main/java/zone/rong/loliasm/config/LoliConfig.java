@@ -69,6 +69,7 @@ public class LoliConfig {
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor;
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization;
     public boolean fixAmuletHolderCapability;
+    public boolean fixFillBucketEventNullPointerException;
 
     private void initialize() {
         configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
@@ -125,6 +126,8 @@ public class LoliConfig {
         bwmBlastingOilOptimization = getBoolean("bwmBlastingOilOptimization", "modfixes", "When Better with Mods is installed, optimize Blasting Oil related events. The original implementation harms server performance at any given moment. This option will be ignored when Better with Mods isn't installed", true);
 
         fixAmuletHolderCapability = getBoolean("fixAmuletHolderCapability", "capability", "Fixes Astral Sorcery applying AmuletHolderCapability to large amount of ItemStacks when it isn't needed. This option will be ignored when Astral Sorcery isn't installed", true);
+
+        fixFillBucketEventNullPointerException = getBoolean("fixFillBucketEventNullPointerException", "forgefixes", "Fixes Forge's mistake of annotating FillBucketEvent#getFilledBucket as @Nonnull when the contract isn't fulfilled nor checked. First discovered here: https://github.com/Divine-Journey-2/main/issues/295", true);
 
         configuration.save();
     }
