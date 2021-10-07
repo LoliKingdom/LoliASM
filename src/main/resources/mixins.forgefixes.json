@@ -1,10 +1,12 @@
 {
   "package": "zone.rong.loliasm.common.forgefixes.mixins",
+  "plugin": "zone.rong.loliasm.core.LoliMixinPlugin",
   "refmap": "mixins.loliasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "ChunkMixin",
     "ForgeEventFactoryMixin"
   ]
 }

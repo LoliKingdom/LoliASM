@@ -3,6 +3,7 @@ package zone.rong.loliasm.core;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
+import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.core.classfactories.BakedQuadRedirectorFactory;
 
@@ -12,7 +13,9 @@ import java.util.Set;
 public class LoliMixinPlugin implements IMixinConfigPlugin {
 
     static {
-        BakedQuadRedirectorFactory.generateRedirectorClass();
+        if (LoliConfig.instance.squashBakedQuads) {
+            BakedQuadRedirectorFactory.generateRedirectorClass();
+        }
     }
 
     @Override
@@ -25,6 +28,10 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        if (!LoliConfig.instance.fixTileEntityOnLoadCME && mixinClassName.equals("zone.rong.loliasm.common.forgefixes.mixins.ChunkMixin")) {
+            LoliLogger.instance.info("fixTileEntityOnLoadCME disabled, will not patch {}", targetClassName);
+            return false;
+        }
         return true;
     }
 

@@ -1,13 +1,10 @@
 package zone.rong.loliasm.core;
 
-import betterwithmods.module.ModuleLoader;
 import betterwithmods.module.gameplay.Gameplay;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraftforge.fml.common.Loader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
@@ -723,7 +720,6 @@ public class LoliTransformer implements IClassTransformer {
     }
 
     private byte[] injectBlastingOilEntityItemUpdate(byte[] bytes) {
-        LoliLogger.instance.info(ModuleLoader.config);
         if (!Gameplay.disableBlastingOilEvents) {
             ClassReader reader = new ClassReader(bytes);
             ClassNode node = new ClassNode();

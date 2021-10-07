@@ -19,7 +19,7 @@ import java.util.Map;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class LoliLoadingPlugin implements IFMLLoadingPlugin {
 
-    public static final String VERSION = "3.0.6";
+    public static final String VERSION = "3.1";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
     public static final boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
@@ -63,7 +63,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         if (LoliConfig.instance.quickerEnableUniversalBucketCheck) {
             Mixins.addConfiguration("mixins.misc_fluidregistry.json");
         }
-        if (LoliConfig.instance.fixFillBucketEventNullPointerException) {
+        if (LoliConfig.instance.fixFillBucketEventNullPointerException || LoliConfig.instance.fixTileEntityOnLoadCME) {
             Mixins.addConfiguration("mixins.forgefixes.json");
         }
         if (isClient) {

@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "3.0.6"
+version = "3.1"
 group = "zone.rong.loliasm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "loliasm"
 

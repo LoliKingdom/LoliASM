@@ -69,7 +69,7 @@ public class LoliConfig {
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor;
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization;
     public boolean fixAmuletHolderCapability;
-    public boolean fixFillBucketEventNullPointerException;
+    public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME;
 
     private void initialize() {
         configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
@@ -128,6 +128,7 @@ public class LoliConfig {
         fixAmuletHolderCapability = getBoolean("fixAmuletHolderCapability", "capability", "Fixes Astral Sorcery applying AmuletHolderCapability to large amount of ItemStacks when it isn't needed. This option will be ignored when Astral Sorcery isn't installed", true);
 
         fixFillBucketEventNullPointerException = getBoolean("fixFillBucketEventNullPointerException", "forgefixes", "Fixes Forge's mistake of annotating FillBucketEvent#getFilledBucket as @Nonnull when the contract isn't fulfilled nor checked. First discovered here: https://github.com/Divine-Journey-2/main/issues/295", true);
+        fixTileEntityOnLoadCME = getBoolean("fixTileEntityOnLoadCME", "forgefixes", "Fixes a vanilla-forge code interaction bug leading to a possible ConcurrentModificationException/StackOverflowError crash. First discovered here: https://github.com/GregTechCE/GregTech/issues/1256", true);
 
         configuration.save();
     }
