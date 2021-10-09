@@ -93,6 +93,9 @@ public class LoliTransformer implements IClassTransformer {
             addTransformation("betterwithmods.event.BlastingOilEvent", bytes -> stripSubscribeEventAnnotation(bytes, "onPlayerTakeDamage", "onHitGround"));
             addTransformation("betterwithmods.common.items.ItemMaterial", this::injectBlastingOilEntityItemUpdate);
         }
+        if (LoliConfig.instance.optimizeQMDBeamRenderer) {
+            addTransformation("lach_01298.qmd.render.entity.BeamRenderer", bytes -> stripSubscribeEventAnnotation(bytes, "renderBeamEffects"));
+        }
         addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.nbtBackingMapStringCanonicalization));
     }
 

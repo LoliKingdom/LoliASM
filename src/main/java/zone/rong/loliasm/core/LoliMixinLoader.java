@@ -18,6 +18,9 @@ public class LoliMixinLoader {
         if (Loader.isModLoaded("astralsorcery") && LoliConfig.instance.optimizeAmuletRelatedFunctions) {
             Mixins.addConfiguration("mixins.modfixes_astralsorcery.json");
         }
+        if (Loader.isModLoaded("qmd") && LoliConfig.instance.optimizeQMDBeamRenderer) {
+            Mixins.addConfiguration("mixins.modfixes_qmd.json");
+        }
         if (Loader.isModLoaded("astralsorcery") && LoliConfig.instance.fixAmuletHolderCapability) {
            Mixins.addConfiguration("mixins.capability_astralsorcery.json");
         }

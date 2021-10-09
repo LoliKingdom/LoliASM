@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "3.1"
+version = "3.1.1"
 group = "zone.rong.loliasm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "loliasm"
 
@@ -95,6 +95,7 @@ dependencies {
     }
     compile "codechicken:ChickenASM:1.12-1.0.2.9"
     compile "epicsquid.mysticallib:mysticallib:1.12.2-+"
+    compile "mezz.jei:jei_1.12.2:4.15.0.293"
 
     deobfCompile 'slimeknights.mantle:Mantle:1.12-1.3.3.55+'
     deobfCompile 'slimeknights:TConstruct:1.12.2-2.13.0.183+'
@@ -109,7 +110,7 @@ dependencies {
     deobfCompile "curse.maven:mixin-booter-419286:3321174"
     deobfCompile "curse.maven:foamfix-optimization-mod-278494:3327893"
 
-    compile "mezz.jei:jei_1.12.2:4.15.0.293"
+    deobfProvided "curse.maven:qmd-362056:3474533"
     // deobfCompile "cofh:CoFHCore:1.12.2-+:universal"
     // compile "com.teamwizardry.librarianlib:librarianlib-1.12:4.0-SNAPSHOT:deobf"
 }
