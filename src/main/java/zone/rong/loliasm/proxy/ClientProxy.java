@@ -17,6 +17,7 @@ import pl.asie.foamfix.shared.FoamFixShared;
 import slimeknights.tconstruct.library.client.texture.AbstractColoredTexture;
 import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.client.sprite.FramesTextureData;
+import zone.rong.loliasm.common.modfixes.qmd.QMDEventHandler;
 import zone.rong.loliasm.config.LoliConfig;
 
 import java.util.ArrayList;
@@ -46,6 +47,9 @@ public class ClientProxy extends CommonProxy {
         super.preInit(event);
         if (LoliConfig.instance.releaseSpriteFramesCache) {
             MinecraftForge.EVENT_BUS.register(FramesTextureData.class);
+        }
+        if (Loader.isModLoaded("qmd") && LoliConfig.instance.optimizeQMDBeamRenderer) {
+            MinecraftForge.EVENT_BUS.register(QMDEventHandler.class);
         }
     }
 
