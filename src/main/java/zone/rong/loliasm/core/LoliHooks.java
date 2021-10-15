@@ -1,12 +1,12 @@
 package zone.rong.loliasm.core;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ModCandidate;
+import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.api.StringPool;
+import zone.rong.loliasm.config.LoliConfig;
 
 import java.util.Set;
 
@@ -42,6 +42,26 @@ public class LoliHooks {
 
     public static <K, V> Object2ObjectOpenHashMap<K, V> createHashMap() {
         return new Object2ObjectOpenHashMap<>();
+    }
+
+    private static Set<Class<?>> classesThatCallBakedQuadCtor;
+    private static Set<Class<?>> classesThatExtendBakedQuad;
+
+    public static void inform(Class<?> clazz) {
+        if (classesThatCallBakedQuadCtor == null) {
+            classesThatCallBakedQuadCtor = new ReferenceOpenHashSet<>();
+        }
+        if (classesThatCallBakedQuadCtor.add(clazz)) {
+            LoliConfig.instance.editClassesThatCallBakedQuadCtor(clazz);
+        }
+        if (BakedQuad.class.isAssignableFrom(clazz)) {
+            if (classesThatExtendBakedQuad == null) {
+                classesThatExtendBakedQuad = new ReferenceOpenHashSet<>();
+            }
+            if (classesThatExtendBakedQuad.add(clazz)) {
+                LoliConfig.instance.editClassesThatExtendBakedQuad(clazz);
+            }
+        }
     }
 
     public static void modCandidate$override$addClassEntry(ModCandidate modCandidate, String name, Set<String> foundClasses, Set<String> packages, ASMDataTable table) {

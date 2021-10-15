@@ -1,7 +1,6 @@
 package zone.rong.loliasm.patches;
 
 import org.objectweb.asm.*;
-import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.core.LoliLoadingPlugin;
 import zone.rong.loliasm.core.LoliTransformer;
 
@@ -127,6 +126,7 @@ public final class BakedQuadPatch {
             Label l4 = new Label();
             methodVisitor.visitLabel(l4);
             methodVisitor.visitLineNumber(44, l4);
+            /*
             Label startingLabel = null;
             if (LoliConfig.instance.logClassesThatCallBakedQuadCtor) {
                 methodVisitor.visitFieldInsn(GETSTATIC, "me/nallar/whocalled/WhoCalled", "$", "Lme/nallar/whocalled/WhoCalled;");
@@ -159,6 +159,34 @@ public final class BakedQuadPatch {
                 methodVisitor.visitLabel(l8);
                 methodVisitor.visitLineNumber(49, l8);
             }
+            */
+            methodVisitor.visitFieldInsn(GETSTATIC, "me/nallar/whocalled/WhoCalled", "$", "Lme/nallar/whocalled/WhoCalled;");
+            methodVisitor.visitInsn(ICONST_1);
+            methodVisitor.visitMethodInsn(INVOKEINTERFACE, "me/nallar/whocalled/WhoCalled", "getCallingClass", "(I)Ljava/lang/Class;", true);
+            methodVisitor.visitVarInsn(ASTORE, 7);
+            Label l5 = new Label();
+            // startingLabel = l5;
+            methodVisitor.visitLabel(l5);
+            methodVisitor.visitLineNumber(45, l5);
+            methodVisitor.visitVarInsn(ALOAD, 7);
+            methodVisitor.visitLdcInsn(Type.getType("Lnet/minecraft/client/renderer/block/model/BakedQuad;"));
+            Label l6 = new Label();
+            methodVisitor.visitJumpInsn(IF_ACMPNE, l6);
+            Label l7 = new Label();
+            methodVisitor.visitLabel(l7);
+            methodVisitor.visitLineNumber(46, l7);
+            methodVisitor.visitFieldInsn(GETSTATIC, "me/nallar/whocalled/WhoCalled", "$", "Lme/nallar/whocalled/WhoCalled;");
+            methodVisitor.visitInsn(ICONST_2);
+            methodVisitor.visitMethodInsn(INVOKEINTERFACE, "me/nallar/whocalled/WhoCalled", "getCallingClass", "(I)Ljava/lang/Class;", true);
+            methodVisitor.visitVarInsn(ASTORE, 7);
+            methodVisitor.visitLabel(l6);
+            methodVisitor.visitLineNumber(48, l6);
+            methodVisitor.visitFrame(Opcodes.F_FULL, 8, new Object[]{"net/minecraft/client/renderer/block/model/BakedQuad", "[I", Opcodes.INTEGER, "net/minecraft/util/EnumFacing", "net/minecraft/client/renderer/texture/TextureAtlasSprite", Opcodes.INTEGER, "net/minecraft/client/renderer/vertex/VertexFormat", "java/lang/Class"}, 0, new Object[]{});
+            methodVisitor.visitVarInsn(ALOAD, 7);
+            methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "inform", "(Ljava/lang/Class;)V", false);
+            Label l8 = new Label();
+            methodVisitor.visitLabel(l8);
+            methodVisitor.visitLineNumber(49, l8);
             methodVisitor.visitInsn(RETURN);
             Label finalLabel = new Label();
             methodVisitor.visitLabel(finalLabel);
@@ -169,12 +197,16 @@ public final class BakedQuadPatch {
             methodVisitor.visitLocalVariable("spriteIn", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, l0, finalLabel, 4);
             methodVisitor.visitLocalVariable("applyDiffuseLighting", "Z", null, l0, finalLabel, 5);
             methodVisitor.visitLocalVariable("format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;", null, l0, finalLabel, 6);
+            methodVisitor.visitLocalVariable("callee", "Ljava/lang/Class;", null, l5, finalLabel, 7);
+            methodVisitor.visitMaxs(3, 8);
+            /*
             if (LoliConfig.instance.logClassesThatCallBakedQuadCtor) {
                 methodVisitor.visitLocalVariable("callee", "Ljava/lang/Class;", null, startingLabel, finalLabel, 7);
                 methodVisitor.visitMaxs(3, 8);
             } else {
                 methodVisitor.visitMaxs(2, 7);
             }
+             */
             methodVisitor.visitEnd();
         }
         {

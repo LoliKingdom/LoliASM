@@ -28,12 +28,9 @@ public final class BakedQuadClassFactory {
             for (String lighting : new String[] { "NoDiffuseLighting", "DiffuseLighting" }) {
                 for (String tint : new String[] { "NoTint", "Tint" }) {
 
-                    // cba making comprehensible names
                     final String className = "ifuckinglovelolis/bakedquads/" + face + lighting + tint;
                     final String classDescriptor = "L" + className + ";";
                     final boolean hasTint = tint.equals("Tint");
-
-                    // TODO: Line number nodes aren't needed, removal?
 
                     ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 
@@ -73,7 +70,7 @@ public final class BakedQuadClassFactory {
                             // If it is a tint variant, grab this.tintIndex so we can PUTFIELD
                             methodVisitor.visitVarInsn(ALOAD, 0);
                             methodVisitor.visitVarInsn(ILOAD, 2);
-                            methodVisitor.visitInsn(I2B); // Cast byte to int tintIndex (this is performed in the soft patch as well)
+                            methodVisitor.visitInsn(I2B);
                             methodVisitor.visitFieldInsn(PUTFIELD, className, "tintIndex", "B"); // PUTFIELD to this.tintIndex
                         }
                         if (!hasTint) {

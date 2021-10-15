@@ -3,6 +3,7 @@ package zone.rong.loliasm.core;
 import betterwithmods.module.gameplay.Gameplay;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.commons.lang3.ArrayUtils;
@@ -33,6 +34,9 @@ public class LoliTransformer implements IClassTransformer {
                 addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad);
                 addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad$Builder", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad$Builder);
                 addTransformation("zone.rong.loliasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
+                for (String classThatExtendBakedQuad : LoliConfig.instance.classesThatExtendBakedQuad) {
+                    addTransformation(classThatExtendBakedQuad, this::extendSupportingBakedQuadInstead);
+                }
             }
             if (LoliConfig.instance.modelConditionCanonicalization) {
                 addTransformation("net.minecraft.client.renderer.block.model.multipart.ICondition", this::canonicalBoolConditions);
@@ -116,6 +120,42 @@ public class LoliTransformer implements IClassTransformer {
         }
         // transformations.removeAll(transformedName);
         return bytes;
+    }
+
+    private byte[] extendSupportingBakedQuadInstead(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        if (node.superName.equals("net/minecraft/client/renderer/block/model/BakedQuad")) {
+            node.superName = "zone/rong/loliasm/bakedquad/SupportingBakedQuad";
+        }
+
+        Set<String> fieldsToLookOutFor = new ObjectOpenHashSet<>(new String[] { "face", "applyDiffuseLighting", "tintIndex" });
+
+        for (MethodNode method : node.methods) {
+            ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+            while (iter.hasNext()) {
+                AbstractInsnNode instruction = iter.next();
+                if (method.name.equals("<init>") && instruction instanceof MethodInsnNode) {
+                    MethodInsnNode methodNode = (MethodInsnNode) instruction;
+                    if (methodNode.getOpcode() == INVOKESPECIAL && methodNode.owner.equals("net/minecraft/client/renderer/block/model/BakedQuad")) {
+                        methodNode.owner = "zone/rong/loliasm/bakedquad/SupportingBakedQuad";
+                    }
+                } else if (instruction instanceof FieldInsnNode) {
+                    FieldInsnNode fieldNode = (FieldInsnNode) instruction;
+                    if (fieldNode.owner.equals("net/minecraft/client/renderer/block/model/BakedQuad")) {
+                        if (fieldsToLookOutFor.contains(fieldNode.name)) {
+                            fieldNode.owner = "zone/rong/loliasm/bakedquad/SupportingBakedQuad";
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
     }
 
     private byte[] canonicalizeResourceLocationStrings(byte[] bytes) {

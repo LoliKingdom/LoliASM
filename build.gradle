@@ -1,11 +1,10 @@
 buildscript {
     repositories {
-        maven { url = 'https://jitpack.io' }
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
-        classpath 'com.github.GregTechCE:ForgeGradle:FG_2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
@@ -14,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "3.1.2"
+version = "3.2"
 group = "zone.rong.loliasm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "loliasm"
 
@@ -109,8 +108,7 @@ dependencies {
     deobfCompile "curse.maven:tfcraft-302973:3268988"
     deobfCompile "curse.maven:mixin-booter-419286:3321174"
     deobfCompile "curse.maven:foamfix-optimization-mod-278494:3327893"
-
-    deobfProvided "curse.maven:qmd-362056:3474533"
+    deobfCompile "curse.maven:qmd-362056:3474533"
     // deobfCompile "cofh:CoFHCore:1.12.2-+:universal"
     // compile "com.teamwizardry.librarianlib:librarianlib-1.12:4.0-SNAPSHOT:deobf"
 }

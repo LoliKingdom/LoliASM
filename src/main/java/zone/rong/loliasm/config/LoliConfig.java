@@ -4,13 +4,16 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.config.annotation.*;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Set;
 
 public class LoliConfig {
 
@@ -59,7 +62,7 @@ public class LoliConfig {
     private Configuration configuration;
 
     public boolean squashBakedQuads, logClassesThatCallBakedQuadCtor, reuseBucketQuads;
-    public String[] classesThatCallBakedQuadCtor;
+    public String[] classesThatCallBakedQuadCtor, classesThatExtendBakedQuad;
     public boolean cleanupLaunchClassLoaderEarly, cleanupLaunchClassLoaderLate, noResourceCache, noClassCache, weakResourceCache, weakClassCache, disablePackageManifestMap, cleanCachesOnGameLoad/*, cleanCachesOnWorldLoad*/;
     public boolean resourceLocationCanonicalization, modelConditionCanonicalization, nbtTagStringBackingStringCanonicalization, nbtBackingMapStringCanonicalization, packageStringCanonicalization, lockCodeCanonicalization, spriteNameCanonicalization;
     public boolean optimizeFMLRemapper;
@@ -78,7 +81,8 @@ public class LoliConfig {
 
     public void load() {
         squashBakedQuads = getBoolean("squashBakedQuads", "bakedquad", "Saves RAM by removing BakedQuad instance variables, redirecting BakedQuad creation to specific BakedQuad child classes. This will be forcefully turned off when Optifine is installed as it is incompatible", true);
-        classesThatCallBakedQuadCtor = getStringArray("classesThatCallBakedQuadCtor", "bakedquad", "Classes where BakedQuad::new calls need to be redirected", "net.minecraft.client.renderer.block.model.FaceBakery");
+        classesThatCallBakedQuadCtor = getStringArray("classesThatCallBakedQuadCtor", "bakedquad", "Classes where BakedQuad::new calls need to be redirected. As of 3.2, this should be done automatically, while the changes will show in the next launch", "net.minecraft.client.renderer.block.model.FaceBakery");
+        classesThatExtendBakedQuad = getStringArray("classesThatExtendBakedQuad", "bakedquad", "Classes that extend BakedQuad need to be handled separately. This should be done automatically, while the changes will show in the next launch", "");
         logClassesThatCallBakedQuadCtor = getBoolean("logClassesThatCallBakedQuadCtor", "bakedquad", "Log classes that need their BakedQuad::new calls redirected", true);
         reuseBucketQuads = getBoolean("reuseBucketQuads", "bakedquad", "Allows bucket models to re-use UnpackedBakedQuads", true);
 
@@ -132,6 +136,26 @@ public class LoliConfig {
         fixTileEntityOnLoadCME = getBoolean("fixTileEntityOnLoadCME", "forgefixes", "Fixes a vanilla-forge code interaction bug leading to a possible ConcurrentModificationException/StackOverflowError crash. First discovered here: https://github.com/GregTechCE/GregTech/issues/1256", true);
 
         configuration.save();
+    }
+
+    public void editClassesThatCallBakedQuadCtor(Class<?> clazz) {
+        Property prop = configuration.getCategory("bakedquad").get("classesThatCallBakedQuadCtor");
+        Set<String> classes = new ObjectOpenHashSet<>(prop.getStringList());
+        if (classes.add(clazz.getName())) {
+            prop.set(classes.toArray(new String[0]));
+            configuration.save();
+            LoliLogger.instance.warn("{} added to classesThatCallBakedQuadCtor list in loliasm.cfg", clazz.getName());
+        }
+    }
+
+    public void editClassesThatExtendBakedQuad(Class<?> clazz) {
+        Property prop = configuration.getCategory("bakedquad").get("classesThatExtendBakedQuad");
+        Set<String> classes = new ObjectOpenHashSet<>(prop.getStringList());
+        if (classes.add(clazz.getName())) {
+            prop.set(classes.toArray(new String[0]));
+            configuration.save();
+            LoliLogger.instance.warn("{} added to classesThatExtendBakedQuad list in loliasm.cfg", clazz.getName());
+        }
     }
 
     private boolean setBoolean(String name, String category, boolean newValue) {
