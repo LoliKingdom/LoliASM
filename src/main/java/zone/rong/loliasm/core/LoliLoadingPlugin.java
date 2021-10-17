@@ -7,6 +7,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.SystemUtils;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
+import zone.rong.loliasm.UnsafeLolis;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
@@ -19,7 +20,7 @@ import java.util.Map;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class LoliLoadingPlugin implements IFMLLoadingPlugin {
 
-    public static final String VERSION = "3.2.1";
+    public static final String VERSION = "3.3";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
     public static final boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
@@ -31,6 +32,9 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
     public LoliLoadingPlugin() {
         LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
         LoliLogger.instance.info("Lolis are preparing and loading in mixins since Rongmario's too lazy to write pure ASM at times despite the mod being called 'LoliASM'");
+        if (LoliConfig.instance.removeForgeSecurityManager) {
+            UnsafeLolis.removeFMLSecurityManager();
+        }
         MixinBootstrap.init();
         boolean needToDGSFFFF = isVMOpenJ9 && SystemUtils.IS_JAVA_1_8;
         int buildAppendIndex = SystemUtils.JAVA_VERSION.indexOf("_");
