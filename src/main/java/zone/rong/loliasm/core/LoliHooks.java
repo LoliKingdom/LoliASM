@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ModCandidate;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.api.StringPool;
+import zone.rong.loliasm.bakedquad.SupportingBakedQuad;
 import zone.rong.loliasm.config.LoliConfig;
 
 import java.util.Set;
@@ -54,7 +55,7 @@ public class LoliHooks {
         if (classesThatCallBakedQuadCtor.add(clazz)) {
             LoliConfig.instance.editClassesThatCallBakedQuadCtor(clazz);
         }
-        if (BakedQuad.class.isAssignableFrom(clazz)) {
+        if (clazz != SupportingBakedQuad.class && BakedQuad.class.isAssignableFrom(clazz)) {
             if (classesThatExtendBakedQuad == null) {
                 classesThatExtendBakedQuad = new ReferenceOpenHashSet<>();
             }
