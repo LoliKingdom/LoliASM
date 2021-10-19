@@ -80,7 +80,7 @@ public class BakedQuadRedirectorFactory {
                 methodVisitor.visitVarInsn(ALOAD, isStatic ? 3 : 4);
                 if (isDeprecated) {
                     methodVisitor.visitInsn(ICONST_1);
-                    methodVisitor.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/vertex/DefaultVertexFormats", "ITEM", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
+                    methodVisitor.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/vertex/DefaultVertexFormats", LoliLoadingPlugin.isDeobf ? "ITEM" : "field_176599_b", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
                 } else {
                     methodVisitor.visitVarInsn(ILOAD, isStatic ? 4 : 5);
                     methodVisitor.visitVarInsn(ALOAD, isStatic ? 5 : 6);
