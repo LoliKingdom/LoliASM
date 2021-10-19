@@ -49,13 +49,16 @@ public class LoliHooks {
     private static Set<Class<?>> classesThatExtendBakedQuad;
 
     public static void inform(Class<?> clazz) {
+        if (clazz == SupportingBakedQuad.class) {
+            return;
+        }
         if (classesThatCallBakedQuadCtor == null) {
             classesThatCallBakedQuadCtor = new ReferenceOpenHashSet<>();
         }
         if (classesThatCallBakedQuadCtor.add(clazz)) {
             LoliConfig.instance.editClassesThatCallBakedQuadCtor(clazz);
         }
-        if (clazz != SupportingBakedQuad.class && BakedQuad.class.isAssignableFrom(clazz)) {
+        if (BakedQuad.class.isAssignableFrom(clazz)) {
             if (classesThatExtendBakedQuad == null) {
                 classesThatExtendBakedQuad = new ReferenceOpenHashSet<>();
             }
