@@ -78,7 +78,7 @@ public class LoliTransformer implements IClassTransformer {
         if (LoliConfig.instance.packageStringCanonicalization) {
             addTransformation("net.minecraftforge.fml.common.discovery.ModCandidate", this::removePackageField);
         }
-        if (LoliConfig.instance.packageStringCanonicalization) {
+        if (LoliConfig.instance.asmDataStringCanonicalization) {
             addTransformation("net.minecraftforge.fml.common.discovery.ASMDataTable$ASMData", this::deduplicateASMDataStrings);
         }
         if (LoliConfig.instance.stripNearUselessItemStackFields) {
@@ -721,7 +721,7 @@ public class LoliTransformer implements IClassTransformer {
                         FieldInsnNode fieldNode = (FieldInsnNode) instruction;
                         if (fieldNode.name.equals("annotationName") || fieldNode.name.equals("className")) {
                             iter.previous();
-                            iter.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "intern", "()Ljava/lang/String;", false));
+                            iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "asmData$redirect$CtorStringsToIntern", "(Ljava/lang/String;)Ljava/lang/String;", false));
                             iter.next();
                         }
                     }

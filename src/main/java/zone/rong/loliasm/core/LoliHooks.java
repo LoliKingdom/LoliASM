@@ -80,6 +80,10 @@ public class LoliHooks {
         }
     }
 
+    public static String asmData$redirect$CtorStringsToIntern(String string) {
+        return string == null ? null : string.intern();
+    }
+
     public static /*char[]*/ String nbtTagString$override$ctor(String data) {
         /*
         if (data == null) {

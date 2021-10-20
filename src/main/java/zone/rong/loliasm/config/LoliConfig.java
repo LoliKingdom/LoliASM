@@ -64,7 +64,7 @@ public class LoliConfig {
     public boolean squashBakedQuads, logClassesThatCallBakedQuadCtor, reuseBucketQuads;
     public String[] classesThatCallBakedQuadCtor, classesThatExtendBakedQuad;
     public boolean cleanupLaunchClassLoaderEarly, cleanupLaunchClassLoaderLate, noResourceCache, noClassCache, weakResourceCache, weakClassCache, disablePackageManifestMap, cleanCachesOnGameLoad/*, cleanCachesOnWorldLoad*/;
-    public boolean resourceLocationCanonicalization, modelConditionCanonicalization, nbtTagStringBackingStringCanonicalization, nbtBackingMapStringCanonicalization, packageStringCanonicalization, lockCodeCanonicalization, spriteNameCanonicalization;
+    public boolean resourceLocationCanonicalization, modelConditionCanonicalization, nbtTagStringBackingStringCanonicalization, nbtBackingMapStringCanonicalization, packageStringCanonicalization, lockCodeCanonicalization, spriteNameCanonicalization, asmDataStringCanonicalization;
     public boolean optimizeFMLRemapper;
     public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields, moreModelManagerCleanup;
     public boolean releaseSpriteFramesCache;
@@ -105,6 +105,7 @@ public class LoliConfig {
         lockCodeCanonicalization = getBoolean("lockCodeCanonicalization", "canonicalization", "Deduplicate LockCode when reading from NBT", true);
         // bakedQuadVertexDataCanonicalization = getBoolean("bakedQuadVertexDataCanonicalization", "canonicalization", "EXPERIMENTAL: Deduplicate BakedQuad vertexData integer arrays, saves a LOT of memory", false);
         spriteNameCanonicalization = getBoolean("spriteNameCanonicalization", "canonicalization", "Deduplicate TextureAtlasSprite's names", true);
+        asmDataStringCanonicalization = getBoolean("asmDataStringCanonicalization", "canonicalization", "Deduplicate ASMData related Strings", true);
 
         optimizeFMLRemapper = getBoolean("optimizeFMLRemapper", "remapper", "Optimizing Forge's Remapper for not storing redundant entries", true);
 
