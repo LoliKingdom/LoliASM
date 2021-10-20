@@ -32,6 +32,10 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
             LoliLogger.instance.info("fixTileEntityOnLoadCME disabled, will not patch {}", targetClassName);
             return false;
         }
+        if (!LoliConfig.instance.fasterEntitySpawnPreparation && mixinClassName.equals("zone.rong.loliasm.common.forgefixes.mixins.EntityEntryMixin")) {
+            LoliLogger.instance.info("fasterEntitySpawnPreparation disabled, will not patch {}", targetClassName);
+            return false;
+        }
         return true;
     }
 

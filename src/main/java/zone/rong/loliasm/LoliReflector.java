@@ -25,7 +25,7 @@ import java.util.Set;
  */
 public class LoliReflector {
 
-    private static final MethodHandles.Lookup lookup = MethodHandles.lookup();
+    public static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
     private static final MethodHandle classLoader$DefineClass = resolveMethod(ClassLoader.class, "defineClass", String.class, byte[].class, int.class, int.class);
     private static final CaptureSet<String> transformerExclusions;
@@ -89,7 +89,7 @@ public class LoliReflector {
             if (!ctor.isAccessible()) {
                 ctor.setAccessible(true);
             }
-            return lookup.unreflectConstructor(ctor);
+            return LOOKUP.unreflectConstructor(ctor);
         } catch (IllegalAccessException | NoSuchMethodException e) {
             e.printStackTrace();
             return null;
@@ -115,7 +115,7 @@ public class LoliReflector {
             if (!method.isAccessible()) {
                 method.setAccessible(true);
             }
-            return lookup.unreflect(method);
+            return LOOKUP.unreflect(method);
         } catch (IllegalAccessException | NoSuchMethodException e) {
             e.printStackTrace();
             return null;
@@ -137,7 +137,7 @@ public class LoliReflector {
 
     public static MethodHandle resolveMethod(Class<?> clazz, String methodName, String obfMethodName, Class<?>... args) {
         try {
-            return lookup.unreflect(ReflectionHelper.findMethod(clazz, methodName, obfMethodName, args));
+            return LOOKUP.unreflect(ReflectionHelper.findMethod(clazz, methodName, obfMethodName, args));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             return null;
@@ -157,7 +157,7 @@ public class LoliReflector {
             if (LoliLoadingPlugin.isVMOpenJ9) {
                 fixOpenJ9PrivateStaticFinalRestraint(field);
             }
-            return lookup.unreflectGetter(field);
+            return LOOKUP.unreflectGetter(field);
         } catch (Throwable e) {
             e.printStackTrace();
             return null;
@@ -173,7 +173,7 @@ public class LoliReflector {
             if (LoliLoadingPlugin.isVMOpenJ9) {
                 fixOpenJ9PrivateStaticFinalRestraint(field);
             }
-            return lookup.unreflectSetter(field);
+            return LOOKUP.unreflectSetter(field);
         } catch (Throwable e) {
             e.printStackTrace();
             return null;
@@ -182,7 +182,7 @@ public class LoliReflector {
 
     public static MethodHandle resolveFieldGetter(Class<?> clazz, String fieldName, String obfFieldName) {
         try {
-            return lookup.unreflectGetter(ReflectionHelper.findField(clazz, fieldName, obfFieldName));
+            return LOOKUP.unreflectGetter(ReflectionHelper.findField(clazz, fieldName, obfFieldName));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             return null;
@@ -191,7 +191,7 @@ public class LoliReflector {
 
     public static MethodHandle resolveFieldSetter(Class<?> clazz, String fieldName, String obfFieldName) {
         try {
-            return lookup.unreflectSetter(ReflectionHelper.findField(clazz, fieldName, obfFieldName));
+            return LOOKUP.unreflectSetter(ReflectionHelper.findField(clazz, fieldName, obfFieldName));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             return null;
@@ -246,6 +246,6 @@ public class LoliReflector {
     private static void fixOpenJ9PrivateStaticFinalRestraint(Field field) throws Throwable {
         Field modifiers = Field.class.getDeclaredField("modifiers");
         modifiers.setAccessible(true);
-        lookup.unreflectSetter(modifiers).invokeExact(field, field.getModifiers() & ~Modifier.FINAL);
+        LOOKUP.unreflectSetter(modifiers).invokeExact(field, field.getModifiers() & ~Modifier.FINAL);
     }
 }

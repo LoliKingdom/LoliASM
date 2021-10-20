@@ -105,10 +105,10 @@ dependencies {
     deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
     deobfCompile "blusunrize:ImmersiveEngineering:0.12-92-+"
     deobfCompile "curse.maven:astral-sorcery-241721:3044416"
-    deobfCompile "curse.maven:tfcraft-302973:3268988"
+    // deobfCompile "curse.maven:tfcraft-302973:3268988"
     deobfCompile "curse.maven:mixin-booter-419286:3321174"
     deobfCompile "curse.maven:foamfix-optimization-mod-278494:3327893"
-    deobfCompile "curse.maven:qmd-362056:3474533"
+    // deobfCompile "curse.maven:qmd-362056:3474533"
     // deobfCompile "cofh:CoFHCore:1.12.2-+:universal"
     // compile "com.teamwizardry.librarianlib:librarianlib-1.12:4.0-SNAPSHOT:deobf"
 }
