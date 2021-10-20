@@ -31,9 +31,10 @@ public class LoliSparker implements SparkPlugin {
         if (sparkers.containsKey(key)) {
             return;
         }
-        LoliSparker sparker = new LoliSparker();
+        LoliSparker sparker = new LoliSparker(key);
         sparkers.put(key, sparker);
         sparker.platform.enable();
+        LoliLogger.instance.info("Ready for Spark to Profile {}", key);
         sparker.platform.executeCommand(sparker.sender, new String[] { "sampler" });
     }
 
@@ -51,10 +52,10 @@ public class LoliSparker implements SparkPlugin {
     private final SparkPlatform platform;
     private final CommandSender sender;
 
-    public LoliSparker() {
+    public LoliSparker(String key) {
         this.scheduler = Executors.newSingleThreadScheduledExecutor((new ThreadFactoryBuilder()).setNameFormat("spark-loli-async-worker").build());
         this.platform = new SparkPlatform(this);
-        this.sender = new LoliCommandSender();
+        this.sender = new LoliCommandSender(key);
     }
 
     @Override
@@ -119,10 +120,15 @@ public class LoliSparker implements SparkPlugin {
     public static class LoliCommandSender implements CommandSender {
 
         private final UUID uuid = UUID.randomUUID();
+        private final String name;
+
+        public LoliCommandSender(String key) {
+            this.name = "LoliASM|" + key;
+        }
 
         @Override
         public String getName() {
-            return "LoliASM";
+            return name;
         }
 
         @Override
@@ -135,7 +141,7 @@ public class LoliSparker implements SparkPlugin {
             if (component instanceof TextComponent) {
                 String content = ((TextComponent) component).content();
                 if (!content.trim().isEmpty()) {
-                    LoliLogger.instance.warn(((TextComponent) component).content());
+                    LoliLogger.instance.warn("Spark Profiler output for: {}, {}", name, ((TextComponent) component).content());
                 }
             }
 

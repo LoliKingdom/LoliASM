@@ -44,9 +44,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
                     if (sparkProto != null) {
                         toAddToCp = file;
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                } catch (IOException ignored) { }
                 if (toAddToCp != null) {
                     try {
                         Launch.classLoader.addURL(toAddToCp.toURI().toURL());
