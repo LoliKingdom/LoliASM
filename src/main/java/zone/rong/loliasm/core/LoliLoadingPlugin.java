@@ -1,5 +1,6 @@
 package zone.rong.loliasm.core;
 
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -11,10 +12,16 @@ import zone.rong.loliasm.UnsafeLolis;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
+import zone.rong.loliasm.spark.LoliSparker;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.MalformedURLException;
 import java.util.Locale;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 @IFMLLoadingPlugin.Name("LoliASM")
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
@@ -23,6 +30,35 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
     public static final String VERSION = "3.3";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
+
+    static {
+        if (!isDeobf && (LoliConfig.instance.sparkProfileCoreModLoading || LoliConfig.instance.sparkProfileEntireGameLoad)) {
+            File modsFolder = new File(Launch.minecraftHome, "mods");
+            for (File file : modsFolder.listFiles()) {
+                if (file.isDirectory()) {
+                    continue;
+                }
+                File toAddToCp = null;
+                try (ZipFile jar = new ZipFile(file)) {
+                    ZipEntry sparkProto = jar.getEntry("spark/spark.proto");
+                    if (sparkProto != null) {
+                        toAddToCp = file;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (toAddToCp != null) {
+                    try {
+                        Launch.classLoader.addURL(toAddToCp.toURI().toURL());
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
     public static final boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
     public static final boolean isVMOpenJ9 = SystemUtils.JAVA_VM_NAME.toLowerCase(Locale.ROOT).contains("openj9");
     public static final boolean isClient = FMLLaunchHandler.side() == Side.CLIENT;
@@ -32,6 +68,12 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
     public LoliLoadingPlugin() {
         LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
         LoliLogger.instance.info("Lolis are preparing and loading in mixins since Rongmario's too lazy to write pure ASM at times despite the mod being called 'LoliASM'");
+        if (LoliConfig.instance.sparkProfileCoreModLoading) {
+            LoliSparker.start("coremod");
+        }
+        if (LoliConfig.instance.sparkProfileEntireGameLoad) {
+            LoliSparker.start("game");
+        }
         if (LoliConfig.instance.removeForgeSecurityManager) {
             UnsafeLolis.removeFMLSecurityManager();
         }

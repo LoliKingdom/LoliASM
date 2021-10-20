@@ -3,15 +3,13 @@ package zone.rong.loliasm.proxy;
 import betterwithmods.module.gameplay.Gameplay;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.HttpUtil;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import zone.rong.loliasm.LoliASM;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
@@ -21,11 +19,58 @@ import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
 import zone.rong.loliasm.common.modfixes.betterwithmods.BWMBlastingOilOptimization;
 import zone.rong.loliasm.config.LoliConfig;
 
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 
 public class CommonProxy {
+
+    public static boolean consistentModList = false;
+
+    public void construct(FMLConstructionEvent event) throws IOException, ClassNotFoundException {
+        /*
+        File loliCachesFolder = new File(Launch.minecraftHome, "cache/lolicaches");
+        loliCachesFolder.mkdirs();
+        File modListCache = new File(loliCachesFolder, "modlist.bin");
+        Map<String, String> modList = new Object2ObjectOpenHashMap<>();
+        Loader.instance().getActiveModList().forEach(mc -> modList.put(mc.getModId(), mc.getVersion()));
+        if (modListCache.createNewFile()) {
+            FileOutputStream fileOutputStream = new FileOutputStream(modListCache);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(modList);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+        } else {
+            FileInputStream fileInputStream = new FileInputStream(modListCache);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            Map<String, String> readModList = (Map<String, String>) objectInputStream.readObject();
+            objectInputStream.close();
+            if (modList.equals(readModList)) {
+                consistentModList = true;
+                LoliLogger.instance.warn("Mod list is the same as last launch.");
+            }
+        }
+         */
+
+        if (LoliConfig.instance.cleanupLaunchClassLoaderEarly) {
+            cleanupLaunchClassLoader();
+        }
+
+        /*
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                File classesCache = new File(loliCachesFolder, "classes.bin");
+                if (classesCache.createNewFile()) {
+                    Map<String, byte[]> classesToCache = new Object2ObjectOpenHashMap<>();
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }));
+         */
+    }
 
     public void preInit(FMLPreInitializationEvent event) { }
 
@@ -59,7 +104,7 @@ public class CommonProxy {
         if (LoliConfig.instance.cleanupLaunchClassLoaderEarly || LoliConfig.instance.cleanCachesOnGameLoad) {
             invalidateLaunchClassLoaderCaches();
         } else if (LoliConfig.instance.cleanupLaunchClassLoaderLate) {
-            LoliASM.cleanupLaunchClassLoader();
+            cleanupLaunchClassLoader();
         }
     }
 
@@ -79,4 +124,29 @@ public class CommonProxy {
         }
     }
 
+
+    private static void cleanupLaunchClassLoader() {
+        try {
+            LoliLogger.instance.info("Cleaning up LaunchClassLoader");
+            if (LoliConfig.instance.noClassCache) {
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader, DummyMap.of());
+            } else if (LoliConfig.instance.weakClassCache) {
+                Map<String, Class<?>> oldClassCache = (Map<String, Class<?>>) LoliReflector.resolveFieldGetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader);
+                Cache<String, Class<?>> newClassCache = CacheBuilder.newBuilder().concurrencyLevel(2).weakValues().build();
+                newClassCache.putAll(oldClassCache);
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader, newClassCache.asMap());
+            }
+            if (LoliConfig.instance.noResourceCache) {
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader, new ResourceCache());
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "negativeResourceCache").invokeExact(Launch.classLoader, DummyMap.asSet());
+            } else if (LoliConfig.instance.weakResourceCache) {
+                Map<String, byte[]> oldResourceCache = (Map<String, byte[]>) LoliReflector.resolveFieldGetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader);
+                Cache<String, byte[]> newResourceCache = CacheBuilder.newBuilder().concurrencyLevel(2).weakValues().build();
+                newResourceCache.putAll(oldResourceCache);
+                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader, newResourceCache.asMap());
+            }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
 }

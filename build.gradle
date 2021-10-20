@@ -95,6 +95,7 @@ dependencies {
     compile "codechicken:ChickenASM:1.12-1.0.2.9"
     compile "epicsquid.mysticallib:mysticallib:1.12.2-+"
     compile "mezz.jei:jei_1.12.2:4.15.0.293"
+    compile files("./libs/spark-forge-deobf.jar")
 
     deobfCompile 'slimeknights.mantle:Mantle:1.12-1.3.3.55+'
     deobfCompile 'slimeknights:TConstruct:1.12.2-2.13.0.183+'

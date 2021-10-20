@@ -69,10 +69,11 @@ public class LoliConfig {
     public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields, moreModelManagerCleanup;
     public boolean releaseSpriteFramesCache;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
-    public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor;
+    public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching;
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer;
     public boolean fixAmuletHolderCapability;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
+    public boolean sparkProfileEntireGameLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage;
 
     private void initialize() {
         configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
@@ -121,6 +122,7 @@ public class LoliConfig {
 
         quickerEnableUniversalBucketCheck = getBoolean("quickerEnableUniversalBucketCheck", "misc", "Optimizes FluidRegistry::enableUniversalBucket check", true);
         stripInstancedRandomFromSoundEventAccessor = getBoolean("stripInstancedRandomFromSoundEventAccessor", "misc", "Strips the boring instanced Random object from SoundEventAccessors and uses ThreadLocalRandom instead", true);
+        classCaching = getBoolean("classCaching", "misc", "[W.I.P] - EXPERIMENTAL: Yet another attempt at caching classes between loads", false);
 
         fixBlockIEBaseArrayIndexOutOfBoundsException = getBoolean("fixBlockIEBaseArrayIndexOutOfBoundsException", "modfixes", "When Immersive Engineering is installed, sometimes it or it's addons can induce an ArrayIndexOutOfBoundsException in BlockIEBase#getPushReaction. This option will be ignored when IE isn't installed", true);
         cleanupChickenASMClassHierarchyManager = getBoolean("cleanupChickenASMClassHierarchyManager", "modfixes", "EXPERIMENTAL: When ChickenASM (Library of CodeChickenLib and co.) is installed, ClassHierarchyManager can cache a lot of Strings and seem to be unused in any transformation purposes. This clears ClassHierarchyManager of those redundant strings. This option will be ignored when ChickenASM isn't installed", true);
@@ -136,6 +138,14 @@ public class LoliConfig {
         fixTileEntityOnLoadCME = getBoolean("fixTileEntityOnLoadCME", "forgefixes", "Fixes a vanilla-forge code interaction bug leading to a possible ConcurrentModificationException/StackOverflowError crash. First discovered here: https://github.com/GregTechCE/GregTech/issues/1256", true);
         removeForgeSecurityManager = getBoolean("removeForgeSecurityManager", "forgefixes", "EXPERIMENTAL: Forcibly remove Forge's FMLSecurityManager that adds very very slight overheads in calls that requires permission checks", false);
         fasterEntitySpawnPreparation = getBoolean("fasterEntitySpawnPreparation", "forgefixes", "Fixes Forge's EntityEntry calling a slow Constructor::newInstance call every time an entity spawns, it is replaced with a fast Function::get generated from LambdaMetafactory#metafactory", true);
+
+        sparkProfileEntireGameLoad = getBoolean("sparkProfileEntireGameLoad", "spark", "When Spark is installed, profile the loading of the game in its entirety", false);
+        sparkProfileCoreModLoading = getBoolean("sparkProfileCoreModLoading", "spark", "When Spark is installed, profile the loading of coremods, but only those that load after LoliASM", false);
+        sparkProfileConstructionStage = getBoolean("sparkProfileConstructionStage", "spark", "When Spark is installed, profile the loading of FMLConstructionEvent stage", false);
+        sparkProfilePreInitializationStage = getBoolean("sparkProfilePreInitializationStage", "spark", "When Spark is installed, profile the loading of FMLPreInitializationEvent stage", false);
+        sparkProfileInitializationStage = getBoolean("sparkProfileInitializationStage", "spark", "When Spark is installed, profile the loading of FMLInitializationEvent stage", false);
+        sparkProfilePostInitializationStage = getBoolean("sparkProfilePostInitializationStage", "spark", "When Spark is installed, profile the loading of FMLPostInitializationEvent stage", false);
+        sparkProfileLoadCompleteStage = getBoolean("sparkProfileLoadCompleteStage", "spark", "When Spark is installed, profile the loading of FMLLoadCompleteEvent stage", false);
 
         configuration.save();
     }
