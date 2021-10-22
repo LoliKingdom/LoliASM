@@ -22,7 +22,7 @@ import java.io.ObjectOutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Mixin(Internal.class)
+@Mixin(value = Internal.class, remap = false)
 public class InternalMixin {
 
     @Unique private static ExecutorService serializingExecutor;

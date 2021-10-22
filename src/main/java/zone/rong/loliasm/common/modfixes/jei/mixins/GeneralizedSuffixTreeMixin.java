@@ -107,6 +107,7 @@ public class GeneralizedSuffixTreeMixin implements ISearchTree, GeneralizedSuffi
      * @param key   the string key that will be added to the index
      * @param index the value that will be added to the index
      * @author Rongmario
+     * @reason Use LoliASM objects, overwriting this method instead of re-writing damn classes everywhere
      */
     @Overwrite
     public void put(String key, int index) throws IllegalStateException {
