@@ -55,7 +55,7 @@ public class LoliASM {
     }
 
     @Mod.EventHandler
-    public void loadComplete(FMLLoadCompleteEvent event) {
+    public void loadComplete(FMLLoadCompleteEvent event) throws Throwable {
         proxy.loadComplete(event);
     }
 

@@ -1,0 +1,15 @@
+{
+  "package": "zone.rong.loliasm.common.modfixes.jei.mixins",
+  "refmap": "mixins.loliasm.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "GeneralizedSuffixTreeMixin",
+    "IngredientFilterMixin",
+    "InternalMixin"
+  ]
+}

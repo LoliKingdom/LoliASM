@@ -21,6 +21,9 @@ public class LoliMixinLoader {
         if (Loader.isModLoaded("astralsorcery") && LoliConfig.instance.fixAmuletHolderCapability) {
            Mixins.addConfiguration("mixins.capability_astralsorcery.json");
         }
+        if (Loader.isModLoaded("jei") && LoliConfig.instance.optimizeAndCacheJEISearchTrees) {
+            Mixins.addConfiguration("mixins.modfixes_jei.json");
+        }
     }
 
 }

@@ -66,7 +66,7 @@ public class LoliConfig {
     public boolean cleanupLaunchClassLoaderEarly, cleanupLaunchClassLoaderLate, noResourceCache, noClassCache, weakResourceCache, weakClassCache, disablePackageManifestMap, cleanCachesOnGameLoad/*, cleanCachesOnWorldLoad*/;
     public boolean resourceLocationCanonicalization, modelConditionCanonicalization, nbtTagStringBackingStringCanonicalization, nbtBackingMapStringCanonicalization, packageStringCanonicalization, lockCodeCanonicalization, spriteNameCanonicalization, asmDataStringCanonicalization;
     public boolean optimizeFMLRemapper;
-    public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields, moreModelManagerCleanup;
+    public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields, moreModelManagerCleanup, optimizeAndCacheJEISearchTrees;
     public boolean releaseSpriteFramesCache;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching;
@@ -115,6 +115,7 @@ public class LoliConfig {
         optimizeFurnaceRecipeStore = getBoolean("optimizeFurnaceRecipeStore", "datastructures", "Optimizing FurnaceRecipes. FastFurnace will see very little benefit when this option is turned on", true);
         stripNearUselessItemStackFields = getBoolean("stripNearUselessItemStackFields", "datastructures", "EXPERIMENTAL: Strips ItemStack of some of its fields as it stores some near-useless references", true);
         moreModelManagerCleanup = getBoolean("moreModelManagerCleanup", "datastructures", "Clears and trims ModelManager data structures after models are loaded and baked", true);
+        optimizeAndCacheJEISearchTrees = getBoolean("optimizeAndCacheJEISearchTrees", "datastructures", "When JEI is installed, optimize search tree structures along with caching to disk for insane loadtime optimization", true);
 
         releaseSpriteFramesCache = getBoolean("releaseSpriteFramesCache", "textures", "Releases TextureAtlasSprite's framesTextureData. Won't touch custom TextureAtlasSprite implementations", true);
 

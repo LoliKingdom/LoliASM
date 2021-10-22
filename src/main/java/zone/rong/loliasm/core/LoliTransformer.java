@@ -90,8 +90,11 @@ public class LoliTransformer implements IClassTransformer {
         if (LoliConfig.instance.fixAmuletHolderCapability) {
             addTransformation("hellfirepvp.astralsorcery.common.enchantment.amulet.PlayerAmuletHandler", bytes -> stripSubscribeEventAnnotation(bytes, "attachAmuletItemCapability"));
         }
-        if (LoliConfig.instance.labelCanonicalization) {
+        if (LoliConfig.instance.labelCanonicalization && !LoliConfig.instance.optimizeAndCacheJEISearchTrees) {
             addTransformation("mezz.jei.suffixtree.Edge", this::deduplicateEdgeLabels);
+        }
+        if (LoliConfig.instance.optimizeAndCacheJEISearchTrees) {
+            addTransformation("mezz.jei.ingredients.IngredientFilter", this::redirectConstructionCalls);
         }
         if (LoliConfig.instance.bwmBlastingOilOptimization) {
             addTransformation("betterwithmods.event.BlastingOilEvent", bytes -> stripSubscribeEventAnnotation(bytes, "onPlayerTakeDamage", "onHitGround"));
@@ -754,6 +757,60 @@ public class LoliTransformer implements IClassTransformer {
                         }
                     }
                 }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] redirectConstructionCalls(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == NEW) {
+                        TypeInsnNode newNode = (TypeInsnNode) instruction;
+                        if (newNode.desc.equals("mezz/jei/suffixtree/GeneralizedSuffixTree")) {
+                            iter.remove();
+                            iter.next();
+                            iter.remove(); // Remove DUP
+                            iter.next();
+                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks$JEI", "getMain", "()Lmezz/jei/suffixtree/GeneralizedSuffixTree;", false));
+                            break;
+                        }
+                    }
+                }
+                /*
+            } else if (method.name.equals("createPrefixedSearchTree")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == NEW) {
+                        TypeInsnNode newNode = (TypeInsnNode) instruction;
+                        if (newNode.desc.equals("mezz/jei/suffixtree/GeneralizedSuffixTree")) {
+                            iter.remove();
+                            iter.next();
+                            iter.remove(); // Remove DUP
+                            iter.next();
+                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks$JEI", "get", "(C)Lmezz/jei/suffixtree/GeneralizedSuffixTree;", false));
+                        } else if (newNode.desc.equals("mezz/jei/ingredients/PrefixedSearchTree")) {
+                            newNode.desc = "mezz/jei/ingredients/PublicizedPrefixSearchTree";
+                        }
+                    } else if (instruction.getOpcode() == INVOKESPECIAL) {
+                        MethodInsnNode methodNode = (MethodInsnNode) instruction;
+                        if (methodNode.owner.equals("mezz/jei/ingredients/PrefixedSearchTree")) {
+                            methodNode.owner = "mezz/jei/ingredients/PublicizedPrefixSearchTree";
+                        }
+                    }
+                }
+                 */
             }
         }
 

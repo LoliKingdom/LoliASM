@@ -18,6 +18,7 @@ import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
 import zone.rong.loliasm.common.modfixes.betterwithmods.BWMBlastingOilOptimization;
 import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.loliasm.core.LoliHooks;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -26,11 +27,11 @@ import java.util.Set;
 
 public class CommonProxy {
 
-    public static boolean consistentModList = false;
+    public final File loliCachesFolder = new File(Launch.minecraftHome, "cache/lolicaches");
+
+    public boolean consistentModList = false;
 
     public void construct(FMLConstructionEvent event) throws IOException, ClassNotFoundException {
-        /*
-        File loliCachesFolder = new File(Launch.minecraftHome, "cache/lolicaches");
         loliCachesFolder.mkdirs();
         File modListCache = new File(loliCachesFolder, "modlist.bin");
         Map<String, String> modList = new Object2ObjectOpenHashMap<>();
@@ -48,10 +49,20 @@ public class CommonProxy {
             objectInputStream.close();
             if (modList.equals(readModList)) {
                 consistentModList = true;
-                LoliLogger.instance.warn("Mod list is the same as last launch.");
+                LoliLogger.instance.info("Mod list is the same as last launch.");
+            } else {
+                FileOutputStream fileOutputStream = new FileOutputStream(modListCache);
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                objectOutputStream.writeObject(modList);
+                objectOutputStream.flush();
+                objectOutputStream.close();
+                LoliLogger.instance.info("Refreshing Mod list cache.");
             }
         }
-         */
+
+        if (LoliConfig.instance.optimizeAndCacheJEISearchTrees) {
+            LoliHooks.JEI.init();
+        }
 
         if (LoliConfig.instance.cleanupLaunchClassLoaderEarly) {
             cleanupLaunchClassLoader();
