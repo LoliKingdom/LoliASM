@@ -21,10 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("unused")
 public class LoliHooks {
@@ -121,8 +118,6 @@ public class LoliHooks {
         public static final Char2ObjectMap<String> treeIdentifiers = new Char2ObjectLinkedOpenHashMap<>(7);
         private static final Char2ObjectMap<GeneralizedSuffixTree> trees = Char2ObjectMaps.synchronize(new Char2ObjectOpenHashMap<>(7, 0.99f));
 
-        private static ExecutorService deserializingExecutor;
-
         static {
             treeIdentifiers.put(' ', "main");
             treeIdentifiers.put('@', "modname");
@@ -142,10 +137,7 @@ public class LoliHooks {
                     if (!cache.exists()) {
                         continue;
                     }
-                    if (deserializingExecutor == null) {
-                        deserializingExecutor = Executors.newFixedThreadPool(Math.min(Runtime.getRuntime().availableProcessors() / 2, 7));
-                    }
-                    deserializingExecutor.submit(() -> {
+                    CompletableFuture.runAsync(() -> {
                         try {
                             Stopwatch stopwatch = Stopwatch.createStarted();
                             FileInputStream fileInputStream = new FileInputStream(cache);
@@ -159,27 +151,13 @@ public class LoliHooks {
                         }
                     });
                 }
-                if (deserializingExecutor != null) {
-                    deserializingExecutor.shutdown(); // Schedule a shutdown, if deserializingExecutor hasn't shut down, we await in getMain
-                }
             }
         }
 
-        public static GeneralizedSuffixTree getMain() { // Holds up and waits for deserializingExecutor to finish, shouldn't need to wait but just in case.
-            if (deserializingExecutor == null || !trees.containsKey(' ')) { // Not deserializing
+        public static GeneralizedSuffixTree getMain() {
+            if (!trees.containsKey(' ')) { // Not deserializing
                 return new GeneralizedSuffixTree();
             }
-            if (!deserializingExecutor.isShutdown()) {
-                try {
-                    if (!deserializingExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
-                        deserializingExecutor.shutdownNow();
-                    }
-                } catch (InterruptedException e) {
-                    deserializingExecutor.shutdownNow();
-                    Thread.currentThread().interrupt();
-                }
-            }
-            deserializingExecutor = null;
             return trees.get(' ');
         }
 

@@ -54,7 +54,7 @@ public abstract class IngredientFilterMixin implements IngredientFilterExtender 
         for (Object obj : this.prefixedSearchTrees.values()) {
             PublicizedPrefixSearchTree prefixedSearchTree = (PublicizedPrefixSearchTree) obj;
             GeneralizedSuffixTree tree = prefixedSearchTree.getTree();
-            if (Internal.getRuntime() == null && !((GeneralizedSuffixTreeExtender) tree).isDeserialized()) {
+            if (Internal.getRuntime() == null && ((GeneralizedSuffixTreeExtender) tree).isDeserialized()) {
                 continue;
             }
             Config.SearchMode searchMode = prefixedSearchTree.getMode();
