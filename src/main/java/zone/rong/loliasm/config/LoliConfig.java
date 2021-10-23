@@ -73,7 +73,7 @@ public class LoliConfig {
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer;
     public boolean fixAmuletHolderCapability;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
-    public boolean sparkProfileEntireGameLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage;
+    public boolean sparkProfileEntireGameLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, includeAllThreadsWhenProfiling;
 
     private void initialize() {
         configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
@@ -148,6 +148,7 @@ public class LoliConfig {
         sparkProfileInitializationStage = getBoolean("sparkProfileInitializationStage", "spark", "When Spark is installed, profile the loading of FMLInitializationEvent stage", false);
         sparkProfilePostInitializationStage = getBoolean("sparkProfilePostInitializationStage", "spark", "When Spark is installed, profile the loading of FMLPostInitializationEvent stage", false);
         sparkProfileLoadCompleteStage = getBoolean("sparkProfileLoadCompleteStage", "spark", "When Spark is installed, profile the loading of FMLLoadCompleteEvent stage", false);
+        includeAllThreadsWhenProfiling = getBoolean("includeAllThreadsWhenProfiling", "spark", "Allow LoliASM's Spark profiling to include all threads that are present", true);
 
         configuration.save();
     }

@@ -2,95 +2,73 @@ package zone.rong.loliasm.spark;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
-import me.lucko.spark.common.command.sender.CommandSender;
 import me.lucko.spark.common.SparkPlatform;
-import me.lucko.spark.common.SparkPlugin;
+import me.lucko.spark.common.command.sender.CommandSender;
 import me.lucko.spark.common.platform.AbstractPlatformInfo;
 import me.lucko.spark.common.platform.PlatformInfo;
+import me.lucko.spark.common.sampler.Sampler;
 import me.lucko.spark.common.sampler.ThreadDumper;
+import me.lucko.spark.common.sampler.ThreadGrouper;
+import me.lucko.spark.common.sampler.ThreadNodeOrder;
+import me.lucko.spark.common.sampler.async.AsyncProfilerAccess;
+import me.lucko.spark.common.sampler.async.AsyncSampler;
+import me.lucko.spark.common.sampler.java.JavaSampler;
+import me.lucko.spark.common.sampler.node.MergeMode;
+import me.lucko.spark.common.util.MethodDisambiguator;
 import me.lucko.spark.lib.adventure.text.Component;
-import me.lucko.spark.lib.adventure.text.TextComponent;
-import net.minecraft.launchwrapper.Launch;
+import me.lucko.spark.lib.okhttp3.MediaType;
 import zone.rong.loliasm.LoliLogger;
+import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.core.LoliLoadingPlugin;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.stream.Stream;
 
-public class LoliSparker implements SparkPlugin {
+public class LoliSparker {
 
-    private static final Map<String, LoliSparker> sparkers = new Object2ReferenceOpenHashMap<>();
-    private static final PlatformInfo info = new LoliPlatformInfo();
+    private static PlatformInfo platformInfo = new LoliPlatformInfo();
+    private static CommandSender commandSender = new LoliCommandSender();
+    private static Map<String, Sampler> ongoingSamplers = new Object2ReferenceOpenHashMap<>();
+    private static MediaType mediaType = MediaType.parse("application/x-spark-sampler");
+    private static ExecutorService executor = Executors.newSingleThreadScheduledExecutor((new ThreadFactoryBuilder()).setNameFormat("spark-loli-async-worker").build());
 
     public static void start(String key) {
-        if (sparkers.containsKey(key)) {
-            return;
+        if (!ongoingSamplers.containsKey(key)) {
+            Sampler sampler;
+            try {
+                AsyncProfilerAccess.INSTANCE.getProfiler();
+                sampler = new AsyncSampler(4000, LoliConfig.instance.includeAllThreadsWhenProfiling ? ThreadDumper.ALL : new ThreadDumper.Specific(new long[] { Thread.currentThread().getId() } ), ThreadGrouper.BY_NAME);
+            } catch (UnsupportedOperationException e) {
+                sampler = new JavaSampler(4000, LoliConfig.instance.includeAllThreadsWhenProfiling ? ThreadDumper.ALL : new ThreadDumper.Specific(new long[] { Thread.currentThread().getId() } ), ThreadGrouper.BY_NAME, -1, !LoliConfig.instance.includeAllThreadsWhenProfiling, !LoliConfig.instance.includeAllThreadsWhenProfiling);
+            }
+            ongoingSamplers.put(key, sampler);
+            LoliLogger.instance.warn("Profiler has started for stage [{}]...", key);
+            sampler.start();
         }
-        LoliSparker sparker = new LoliSparker(key);
-        sparkers.put(key, sparker);
-        sparker.platform.enable();
-        LoliLogger.instance.info("Ready for Spark to Profile {}", key);
-        sparker.platform.executeCommand(sparker.sender, new String[] { "sampler" });
     }
 
     public static void stop(String key) {
-        LoliSparker sparker = sparkers.get(key);
-        if (sparker != null) {
-            // TODO more args?
-            sparker.platform.executeCommand(sparker.sender, new String[] { "sampler", "--stop" });
-            sparker.platform.disable();
-            sparkers.remove(key);
+        Sampler sampler = ongoingSamplers.remove(key);
+        if (sampler != null) {
+            sampler.stop();
+            output(key, sampler);
         }
     }
 
-    private final ScheduledExecutorService scheduler;
-    private final SparkPlatform platform;
-    private final CommandSender sender;
-
-    public LoliSparker(String key) {
-        this.scheduler = Executors.newSingleThreadScheduledExecutor((new ThreadFactoryBuilder()).setNameFormat("spark-loli-async-worker").build());
-        this.platform = new SparkPlatform(this);
-        this.sender = new LoliCommandSender(key);
-    }
-
-    @Override
-    public String getVersion() {
-        return LoliLoadingPlugin.VERSION;
-    }
-
-    @Override
-    public Path getPluginDirectory() {
-        return new File(Launch.minecraftHome, "config").toPath();
-    }
-
-    @Override
-    public String getCommandName() {
-        return "lolispark";
-    }
-
-    @Override
-    public Stream<? extends CommandSender> getSendersWithPermission(String s) {
-        return Stream.of(this.sender);
-    }
-
-    @Override
-    public void executeAsync(Runnable runnable) {
-        this.scheduler.execute(runnable);
-    }
-
-    @Override
-    public ThreadDumper getDefaultThreadDumper() {
-        return new ThreadDumper.Specific(new long[]{ Thread.currentThread().getId() });
-    }
-
-    @Override
-    public PlatformInfo getPlatformInfo() {
-        return info;
+    private static void output(String key, Sampler sampler) {
+        executor.execute(() -> {
+            LoliLogger.instance.warn("The active profiler has been stopped! Uploading results...");
+            byte[] output = sampler.formCompressedDataPayload(platformInfo, commandSender, ThreadNodeOrder.BY_TIME, "Stage: " + key, MergeMode.separateParentCalls(new MethodDisambiguator()));
+            try {
+                String urlKey = SparkPlatform.BYTEBIN_CLIENT.postContent(output, mediaType, false).key();
+                String url = "https://spark.lucko.me/" + urlKey;
+                LoliLogger.instance.warn("Profiler results for Stage [{}]: {}", key, url);
+            } catch (Exception e) {
+                LoliLogger.instance.fatal("An error occurred whilst uploading the results.", e);
+            }
+        });
     }
 
     static class LoliPlatformInfo extends AbstractPlatformInfo {
@@ -122,8 +100,8 @@ public class LoliSparker implements SparkPlugin {
         private final UUID uuid = UUID.randomUUID();
         private final String name;
 
-        public LoliCommandSender(String key) {
-            this.name = "LoliASM|" + key;
+        public LoliCommandSender() {
+            this.name = "LoliASM";
         }
 
         @Override
@@ -137,15 +115,7 @@ public class LoliSparker implements SparkPlugin {
         }
 
         @Override
-        public void sendMessage(Component component) {
-            if (component instanceof TextComponent) {
-                String content = ((TextComponent) component).content();
-                if (!content.trim().isEmpty()) {
-                    LoliLogger.instance.warn("Spark Profiler output for: {}, {}", name, ((TextComponent) component).content());
-                }
-            }
-
-        }
+        public void sendMessage(Component component) { }
 
         @Override
         public boolean hasPermission(String s) {
@@ -153,48 +123,5 @@ public class LoliSparker implements SparkPlugin {
         }
 
     }
-
-    /*
-    public static class LoliTicker implements TickCounter {
-
-        private final Executor executor = Executors.newSingleThreadExecutor();
-
-        private final Set<TickTask> tasks = Sets.newConcurrentHashSet();
-        private final AtomicBoolean running = new AtomicBoolean(true);
-        private final AtomicInteger ticks = new AtomicInteger(0);
-
-        @Override
-        public void start() {
-            executor.execute(() -> {
-                while (running.get()) {
-                    if (System.currentTimeMillis() % 50 == 0) {
-                        tasks.forEach(task -> task.onTick(LoliTicker.this));
-                        ticks.incrementAndGet();
-                    }
-                }
-            });
-        }
-
-        @Override
-        public void close() {
-            running.set(false);
-        }
-
-        @Override
-        public int getCurrentTick() {
-            return ticks.get();
-        }
-
-        @Override
-        public void addTickTask(TickTask tickTask) {
-            tasks.add(tickTask);
-        }
-
-        @Override
-        public void removeTickTask(TickTask tickTask) {
-            tasks.remove(tickTask);
-        }
-    }
-     */
 
 }

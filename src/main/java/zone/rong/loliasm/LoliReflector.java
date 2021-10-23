@@ -12,10 +12,7 @@ import zone.rong.loliasm.core.LoliLoadingPlugin;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -86,9 +83,7 @@ public class LoliReflector {
     public static MethodHandle resolveCtor(Class<?> clazz, Class<?>... args) {
         try {
             Constructor<?> ctor = clazz.getDeclaredConstructor(args);
-            if (!ctor.isAccessible()) {
-                ctor.setAccessible(true);
-            }
+            ctor.setAccessible(true);
             return LOOKUP.unreflectConstructor(ctor);
         } catch (IllegalAccessException | NoSuchMethodException e) {
             e.printStackTrace();
@@ -99,9 +94,7 @@ public class LoliReflector {
     public static <T> Constructor<T> getCtor(Class<T> clazz, Class<?>... args) {
         try {
             Constructor<T> ctor = clazz.getDeclaredConstructor(args);
-            if (!ctor.isAccessible()) {
-                ctor.setAccessible(true);
-            }
+            ctor.setAccessible(true);
             return ctor;
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -112,9 +105,7 @@ public class LoliReflector {
     public static MethodHandle resolveMethod(Class<?> clazz, String methodName, Class<?>... args) {
         try {
             Method method = clazz.getDeclaredMethod(methodName, args);
-            if (!method.isAccessible()) {
-                method.setAccessible(true);
-            }
+            method.setAccessible(true);
             return LOOKUP.unreflect(method);
         } catch (IllegalAccessException | NoSuchMethodException e) {
             e.printStackTrace();
@@ -125,9 +116,7 @@ public class LoliReflector {
     public static Method getMethod(Class<?> clazz, String methodName, Class<?>... args) {
         try {
             Method method = clazz.getDeclaredMethod(methodName, args);
-            if (!method.isAccessible()) {
-                method.setAccessible(true);
-            }
+            method.setAccessible(true);
             return method;
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -151,9 +140,7 @@ public class LoliReflector {
     public static MethodHandle resolveFieldGetter(Class<?> clazz, String fieldName) {
         try {
             Field field = clazz.getDeclaredField(fieldName);
-            if (!field.isAccessible()) {
-                field.setAccessible(true);
-            }
+            field.setAccessible(true);
             if (LoliLoadingPlugin.isVMOpenJ9) {
                 fixOpenJ9PrivateStaticFinalRestraint(field);
             }
@@ -167,9 +154,7 @@ public class LoliReflector {
     public static MethodHandle resolveFieldSetter(Class<?> clazz, String fieldName) {
         try {
             Field field = clazz.getDeclaredField(fieldName);
-            if (!field.isAccessible()) {
-                field.setAccessible(true);
-            }
+            field.setAccessible(true);
             if (LoliLoadingPlugin.isVMOpenJ9) {
                 fixOpenJ9PrivateStaticFinalRestraint(field);
             }
@@ -201,9 +186,7 @@ public class LoliReflector {
     public static Field getField(Class<?> clazz, String fieldName) {
         try {
             Field field = clazz.getDeclaredField(fieldName);
-            if (!field.isAccessible()) {
-                field.setAccessible(true);
-            }
+            field.setAccessible(true);
             if (LoliLoadingPlugin.isVMOpenJ9) {
                 fixOpenJ9PrivateStaticFinalRestraint(field);
             }
@@ -248,4 +231,5 @@ public class LoliReflector {
         modifiers.setAccessible(true);
         LOOKUP.unreflectSetter(modifiers).invokeExact(field, field.getModifiers() & ~Modifier.FINAL);
     }
+
 }

@@ -4,8 +4,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
 
@@ -24,8 +26,8 @@ public class EntityEntryMixin {
      * @author Rongmario
      * @reason LambdaMetafactory constructed Function::apply instead of doing Constructor::newInstance
      */
-    @Overwrite
-    protected void init() {
+    @Inject(method = "init", at = @At("HEAD"), cancellable = true)
+    private void captureInit(CallbackInfo ci) {
         try {
             CallSite callSite = LambdaMetafactory.metafactory(
                     LoliReflector.LOOKUP,
@@ -35,8 +37,9 @@ public class EntityEntryMixin {
                     LoliReflector.resolveCtor(this.cls, World.class),
                     MethodType.methodType(this.cls, World.class));
             this.factory = (Function) callSite.getTarget().invokeExact();
+            ci.cancel();
         } catch (Throwable t) {
-            LoliLogger.instance.error("LoliASM could not establish a faster Entity constructor replacement for {}", this.cls, t);
+            LoliLogger.instance.error("Could not establish a faster Entity constructor replacement for {}", this.cls, t);
         }
     }
 
