@@ -16,14 +16,9 @@ public final class BakedQuadFactory {
     // The SwitchMap is literally just an int array or enum ordinal positions
     private static final int[] pseudoSwitchMap = new int[] { 0, 1, 2, 3, 4, 5 };
 
-    // TODO:
-    /*
-    private static final ObjectOpenCustomHashSet<int[]> DUPES = new ObjectOpenCustomHashSet<>(1024, IntArrays.HASH_STRATEGY);
-
-    public static BakedQuad canonize(int[] vertexDataIn, int tintIndexIn, EnumFacing faceIn, TextureAtlasSprite spriteIn, boolean applyDiffuseLighting, VertexFormat format) {
-        return create(DUPES.addOrGet(vertexDataIn), tintIndexIn, faceIn, spriteIn, applyDiffuseLighting, format);
+    public static BakedQuad canonicalize(int[] vertexDataIn, int tintIndexIn, EnumFacing faceIn, TextureAtlasSprite spriteIn, boolean applyDiffuseLighting, VertexFormat format) {
+        return create(LoliVertexDataPool.canonicalize(vertexDataIn), tintIndexIn, faceIn, spriteIn, applyDiffuseLighting, format);
     }
-     */
 
     /**
      * This method is here as a placeholder. The contents of this method has to be dynamically written at runtime.

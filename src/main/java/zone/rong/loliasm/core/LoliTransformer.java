@@ -38,6 +38,8 @@ public class LoliTransformer implements IClassTransformer {
                 for (String classThatExtendBakedQuad : LoliConfig.instance.classesThatExtendBakedQuad) {
                     addTransformation(classThatExtendBakedQuad, this::extendSupportingBakedQuadInstead);
                 }
+            } else if (LoliConfig.instance.vertexDataCanonicalization) {
+                addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", this::canonicalizeVertexData);
             }
             if (LoliConfig.instance.modelConditionCanonicalization) {
                 addTransformation("net.minecraft.client.renderer.block.model.multipart.ICondition", this::canonicalBoolConditions);
@@ -790,30 +792,6 @@ public class LoliTransformer implements IClassTransformer {
                         }
                     }
                 }
-                /*
-            } else if (method.name.equals("createPrefixedSearchTree")) {
-                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
-                while (iter.hasNext()) {
-                    AbstractInsnNode instruction = iter.next();
-                    if (instruction.getOpcode() == NEW) {
-                        TypeInsnNode newNode = (TypeInsnNode) instruction;
-                        if (newNode.desc.equals("mezz/jei/suffixtree/GeneralizedSuffixTree")) {
-                            iter.remove();
-                            iter.next();
-                            iter.remove(); // Remove DUP
-                            iter.next();
-                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks$JEI", "get", "(C)Lmezz/jei/suffixtree/GeneralizedSuffixTree;", false));
-                        } else if (newNode.desc.equals("mezz/jei/ingredients/PrefixedSearchTree")) {
-                            newNode.desc = "mezz/jei/ingredients/PublicizedPrefixSearchTree";
-                        }
-                    } else if (instruction.getOpcode() == INVOKESPECIAL) {
-                        MethodInsnNode methodNode = (MethodInsnNode) instruction;
-                        if (methodNode.owner.equals("mezz/jei/ingredients/PrefixedSearchTree")) {
-                            methodNode.owner = "mezz/jei/ingredients/PublicizedPrefixSearchTree";
-                        }
-                    }
-                }
-                 */
             }
         }
 
@@ -842,6 +820,35 @@ public class LoliTransformer implements IClassTransformer {
             return writer.toByteArray();
         }
         return bytes;
+    }
+
+    private byte[] canonicalizeVertexData(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>") && method.desc.equals("([IILnet/minecraft/util/EnumFacing;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;ZLnet/minecraft/client/renderer/vertex/VertexFormat;)V")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == PUTFIELD) {
+                        FieldInsnNode fieldNode = (FieldInsnNode) instruction;
+                        if (fieldNode.desc.equals("[I")) {
+                            iter.previous();
+                            iter.add(new VarInsnNode(ALOAD, 0));
+                            iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/bakedquad/LoliVertexDataPool", "canonicalize", "([ILnet/minecraft/client/renderer/block/model/BakedQuad;)[I", false));
+                            method.maxStack = 3;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
     }
 
 }

@@ -118,8 +118,10 @@ public class CommonProxy {
         } else if (LoliConfig.instance.cleanupLaunchClassLoaderLate) {
             cleanupLaunchClassLoader();
         }
-        MinecraftForge.EVENT_BUS.register(LoliStringPool.class);
-        LoliLogger.instance.info("{} total strings processed. {} unique strings in LoliStringPool, {} strings deduplicated altogether during game load.", LoliStringPool.getDeduplicatedCount(), LoliStringPool.getSize(), LoliStringPool.getDeduplicatedCount() - LoliStringPool.getSize());
+        if (LoliStringPool.getSize() > 0) {
+            MinecraftForge.EVENT_BUS.register(LoliStringPool.class);
+            LoliLogger.instance.info("{} total strings processed. {} unique strings in LoliStringPool, {} strings deduplicated altogether during game load.", LoliStringPool.getDeduplicatedCount(), LoliStringPool.getSize(), LoliStringPool.getDeduplicatedCount() - LoliStringPool.getSize());
+        }
     }
 
     private void invalidateLaunchClassLoaderCaches() {

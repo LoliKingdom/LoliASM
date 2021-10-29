@@ -85,9 +85,7 @@ public class BakedQuadRedirectorFactory {
                     methodVisitor.visitVarInsn(ILOAD, isStatic ? 4 : 5);
                     methodVisitor.visitVarInsn(ALOAD, isStatic ? 5 : 6);
                 }
-                // TODO
-                methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/bakedquad/BakedQuadFactory", "create", "([IILnet/minecraft/util/EnumFacing;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;ZLnet/minecraft/client/renderer/vertex/VertexFormat;)Lnet/minecraft/client/renderer/block/model/BakedQuad;", false);
-                // methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/bakedquad/BakedQuadFactory", "canonize", "([IILnet/minecraft/util/EnumFacing;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;ZLnet/minecraft/client/renderer/vertex/VertexFormat;)Lnet/minecraft/client/renderer/block/model/BakedQuad;", false);
+                methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/bakedquad/BakedQuadFactory", LoliConfig.instance.vertexDataCanonicalization ? "canonicalize" : "create", "([IILnet/minecraft/util/EnumFacing;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;ZLnet/minecraft/client/renderer/vertex/VertexFormat;)Lnet/minecraft/client/renderer/block/model/BakedQuad;", false);
                 methodVisitor.visitInsn(ARETURN);
 
                 l1 = new Label();

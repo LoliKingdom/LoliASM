@@ -2,6 +2,7 @@ package zone.rong.loliasm.common.modfixes.jei.mixins;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import mezz.jei.Internal;
+import mezz.jei.JustEnoughItems;
 import mezz.jei.config.Config;
 import mezz.jei.gui.ingredients.IIngredientListElement;
 import mezz.jei.ingredients.IngredientFilter;
@@ -9,12 +10,11 @@ import mezz.jei.ingredients.PublicizedPrefixSearchTree;
 import mezz.jei.suffixtree.GeneralizedSuffixTree;
 import mezz.jei.util.Translator;
 import net.minecraft.util.NonNullList;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import zone.rong.loliasm.api.mixins.GeneralizedSuffixTreeExtender;
 import zone.rong.loliasm.api.mixins.IngredientFilterExtender;
 import zone.rong.loliasm.core.LoliHooks;
@@ -34,9 +34,16 @@ public abstract class IngredientFilterMixin implements IngredientFilterExtender 
 
     @Shadow @Final private Char2ObjectMap prefixedSearchTrees;
 
+    @Unique private boolean needsAdding = false;
+
     @Override
     public GeneralizedSuffixTree getTree(char key) {
         return key == ' ' ? searchTree : ((PublicizedPrefixSearchTree) prefixedSearchTrees.get(key)).getTree();
+    }
+
+    @Inject(method = "addIngredients", at = @At("HEAD"))
+    private void onAddIngredients(NonNullList<IIngredientListElement> ingredients, CallbackInfo ci) {
+        needsAdding = Internal.getRuntime() == null || hasStarted();
     }
 
     /**
@@ -48,20 +55,19 @@ public abstract class IngredientFilterMixin implements IngredientFilterExtender 
         updateHiddenState(element);
         final int index = elementList.size();
         elementList.add(element);
-        if (Internal.getRuntime() == null && !((GeneralizedSuffixTreeExtender) this.searchTree).isDeserialized()) {
+        if (needsAdding && !((GeneralizedSuffixTreeExtender) this.searchTree).isDeserialized()) {
             searchTree.put(Translator.toLowercaseWithLocale(element.getDisplayName()), index);
         }
         for (Object obj : this.prefixedSearchTrees.values()) {
             PublicizedPrefixSearchTree prefixedSearchTree = (PublicizedPrefixSearchTree) obj;
             GeneralizedSuffixTree tree = prefixedSearchTree.getTree();
-            if (Internal.getRuntime() == null && ((GeneralizedSuffixTreeExtender) tree).isDeserialized()) {
-                continue;
-            }
-            Config.SearchMode searchMode = prefixedSearchTree.getMode();
-            if (searchMode != Config.SearchMode.DISABLED) {
-                Collection<String> strings = prefixedSearchTree.retrieveStrings(element);
-                for (String string : strings) {
-                    tree.put(string, index);
+            if (needsAdding && !((GeneralizedSuffixTreeExtender) tree).isDeserialized()) {
+                Config.SearchMode searchMode = prefixedSearchTree.getMode();
+                if (searchMode != Config.SearchMode.DISABLED) {
+                    Collection<String> strings = prefixedSearchTree.retrieveStrings(element);
+                    for (String string : strings) {
+                        tree.put(string, index);
+                    }
                 }
             }
         }
@@ -87,5 +93,9 @@ public abstract class IngredientFilterMixin implements IngredientFilterExtender 
         ci.cancel(); // Effectively this is an @Overwrite
     }
      */
+
+    private boolean hasStarted() {
+        return ((AccessorProxyCommonClient) JustEnoughItems.getProxy()).getJeiStarter().hasStarted();
+    }
 
 }

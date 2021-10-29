@@ -15,7 +15,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pl.asie.foamfix.shared.FoamFixShared;
 import slimeknights.tconstruct.library.client.texture.AbstractColoredTexture;
+import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
+import zone.rong.loliasm.bakedquad.LoliVertexDataPool;
 import zone.rong.loliasm.client.sprite.FramesTextureData;
 import zone.rong.loliasm.common.modfixes.qmd.QMDEventHandler;
 import zone.rong.loliasm.config.LoliConfig;
@@ -66,6 +68,10 @@ public class ClientProxy extends CommonProxy {
         super.loadComplete(event);
         if (Loader.isModLoaded("jei")) {
             releaseSpriteFramesCache();
+        }
+        if (LoliConfig.instance.vertexDataCanonicalization) {
+            LoliLogger.instance.info("{} total quads processed. {} unique vertex data array in LoliVertexDataPool, {} vertex data arrays deduplicated altogether during game load.", LoliVertexDataPool.getDeduplicatedCount(), LoliVertexDataPool.getSize(), LoliVertexDataPool.getDeduplicatedCount() - LoliVertexDataPool.getSize());
+            MinecraftForge.EVENT_BUS.register(LoliVertexDataPool.class);
         }
     }
 

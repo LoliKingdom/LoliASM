@@ -48,7 +48,7 @@ public class LoliStringPool {
             if (!list.get(list.size() - 1).equals("")) {
                 list.add("");
             }
-            event.getLeft().add(String.format("%s%s%s: %s strings processed. %s unique, %s deduplicated.", TextFormatting.AQUA, "<LoliASM>", TextFormatting.RESET, deduplicatedCount, LoliStringPool.getSize(), deduplicatedCount - LoliStringPool.getSize()));
+            list.add(String.format("%s%s%s: %s strings processed. %s unique, %s deduplicated.", TextFormatting.AQUA, "<LoliASM>", TextFormatting.RESET, deduplicatedCount, getSize(), deduplicatedCount - getSize()));
         }
     }
 
