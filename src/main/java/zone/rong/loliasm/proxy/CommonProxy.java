@@ -4,6 +4,7 @@ import betterwithmods.module.gameplay.Gameplay;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import me.towdium.jecharacters.JechConfig;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.HttpUtil;
@@ -61,7 +62,7 @@ public class CommonProxy {
             }
         }
 
-        if (LoliConfig.instance.optimizeAndCacheJEISearchTrees) {
+        if (Loader.isModLoaded("jei") && LoliConfig.instance.optimizeAndCacheJEISearchTrees && !Loader.isModLoaded("jecharacters") || !JechConfig.enableJEI) {
             LoliHooks.JEI.init();
         }
 

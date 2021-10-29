@@ -38,7 +38,7 @@ public abstract class IngredientFilterMixin implements IngredientFilterExtender 
 
     @Override
     public GeneralizedSuffixTree getTree(char key) {
-        return key == ' ' ? searchTree : ((PublicizedPrefixSearchTree) prefixedSearchTrees.get(key)).getTree();
+        return key == ' ' ? searchTree : PublicizedPrefixSearchTree.getTree(prefixedSearchTrees.get(key));
     }
 
     @Inject(method = "addIngredients", at = @At("HEAD"))
@@ -59,12 +59,11 @@ public abstract class IngredientFilterMixin implements IngredientFilterExtender 
             searchTree.put(Translator.toLowercaseWithLocale(element.getDisplayName()), index);
         }
         for (Object obj : this.prefixedSearchTrees.values()) {
-            PublicizedPrefixSearchTree prefixedSearchTree = (PublicizedPrefixSearchTree) obj;
-            GeneralizedSuffixTree tree = prefixedSearchTree.getTree();
+            GeneralizedSuffixTree tree = PublicizedPrefixSearchTree.getTree(obj);
             if (needsAdding && !((GeneralizedSuffixTreeExtender) tree).isDeserialized()) {
-                Config.SearchMode searchMode = prefixedSearchTree.getMode();
+                Config.SearchMode searchMode = PublicizedPrefixSearchTree.getMode(obj);
                 if (searchMode != Config.SearchMode.DISABLED) {
-                    Collection<String> strings = prefixedSearchTree.retrieveStrings(element);
+                    Collection<String> strings = PublicizedPrefixSearchTree.retrieveStrings(obj, element);
                     for (String string : strings) {
                         tree.put(string, index);
                     }
@@ -79,10 +78,12 @@ public abstract class IngredientFilterMixin implements IngredientFilterExtender 
         return LoliHooks.JEI.get(prefix);
     }
 
+    /*
     @Redirect(method = "createPrefixedSearchTree", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/chars/Char2ObjectMap;put(CLjava/lang/Object;)Ljava/lang/Object;"))
     private Object retrieveTree(Char2ObjectMap char2ObjectMap, char key, Object value) throws IllegalAccessException {
         return char2ObjectMap.put(key, new PublicizedPrefixSearchTree(value));
     }
+     */
 
     /*
     @SuppressWarnings("all")

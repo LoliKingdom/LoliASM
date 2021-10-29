@@ -1,5 +1,6 @@
 package zone.rong.loliasm.core;
 
+import me.towdium.jecharacters.JechConfig;
 import net.minecraftforge.fml.common.Loader;
 import org.spongepowered.asm.mixin.Mixins;
 import zone.rong.loliasm.config.LoliConfig;
@@ -21,7 +22,7 @@ public class LoliMixinLoader {
         if (Loader.isModLoaded("astralsorcery") && LoliConfig.instance.fixAmuletHolderCapability) {
            Mixins.addConfiguration("mixins.capability_astralsorcery.json");
         }
-        if (Loader.isModLoaded("jei") && LoliConfig.instance.optimizeAndCacheJEISearchTrees) {
+        if (Loader.isModLoaded("jei") && LoliConfig.instance.optimizeAndCacheJEISearchTrees && !Loader.isModLoaded("jecharacters") || !JechConfig.enableJEI) {
             Mixins.addConfiguration("mixins.modfixes_jei.json");
         }
     }
