@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import zone.rong.loliasm.api.datastructures.canonical.AutoCanonizingArrayMap;
-import zone.rong.loliasm.api.StringPool;
+import zone.rong.loliasm.api.LoliStringPool;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class FieldDescriptionsMap extends Object2ObjectOpenHashMap<String, Map<S
 
     @Override
     public Map<String, String> put(String s, Map<String, String> innerMap) {
-        s = StringPool.canonicalize(s);
+        s = LoliStringPool.canonicalize(s);
         if (!(innerMap instanceof Object2ObjectArrayMap)) {
             innerMap = innerMapCanonicalCache.addOrGet(new AutoCanonizingArrayMap<>(innerMap));
         }

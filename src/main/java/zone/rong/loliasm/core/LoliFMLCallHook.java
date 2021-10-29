@@ -12,7 +12,7 @@ import zone.rong.loliasm.api.datastructures.DummyMap;
 import zone.rong.loliasm.api.datastructures.canonical.AutoCanonizingSet;
 import zone.rong.loliasm.api.datastructures.deobf.DeobfuscatedMappingsMap;
 import zone.rong.loliasm.api.datastructures.deobf.FieldDescriptionsMap;
-import zone.rong.loliasm.api.StringPool;
+import zone.rong.loliasm.api.LoliStringPool;
 
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +51,7 @@ public class LoliFMLCallHook implements IFMLCallHook {
 
     private BiMap<String, String> canonicalizeClassNames(BiMap<String, String> map) {
         ImmutableBiMap.Builder<String, String> builder = ImmutableBiMap.builder();
-        map.forEach((s1, s2) -> builder.put(StringPool.canonicalize(s1), StringPool.canonicalize(s2)));
+        map.forEach((s1, s2) -> builder.put(LoliStringPool.canonicalize(s1), LoliStringPool.canonicalize(s2)));
         return builder.build();
     }
 }

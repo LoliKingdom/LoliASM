@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ModCandidate;
 import zone.rong.loliasm.LoliASM;
 import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.api.StringPool;
+import zone.rong.loliasm.api.LoliStringPool;
 import zone.rong.loliasm.bakedquad.SupportingBakedQuad;
 import zone.rong.loliasm.config.LoliConfig;
 
@@ -86,14 +86,14 @@ public class LoliHooks {
         className = className.replace('/','.');
         int pkgIdx = className.lastIndexOf('.');
         if (pkgIdx > -1) {
-            String pkg = StringPool.canonicalize(className.substring(0, pkgIdx));
+            String pkg = LoliStringPool.canonicalize(className.substring(0, pkgIdx));
             packages.add(pkg);
             table.registerPackage(modCandidate, pkg);
         }
     }
 
     public static String asmData$redirect$CtorStringsToIntern(String string) {
-        return string == null ? null : string.intern();
+        return string == null ? null : LoliStringPool.canonicalize(string);
     }
 
     public static /*char[]*/ String nbtTagString$override$ctor(String data) {
@@ -102,7 +102,7 @@ public class LoliHooks {
             throw new NullPointerException("Null string not allowed");
         }
          */
-        return StringPool.canonicalize(data);
+        return LoliStringPool.canonicalize(data);
         /*
         try {
             return (char[]) STRING_BACKING_CHAR_ARRAY_GETTER.invokeExact(data);

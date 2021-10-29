@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.event.*;
 import zone.rong.loliasm.LoliASM;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
+import zone.rong.loliasm.api.LoliStringPool;
 import zone.rong.loliasm.api.datastructures.DummyMap;
 import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
@@ -117,6 +118,8 @@ public class CommonProxy {
         } else if (LoliConfig.instance.cleanupLaunchClassLoaderLate) {
             cleanupLaunchClassLoader();
         }
+        MinecraftForge.EVENT_BUS.register(LoliStringPool.class);
+        LoliLogger.instance.info("{} total strings processed. {} unique strings in LoliStringPool, {} strings deduplicated altogether during game load.", LoliStringPool.getDeduplicatedCount(), LoliStringPool.getSize(), LoliStringPool.getDeduplicatedCount() - LoliStringPool.getSize());
     }
 
     private void invalidateLaunchClassLoaderCaches() {
@@ -134,7 +137,6 @@ public class CommonProxy {
             throwable.printStackTrace();
         }
     }
-
 
     private static void cleanupLaunchClassLoader() {
         try {

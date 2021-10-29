@@ -16,7 +16,7 @@ import scala.collection.mutable.MultiMap;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.api.HashingStrategies;
-import zone.rong.loliasm.api.StringPool;
+import zone.rong.loliasm.api.LoliStringPool;
 
 import java.lang.invoke.MethodHandle;
 import java.util.*;
@@ -320,7 +320,7 @@ public class Deduplicator {
         } else if (o instanceof ItemCameraTransforms) {
             n = itemCameraTransformsCache.addOrGet((ItemCameraTransforms) o);
         } else if (o instanceof String) {
-            n = StringPool.canonicalize((String) o);
+            n = LoliStringPool.canonicalize((String) o);
         }
         if (n != o) {
             LoliLogger.instance.info("Deduplicated {}@{} => {}@{} successfully", o.getClass().getName(), Integer.toHexString(o.hashCode()), n.getClass().getName(), Integer.toHexString(n.hashCode()));

@@ -10,6 +10,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 import zone.rong.loliasm.LoliReflector;
+import zone.rong.loliasm.api.LoliStringPool;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.patches.*;
@@ -177,7 +178,7 @@ public class LoliTransformer implements IClassTransformer {
                         iter.previous(); // Move to GETSTATIC
                         iter.remove(); // Remove GETSTATIC
                         iter.next(); // Replace INVOKEVIRTUAL with INVOKESTATIC
-                        iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/api/StringPool", "lowerCaseAndCanonize", "(Ljava/lang/String;)Ljava/lang/String;", false));
+                        iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/api/LoliStringPool", "lowerCaseAndCanonicalize", "(Ljava/lang/String;)Ljava/lang/String;", false));
                     }
                 }
             }
@@ -485,7 +486,7 @@ public class LoliTransformer implements IClassTransformer {
         try {
             Map<String, Package> packages = (Map<String, Package>)  LoliReflector.getField(ClassLoader.class, "packages").get(Launch.classLoader);
             Set<String> packageStrings = packages.keySet();
-            packageStrings.forEach(String::intern);
+            packageStrings.forEach(LoliStringPool::canonicalize);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -698,7 +699,8 @@ public class LoliTransformer implements IClassTransformer {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction.getOpcode() == PUTFIELD && ((FieldInsnNode) instruction).name.equals("label")) {
                         iter.previous();
-                        iter.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "intern", "()Ljava/lang/String;", false));
+                        iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/api/LoliStringPool", "canonicalize", "(Ljava/lang/String;)Ljava/lang/String;", false));
+                        // iter.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "intern", "()Ljava/lang/String;", false));
                         iter.next();
                     }
                 }
@@ -751,7 +753,8 @@ public class LoliTransformer implements IClassTransformer {
                         FieldInsnNode fieldNode = (FieldInsnNode) instruction;
                         if (fieldNode.desc.equals("Ljava/lang/String")) {
                             iter.previous();
-                            iter.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "intern", "()Ljava/lang/String;", false));
+                            iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/api/LoliStringPool", "canonicalize", "(Ljava/lang/String;)Ljava/lang/String;", false));
+                            // iter.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "intern", "()Ljava/lang/String;", false));
                             iter.next();
                             break;
                         }

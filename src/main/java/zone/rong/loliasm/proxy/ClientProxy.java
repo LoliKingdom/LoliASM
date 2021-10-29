@@ -55,6 +55,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void init(FMLInitializationEvent event) {
+        super.init(event);
         if (!Loader.isModLoaded("jei")) {
             releaseSpriteFramesCache();
         }
@@ -62,6 +63,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void loadComplete(FMLLoadCompleteEvent event) {
+        super.loadComplete(event);
         if (Loader.isModLoaded("jei")) {
             releaseSpriteFramesCache();
         }
