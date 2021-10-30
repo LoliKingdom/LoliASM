@@ -41,6 +41,11 @@ public abstract class IngredientFilterMixin implements IngredientFilterExtender 
         return key == ' ' ? searchTree : PublicizedPrefixSearchTree.getTree(prefixedSearchTrees.get(key));
     }
 
+    @Override
+    public boolean isEnabled(char key) {
+        return key == ' ' || PublicizedPrefixSearchTree.getMode(prefixedSearchTrees.get(key)) != Config.SearchMode.DISABLED;
+    }
+
     @Inject(method = "addIngredients", at = @At("HEAD"))
     private void onAddIngredients(NonNullList<IIngredientListElement> ingredients, CallbackInfo ci) {
         needsAdding = Internal.getRuntime() == null || hasStarted();

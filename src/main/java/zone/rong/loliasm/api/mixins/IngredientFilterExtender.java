@@ -6,4 +6,6 @@ public interface IngredientFilterExtender {
 
     GeneralizedSuffixTree getTree(char key);
 
+    boolean isEnabled(char key);
+
 }

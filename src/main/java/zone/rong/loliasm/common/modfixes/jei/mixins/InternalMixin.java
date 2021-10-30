@@ -28,26 +28,28 @@ public class InternalMixin {
     private static void onSetIngredientFilter(IngredientFilter ingredientFilter, CallbackInfo ci) {
         if (WhoCalled.$.isCalledByClass(JeiStarter.class)) {
             for (Char2ObjectMap.Entry<String> entry : LoliHooks.JEI.treeIdentifiers.char2ObjectEntrySet()) {
-                File cacheFolder = new File(LoliASM.proxy.loliCachesFolder, "jei");
-                cacheFolder.mkdir();
-                File cache = new File(cacheFolder, entry.getValue() + "_tree.bin");
-                if (!cache.exists() || !LoliASM.proxy.consistentModList) {
-                    CompletableFuture.runAsync(() -> {
-                        try {
-                            Stopwatch stopwatch = Stopwatch.createStarted();
-                            File temp = File.createTempFile(entry.getValue(), ".bin");
-                            temp.deleteOnExit();
-                            FileOutputStream fileOutputStream = new FileOutputStream(temp);
-                            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                            objectOutputStream.writeObject(((IngredientFilterExtender) ingredientFilter).getTree(entry.getCharKey()));
-                            objectOutputStream.close();
-                            fileOutputStream.close();
-                            Files.move(temp, cache);
-                            LoliLogger.instance.info("{} Search Tree took {} to be serialized.", entry.getValue(), stopwatch.stop());
-                        } catch (Throwable t) {
-                            t.printStackTrace();
-                        }
-                    });
+                if (((IngredientFilterExtender) ingredientFilter).isEnabled(entry.getCharKey())) {
+                    File cacheFolder = new File(LoliASM.proxy.loliCachesFolder, "jei");
+                    cacheFolder.mkdir();
+                    File cache = new File(cacheFolder, entry.getValue() + "_tree.bin");
+                    if (!cache.exists() || !LoliASM.proxy.consistentModList) {
+                        CompletableFuture.runAsync(() -> {
+                            try {
+                                Stopwatch stopwatch = Stopwatch.createStarted();
+                                File temp = File.createTempFile(entry.getValue(), ".bin");
+                                temp.deleteOnExit();
+                                FileOutputStream fileOutputStream = new FileOutputStream(temp);
+                                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                                objectOutputStream.writeObject(((IngredientFilterExtender) ingredientFilter).getTree(entry.getCharKey()));
+                                objectOutputStream.close();
+                                fileOutputStream.close();
+                                Files.move(temp, cache);
+                                LoliLogger.instance.info("{} Search Tree took {} to be serialized.", entry.getValue(), stopwatch.stop());
+                            } catch (Throwable t) {
+                                t.printStackTrace();
+                            }
+                        });
+                    }
                 }
             }
         }
