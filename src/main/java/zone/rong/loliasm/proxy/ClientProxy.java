@@ -18,6 +18,7 @@ import slimeknights.tconstruct.library.client.texture.AbstractColoredTexture;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.bakedquad.LoliVertexDataPool;
+import zone.rong.loliasm.client.screenshot.ScreenshotListener;
 import zone.rong.loliasm.client.sprite.FramesTextureData;
 import zone.rong.loliasm.common.modfixes.qmd.QMDEventHandler;
 import zone.rong.loliasm.config.LoliConfig;
@@ -52,6 +53,9 @@ public class ClientProxy extends CommonProxy {
         }
         if (Loader.isModLoaded("qmd") && LoliConfig.instance.optimizeQMDBeamRenderer) {
             MinecraftForge.EVENT_BUS.register(QMDEventHandler.class);
+        }
+        if (LoliConfig.instance.copyScreenshotToClipboard) {
+            MinecraftForge.EVENT_BUS.register(ScreenshotListener.class);
         }
     }
 
