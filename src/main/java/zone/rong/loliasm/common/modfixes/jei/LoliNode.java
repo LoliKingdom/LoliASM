@@ -13,6 +13,18 @@ import java.util.Objects;
 
 public class LoliNode {
 
+    public static class Identifiable extends LoliNode {
+
+        static int uniqueId;
+
+        public final int id;
+
+        public Identifiable() {
+            id = uniqueId++;
+        }
+
+    }
+
     public int[] data;
     public Char2ObjectMap<LoliEdge> edges;
     @Nullable public LoliNode suffix;

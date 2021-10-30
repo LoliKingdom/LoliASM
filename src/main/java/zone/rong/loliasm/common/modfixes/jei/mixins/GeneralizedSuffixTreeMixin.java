@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -41,7 +43,7 @@ public class GeneralizedSuffixTreeMixin implements ISearchTree, GeneralizedSuffi
     /**
      * The root of the suffix tree
      */
-    @Unique private LoliNode loliasm$root = new LoliNode();
+    @Unique private LoliNode loliasm$root = new LoliNode.Identifiable();
     /**
      * The last leaf that was added during the update operation
      */
@@ -170,7 +172,7 @@ public class GeneralizedSuffixTreeMixin implements ISearchTree, GeneralizedSuffi
                 String newlabel = label.substring(str.length());
                 assert (label.startsWith(str));
                 // build a new node
-                LoliNode r = new LoliNode();
+                LoliNode r = new LoliNode.Identifiable();
                 // build a new edge
                 LoliEdge newedge = new LoliEdge(str, r);
                 g.label = newlabel;
@@ -193,7 +195,7 @@ public class GeneralizedSuffixTreeMixin implements ISearchTree, GeneralizedSuffi
                     return new Tuple<>(true, s);
                 } else if (e.label.startsWith(remainder)) {
                     // need to split as above
-                    LoliNode newNode = new LoliNode();
+                    LoliNode newNode = new LoliNode.Identifiable();
                     newNode.addRef(value);
                     LoliEdge newEdge = new LoliEdge(remainder, newNode);
                     e.label = e.label.substring(remainder.length());
@@ -270,7 +272,7 @@ public class GeneralizedSuffixTreeMixin implements ISearchTree, GeneralizedSuffi
                 leaf = tempEdge.dest;
             } else {
                 // must build a new leaf
-                leaf = new LoliNode();
+                leaf = new LoliNode.Identifiable();
                 leaf.addRef(value);
                 LoliEdge newedge = new LoliEdge(rest, leaf);
                 r.addEdge(newChar, newedge);
@@ -333,25 +335,30 @@ public class GeneralizedSuffixTreeMixin implements ISearchTree, GeneralizedSuffi
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt(highestIndex);
-        Reference2IntLinkedOpenHashMap<LoliNode> nodeMapping = new Reference2IntLinkedOpenHashMap<>(4096);
-        ArrayDeque<LoliNode> nodes = new ArrayDeque<>(128);
-        nodes.add(loliasm$root);
-        while (!nodes.isEmpty()) {
-            LoliNode node = nodes.remove();
-            nodeMapping.put(node, nodeMapping.size());
+        ObjectArrayList<SerializedLoliNode> serializedNodes = new ObjectArrayList<>();
+        ArrayDeque<LoliNode> nodesQueue = new ArrayDeque<>(128);
+        nodesQueue.add(loliasm$root);
+        while (!nodesQueue.isEmpty()) {
+            LoliNode.Identifiable node = (LoliNode.Identifiable) nodesQueue.remove();
+            Char2ObjectMap<SerializedLoliEdge> edges;
+            if (node.edges instanceof Char2ObjectMaps.EmptyMap) {
+                edges = Char2ObjectMaps.emptyMap();
+            } else if (node.edges instanceof Char2ObjectMaps.Singleton) {
+                Char2ObjectMap.Entry<LoliEdge> entry = node.edges.char2ObjectEntrySet().stream().findFirst().get();
+                LoliEdge edge = entry.getValue();
+                edges = Char2ObjectMaps.singleton(entry.getCharKey(), new SerializedLoliEdge(((LoliNode.Identifiable) edge.dest).id, edge.label));
+            } else {
+                edges = node.edges.char2ObjectEntrySet()
+                        .stream()
+                        .collect(Char2ObjectArrayMap::new,
+                                (m, e) -> m.put(e.getCharKey(), new SerializedLoliEdge(((LoliNode.Identifiable) e.getValue().dest).id, e.getValue().label)),
+                                Char2ObjectMap::putAll);
+            }
+            serializedNodes.add(new SerializedLoliNode(node.id, node.data, edges, node.suffix == null ? -1 : ((LoliNode.Identifiable) node.suffix).id));
             for (LoliEdge edge : node.edges()) {
-                nodes.add(edge.dest);
+                nodesQueue.add(edge.dest);
             }
         }
-        ObjectArrayList<SerializedLoliNode> serializedNodes = new ObjectArrayList<>(nodeMapping.size());
-        nodeMapping.forEach((node, id) -> {
-            Char2ObjectMap<SerializedLoliEdge> edges = node.edges.char2ObjectEntrySet()
-                    .stream()
-                    .collect(Char2ObjectArrayMap::new,
-                            (m, e) -> m.put(e.getCharKey(), new SerializedLoliEdge(nodeMapping.getInt(e.getValue().dest), e.getValue().label)),
-                            Char2ObjectMap::putAll);
-            serializedNodes.add(new SerializedLoliNode(id, node.data, edges, node.suffix == null ? -1 : nodeMapping.getInt(node.suffix)));
-        });
         out.writeObject(serializedNodes.elements());
     }
 
