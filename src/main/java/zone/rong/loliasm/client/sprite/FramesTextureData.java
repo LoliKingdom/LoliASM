@@ -24,7 +24,11 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.END && FramesTextureData.scheduledToReleaseCache != null) {
             for (TextureAtlasSprite sprite : scheduledToReleaseCache) {
-                sprite.clearFramesTextureData();
+                try {
+                    sprite.clearFramesTextureData();
+                } catch (NullPointerException e) {
+                    LoliLogger.instance.error("NullPointerException: Trying to clear {}'s FramesTextureData but unable to!", sprite.getIconName());
+                }
             }
             scheduledToReleaseCache = null;
         }
