@@ -73,7 +73,7 @@ repositories {
         url "https://repo.codemc.io/repository/maven-public/"
     }
     maven {
-        url 'http://dvs1.progwml6.com/files/maven'
+        url "http://maven.tterrag.com"
     }
     // maven {
         // url = "http://maven.bluexin.be/repository/snapshots/"
@@ -91,6 +91,10 @@ dependencies {
         exclude module: "log4j-core"
         exclude module: "gson"
         exclude module: "commons-io"
+    }
+    deobfCompile "com.enderio.core:EnderCore:1.12.2-+"
+    deobfCompile ("com.enderio:EnderIO:1.12.2-+") {
+        transitive = false
     }
     compile "codechicken:ChickenASM:1.12-1.0.2.9"
     compile "epicsquid.mysticallib:mysticallib:1.12.2-+"

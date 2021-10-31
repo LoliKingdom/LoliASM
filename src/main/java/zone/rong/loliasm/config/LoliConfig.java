@@ -70,7 +70,7 @@ public class LoliConfig {
     public boolean releaseSpriteFramesCache;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching, copyScreenshotToClipboard;
-    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer;
+    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat;
     public boolean fixAmuletHolderCapability;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
     public boolean sparkProfileEntireGameLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, includeAllThreadsWhenProfiling;
@@ -135,6 +135,7 @@ public class LoliConfig {
         skipCraftTweakerRecalculatingSearchTrees = getBoolean("skipCraftTweakerRecalculatingSearchTrees", "modfixes", "When CraftTweaker is installed, large modpacks tend to stall in the last stage of loading, when CraftTweaker inexplicably recalculates search trees. This option will be ignored when CraftTweaker isn't installed", true);
         bwmBlastingOilOptimization = getBoolean("bwmBlastingOilOptimization", "modfixes", "When Better with Mods is installed, optimize Blasting Oil related events. The original implementation harms server performance at any given moment. This option will be ignored when Better with Mods isn't installed", true);
         optimizeQMDBeamRenderer = getBoolean("optimizeQMDBeamRenderer", "modfixes", "When QMD is installed, optimize its BeamRenderer. The original implementation harms client performance heavily (takes ~5% of each tick time). This option will be ignored when QMD isn't installed", true);
+        repairEvilCraftEIOCompat = getBoolean("repairEvilCraftEIOCompat", "modfixes", "When EvilCraft Compat + EnderIO is installed, repair the compatibility module", true);
 
         fixAmuletHolderCapability = getBoolean("fixAmuletHolderCapability", "capability", "Fixes Astral Sorcery applying AmuletHolderCapability to large amount of ItemStacks when it isn't needed. This option will be ignored when Astral Sorcery isn't installed", true);
 

@@ -25,6 +25,9 @@ public class LoliMixinLoader {
         if (Loader.isModLoaded("jei") && LoliConfig.instance.optimizeAndCacheJEISearchTrees && !Loader.isModLoaded("jecharacters") || !JechConfig.enableJEI) {
             Mixins.addConfiguration("mixins.modfixes_jei.json");
         }
+        if (Loader.isModLoaded("evilcraftcompat") && LoliConfig.instance.repairEvilCraftEIOCompat) {
+            Mixins.addConfiguration("mixins.modfixes_evilcraftcompat.json");
+        }
     }
 
 }
