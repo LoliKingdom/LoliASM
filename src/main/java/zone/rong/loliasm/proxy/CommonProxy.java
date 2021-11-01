@@ -128,7 +128,9 @@ public class CommonProxy {
         if (LoliConfig.instance.filePermissionsCacheCanonicalization) {
             MinecraftForge.EVENT_BUS.register(JavaFixes.INSTANCE);
         }
-        LoliSparker.checkHeap(true, true);
+        if (LoliConfig.instance.sparkSummarizeHeapSpaceAfterGameLoads) {
+            LoliSparker.checkHeap(true, true);
+        }
     }
 
     private void invalidateLaunchClassLoaderCaches() {

@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import me.lucko.spark.common.SparkPlatform;
 import me.lucko.spark.common.command.sender.CommandSender;
+import me.lucko.spark.common.heapdump.HeapDumpSummary;
 import me.lucko.spark.common.platform.AbstractPlatformInfo;
 import me.lucko.spark.common.platform.PlatformInfo;
 import me.lucko.spark.common.sampler.Sampler;
@@ -32,6 +33,7 @@ public class LoliSparker {
     private static CommandSender commandSender = new LoliCommandSender();
     private static Map<String, Sampler> ongoingSamplers = new Object2ReferenceOpenHashMap<>();
     private static MediaType mediaType = MediaType.parse("application/x-spark-sampler");
+    private static MediaType heapMediaType = MediaType.parse("application/x-spark-heap");
     private static ExecutorService executor = Executors.newSingleThreadScheduledExecutor((new ThreadFactoryBuilder()).setNameFormat("spark-loli-async-worker").build());
 
     public static void start(String key) {
@@ -49,6 +51,24 @@ public class LoliSparker {
         }
     }
 
+    public static void checkHeap(boolean summarize, boolean runGC) {
+        if (runGC) {
+            System.gc();
+        }
+        if (summarize) {
+            executor.execute(() -> {
+                byte[] output = HeapDumpSummary.createNew().formCompressedDataPayload(platformInfo, commandSender);
+                try {
+                    String urlKey = SparkPlatform.BYTEBIN_CLIENT.postContent(output, heapMediaType, false).key();
+                    String url = "https://spark.lucko.me/" + urlKey;
+                    LoliLogger.instance.warn("Heap Summary: {}", url);
+                } catch (Exception e) {
+                    LoliLogger.instance.fatal("An error occurred whilst uploading heap summary.", e);
+                }
+            });
+        }
+    }
+
     public static void stop(String key) {
         Sampler sampler = ongoingSamplers.remove(key);
         if (sampler != null) {
@@ -59,7 +79,7 @@ public class LoliSparker {
 
     private static void output(String key, Sampler sampler) {
         executor.execute(() -> {
-            LoliLogger.instance.warn("The active profiler has been stopped! Uploading results...");
+            LoliLogger.instance.warn("Stage [{}] profiler has stopped! Uploading results...", key);
             byte[] output = sampler.formCompressedDataPayload(platformInfo, commandSender, ThreadNodeOrder.BY_TIME, "Stage: " + key, MergeMode.separateParentCalls(new MethodDisambiguator()));
             try {
                 String urlKey = SparkPlatform.BYTEBIN_CLIENT.postContent(output, mediaType, false).key();
