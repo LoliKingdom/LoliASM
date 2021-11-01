@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -49,12 +51,20 @@ public class LoliHooks {
         return new ObjectOpenHashSet<>();
     }
 
+    public static <K> ReferenceOpenHashSet<K> createReferenceSet() {
+        return new ReferenceOpenHashSet<>();
+    }
+
     public static <K, V> Object2ObjectArrayMap<K, V> createArrayMap() {
         return new Object2ObjectArrayMap<>();
     }
 
     public static <K, V> Object2ObjectOpenHashMap<K, V> createHashMap() {
         return new Object2ObjectOpenHashMap<>();
+    }
+
+    public static <K, V> Reference2ObjectOpenHashMap<K, V> createReferenceMap() {
+        return new Reference2ObjectOpenHashMap<>();
     }
 
     private static Set<Class<?>> classesThatCallBakedQuadCtor;
@@ -115,7 +125,7 @@ public class LoliHooks {
 
     public static final class JEI {
 
-        public static final Char2ObjectMap<String> treeIdentifiers = new Char2ObjectLinkedOpenHashMap<>(7);
+        public static final Char2ObjectMap<String> treeIdentifiers = Char2ObjectMaps.synchronize(new Char2ObjectLinkedOpenHashMap<>(7));
         private static final Char2ObjectMap<GeneralizedSuffixTree> trees = Char2ObjectMaps.synchronize(new Char2ObjectOpenHashMap<>(7, 0.99f));
 
         static {
@@ -132,12 +142,13 @@ public class LoliHooks {
             if (LoliASM.proxy.consistentModList) {
                 File cacheFolder = new File(LoliASM.proxy.loliCachesFolder, "jei");
                 cacheFolder.mkdir();
+                List<CompletableFuture<Void>> tasks = new ArrayList<>();
                 for (Char2ObjectMap.Entry<String> entry : treeIdentifiers.char2ObjectEntrySet()) {
                     File cache = new File(cacheFolder, entry.getValue() + "_tree.bin");
                     if (!cache.exists()) {
                         continue;
                     }
-                    CompletableFuture.runAsync(() -> {
+                    tasks.add(CompletableFuture.supplyAsync(() -> {
                         try {
                             Stopwatch stopwatch = Stopwatch.createStarted();
                             FileInputStream fileInputStream = new FileInputStream(cache);
@@ -149,7 +160,12 @@ public class LoliHooks {
                         } catch (IOException | ClassNotFoundException e) {
                             e.printStackTrace();
                         }
-                    });
+                        return null;
+                    }));
+                }
+                if (!tasks.isEmpty()) {
+                    LoliStringPool.establishPool(LoliStringPool.JEI_ID, 2880);
+                    CompletableFuture.allOf(tasks.toArray(new CompletableFuture[0]));
                 }
             }
         }

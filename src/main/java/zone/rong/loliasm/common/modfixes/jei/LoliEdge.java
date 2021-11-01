@@ -1,5 +1,7 @@
 package zone.rong.loliasm.common.modfixes.jei;
 
+import zone.rong.loliasm.api.LoliStringPool;
+
 import java.util.Objects;
 
 public class LoliEdge {
@@ -9,7 +11,7 @@ public class LoliEdge {
     public String label;
 
     public LoliEdge(String label, LoliNode dest) {
-        this.label = label;
+        this.label = LoliStringPool.canonicalize(label, LoliStringPool.JEI_ID, false);
         this.dest = dest;
     }
 

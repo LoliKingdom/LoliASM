@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import zone.rong.loliasm.api.LoliStringPool;
 import zone.rong.loliasm.api.mixins.GeneralizedSuffixTreeExtender;
 import zone.rong.loliasm.common.modfixes.jei.LoliEdge;
 import zone.rong.loliasm.common.modfixes.jei.LoliNode;
@@ -175,7 +176,7 @@ public class GeneralizedSuffixTreeMixin implements ISearchTree, GeneralizedSuffi
                 LoliNode r = new LoliNode.Identifiable();
                 // build a new edge
                 LoliEdge newedge = new LoliEdge(str, r);
-                g.label = newlabel;
+                g.label = LoliStringPool.unsafe$Canonicalize(newlabel, 0, false);
                 // link s -> r
                 r.addEdge(newlabel.charAt(0), g);
                 s.addEdge(str.charAt(0), newedge);
@@ -198,7 +199,7 @@ public class GeneralizedSuffixTreeMixin implements ISearchTree, GeneralizedSuffi
                     LoliNode newNode = new LoliNode.Identifiable();
                     newNode.addRef(value);
                     LoliEdge newEdge = new LoliEdge(remainder, newNode);
-                    e.label = e.label.substring(remainder.length());
+                    e.label = LoliStringPool.unsafe$Canonicalize(e.label.substring(remainder.length()), 0, false);
                     newNode.addEdge(e.label.charAt(0), e);
                     s.addEdge(t, newEdge);
                     return new Tuple<>(false, s);

@@ -99,6 +99,9 @@ public class ClientProxy extends CommonProxy {
                     }
                     canReload = true;
                 }
+                if (LoliConfig.instance.vertexDataCanonicalization) {
+                    LoliVertexDataPool.invalidate();
+                }
             }
         });
     }

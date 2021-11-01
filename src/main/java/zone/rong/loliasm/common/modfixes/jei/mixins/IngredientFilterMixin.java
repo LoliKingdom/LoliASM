@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import zone.rong.loliasm.api.LoliStringPool;
 import zone.rong.loliasm.api.mixins.GeneralizedSuffixTreeExtender;
 import zone.rong.loliasm.api.mixins.IngredientFilterExtender;
 import zone.rong.loliasm.core.LoliHooks;
@@ -48,6 +49,7 @@ public abstract class IngredientFilterMixin implements IngredientFilterExtender 
 
     @Inject(method = "addIngredients", at = @At("HEAD"))
     private void onAddIngredients(NonNullList<IIngredientListElement> ingredients, CallbackInfo ci) {
+        LoliStringPool.establishPool(LoliStringPool.JEI_ID, 2880);
         needsAdding = Internal.getRuntime() == null || hasStarted();
     }
 

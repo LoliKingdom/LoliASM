@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import zone.rong.loliasm.LoliASM;
 import zone.rong.loliasm.LoliLogger;
+import zone.rong.loliasm.api.LoliStringPool;
 import zone.rong.loliasm.api.mixins.IngredientFilterExtender;
 import zone.rong.loliasm.core.LoliHooks;
 
@@ -27,6 +28,7 @@ public class InternalMixin {
     @Inject(method = "setIngredientFilter", at = @At("RETURN"))
     private static void onSetIngredientFilter(IngredientFilter ingredientFilter, CallbackInfo ci) {
         if (WhoCalled.$.isCalledByClass(JeiStarter.class)) {
+            LoliStringPool.purgePool(LoliStringPool.JEI_ID);
             for (Char2ObjectMap.Entry<String> entry : LoliHooks.JEI.treeIdentifiers.char2ObjectEntrySet()) {
                 if (((IngredientFilterExtender) ingredientFilter).isEnabled(entry.getCharKey())) {
                     File cacheFolder = new File(LoliASM.proxy.loliCachesFolder, "jei");
