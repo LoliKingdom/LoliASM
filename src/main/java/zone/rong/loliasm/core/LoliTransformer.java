@@ -56,8 +56,10 @@ public class LoliTransformer implements IClassTransformer {
             }
             if (LoliConfig.instance.optimizeRegistries) {
                 addTransformation("net.minecraft.client.audio.SoundRegistry", this::removeDupeMapFromSoundRegistry);
-                addTransformation("net.minecraftforge.client.model.ModelLoader", this::optimizeModelLoaderDataStructures);
-                addTransformation("net.minecraft.client.renderer.block.statemap.StateMapperBase", this::optimizeStateMapperBaseBackingMap);
+                addTransformation("net.minecraftforge.client.model.ModelLoader", this::optimizeDataStructures);
+                addTransformation("net.minecraft.client.renderer.block.statemap.StateMapperBase", this::optimizeDataStructures);
+                addTransformation("net.minecraft.client.renderer.BlockModelShapes", this::optimizeDataStructures);
+                addTransformation("net.minecraft.client.renderer.block.statemap.BlockStateMapper", this::optimizeDataStructures);
             }
             if (LoliConfig.instance.optimizeSomeRendering) {
                 addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, LoliLoadingPlugin.isDeobf ? "setupTerrain" : "func_174970_a"));
@@ -640,55 +642,6 @@ public class LoliTransformer implements IClassTransformer {
         return writer.toByteArray();
     }
 
-    private byte[] optimizeModelLoaderDataStructures(byte[] bytes) {
-        ClassReader reader = new ClassReader(bytes);
-        ClassNode node = new ClassNode();
-        reader.accept(node, 0);
-
-        for (MethodNode method : node.methods) {
-            if (method.name.equals("<init>")) {
-                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
-                while (iter.hasNext()) {
-                    AbstractInsnNode instruction = iter.next();
-                    if (instruction.getOpcode() == INVOKESTATIC) {
-                        MethodInsnNode methodInsnNode = (MethodInsnNode) instruction;
-                        if (methodInsnNode.desc.equals("()Ljava/util/HashMap;")) {
-                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "createHashMap", "()Lit/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap;", false));
-                        } else if (methodInsnNode.desc.equals("()Ljava/util/HashSet;")) {
-                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "createHashSet", "()Lit/unimi/dsi/fastutil/objects/ObjectOpenHashSet;", false));
-                        }
-                    }
-                }
-            }
-        }
-
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        node.accept(writer);
-        return writer.toByteArray();
-    }
-
-    private byte[] optimizeStateMapperBaseBackingMap(byte[] bytes) {
-        ClassReader reader = new ClassReader(bytes);
-        ClassNode node = new ClassNode();
-        reader.accept(node, 0);
-
-        for (MethodNode method : node.methods) {
-            if (method.name.equals("<init>")) {
-                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
-                while (iter.hasNext()) {
-                    AbstractInsnNode instruction = iter.next();
-                    if (instruction.getOpcode() == INVOKESTATIC && ((MethodInsnNode) instruction).name.equals("newLinkedHashMap")) {
-                        iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "createArrayMap", "()Lit/unimi/dsi/fastutil/objects/Object2ObjectArrayMap;", false));
-                    }
-                }
-            }
-        }
-
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        node.accept(writer);
-        return writer.toByteArray();
-    }
-
     private byte[] deduplicateEdgeLabels(byte[] bytes) {
         ClassReader reader = new ClassReader(bytes);
         ClassNode node = new ClassNode();
@@ -840,6 +793,55 @@ public class LoliTransformer implements IClassTransformer {
                             iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/bakedquad/LoliVertexDataPool", "canonicalize", "([ILnet/minecraft/client/renderer/block/model/BakedQuad;)[I", false));
                             method.maxStack = 3;
                             break;
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] optimizeDataStructures(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == INVOKESTATIC) {
+                        MethodInsnNode methodNode = (MethodInsnNode) instruction;
+                        switch (methodNode.name) {
+                            case "newIdentityHashMap":
+                                methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
+                                methodNode.name = "createReferenceMap";
+                                methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/Reference2ObjectOpenHashMap;";
+                                break;
+                            case "newLinkedHashMap":
+                                methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
+                                methodNode.name = "createArrayMap";
+                                methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/Object2ObjectArrayMap;";
+                                break;
+                            case "newHashMap":
+                                methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
+                                methodNode.name = "createHashMap";
+                                methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap;";
+                                break;
+                            case "newHashSet":
+                                methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
+                                methodNode.name = "createHashSet";
+                                methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/ObjectOpenHashSet;";
+                                break;
+                            case "newIdentityHashSet":
+                                methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
+                                methodNode.name = "createReferenceSet";
+                                methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/ReferenceOpenHashSet;";
+                                break;
                         }
                     }
                 }
