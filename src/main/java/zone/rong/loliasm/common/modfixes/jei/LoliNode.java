@@ -3,6 +3,7 @@ package zone.rong.loliasm.common.modfixes.jei;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import org.apache.commons.lang3.ArrayUtils;
@@ -33,7 +34,7 @@ public class LoliNode {
      * Creates a new Node
      */
     public LoliNode() {
-        data = new int[0];
+        data = IntArrays.EMPTY_ARRAY;
         edges = Char2ObjectMaps.emptyMap();
     }
 
@@ -104,7 +105,11 @@ public class LoliNode {
     }
 
     private void addIndex(int index) {
-        this.data = ArrayUtils.add(this.data, index);
+        if (this.data.length == 0) {
+            this.data = new int[] { index };
+        } else {
+            this.data = ArrayUtils.add(this.data, index);
+        }
     }
 
     public ObjectCollection<LoliEdge> edges() {

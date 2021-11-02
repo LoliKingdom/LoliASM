@@ -4,10 +4,10 @@ import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.Reference2IntLinkedOpenHashMap;
 import mezz.jei.suffixtree.GeneralizedSuffixTree;
 import mezz.jei.suffixtree.ISearchTree;
 import net.minecraft.util.Tuple;
@@ -27,8 +27,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -371,7 +369,7 @@ public class GeneralizedSuffixTreeMixin implements ISearchTree, GeneralizedSuffi
         for (int i = 0; i < nodes.length; i++) {
             SerializedLoliNode deserializedNode = (SerializedLoliNode) deserializedNodes[i];
             LoliNode node = nodes[i];
-            node.data = deserializedNode.data;
+            node.data = deserializedNode.data.length == 0 ? IntArrays.EMPTY_ARRAY : deserializedNode.data;
             if (deserializedNode.suffixId != -1) {
                 node.suffix = nodes[deserializedNode.suffixId];
             }
