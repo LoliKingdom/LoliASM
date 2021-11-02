@@ -120,6 +120,9 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
             if (LoliConfig.instance.moreModelManagerCleanup) {
                 Mixins.addConfiguration("mixins.datastructures_modelmanager.json");
             }
+            if (LoliConfig.instance.releaseScreenshotCache) {
+                Mixins.addConfiguration("mixins.screenshot.json");
+            }
         }
     }
 
