@@ -4,7 +4,6 @@ import betterwithmods.module.gameplay.Gameplay;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import me.towdium.jecharacters.JechConfig;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.HttpUtil;
@@ -21,7 +20,6 @@ import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
 import zone.rong.loliasm.common.java.JavaFixes;
 import zone.rong.loliasm.common.modfixes.betterwithmods.BWMBlastingOilOptimization;
 import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.core.LoliHooks;
 import zone.rong.loliasm.spark.LoliSparker;
 
 import java.io.*;
@@ -62,10 +60,6 @@ public class CommonProxy {
                 objectOutputStream.close();
                 LoliLogger.instance.info("Refreshing Mod list cache.");
             }
-        }
-
-        if (Loader.isModLoaded("jei") && LoliConfig.instance.optimizeAndCacheJEISearchTrees && !Loader.isModLoaded("jecharacters") || !JechConfig.enableJEI) {
-            LoliHooks.JEI.init();
         }
 
         if (LoliConfig.instance.cleanupLaunchClassLoaderEarly) {
