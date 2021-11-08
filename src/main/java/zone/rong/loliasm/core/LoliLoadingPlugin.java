@@ -27,7 +27,7 @@ import java.util.zip.ZipFile;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class LoliLoadingPlugin implements IFMLLoadingPlugin {
 
-    public static final String VERSION = "4.2.4";
+    public static final String VERSION = "4.3";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
 
@@ -57,11 +57,9 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         }
     }
 
-    public static final boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
+    // public static final boolean isModDirectorInstalled = LoliReflector.doesTweakExist("net.jan.moddirector.launchwrapper.ModDirectorTweaker");
     public static final boolean isVMOpenJ9 = SystemUtils.JAVA_VM_NAME.toLowerCase(Locale.ROOT).contains("openj9");
     public static final boolean isClient = FMLLaunchHandler.side() == Side.CLIENT;
-
-    public static final boolean squashBakedQuads = LoliConfig.instance.squashBakedQuads && !isOptifineInstalled;
 
     public LoliLoadingPlugin() {
         LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
@@ -75,21 +73,24 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
         if (LoliConfig.instance.removeForgeSecurityManager) {
             UnsafeLolis.removeFMLSecurityManager();
         }
-        MixinBootstrap.init();
         boolean needToDGSFFFF = isVMOpenJ9 && SystemUtils.IS_JAVA_1_8;
         int buildAppendIndex = SystemUtils.JAVA_VERSION.indexOf("_");
         if (needToDGSFFFF && buildAppendIndex != -1) {
-            needToDGSFFFF = Integer.parseInt(SystemUtils.JAVA_VERSION.substring(buildAppendIndex + 1)) < 265;
-        }
-        for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
-            if (needToDGSFFFF && arg.equals("-Xjit:disableGuardedStaticFinalFieldFolding")) {
-                needToDGSFFFF = false;
-                break;
+            if (needToDGSFFFF = (Integer.parseInt(SystemUtils.JAVA_VERSION.substring(buildAppendIndex + 1)) < 265)) {
+                for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
+                    if (arg.equals("-Xjit:disableGuardedStaticFinalFieldFolding")) {
+                        needToDGSFFFF = false;
+                        break;
+                    }
+                }
+                if (needToDGSFFFF) {
+                    LoliLogger.instance.fatal("LoliASM notices that you're using Eclipse OpenJ9 {}!", SystemUtils.JAVA_VERSION);
+                    LoliLogger.instance.fatal("This OpenJ9 version is outdated and contains a critical bug: https://github.com/eclipse-openj9/openj9/issues/8353");
+                    LoliLogger.instance.fatal("Either use '-Xjit:disableGuardedStaticFinalFieldFolding' as part of your java arguments, or update OpenJ9!");
+                }
             }
         }
-        if (needToDGSFFFF) {
-            LoliLogger.instance.fatal("LoliASM notices that you're using Eclipse OpenJ9 {} which is outdated and contains a critical bug: {} that slows the game down a lot. Either append -Xjit:disableGuardedStaticFinalFieldFolding to your java arguments or update your Java!", SystemUtils.JAVA_VERSION, "https://github.com/eclipse-openj9/openj9/issues/8353");
-        }
+        MixinBootstrap.init();
         Mixins.addConfiguration("mixins.internal.json");
         Mixins.addConfiguration("mixins.vanities.json");
         if (LoliConfig.instance.optimizeRegistries) {
@@ -148,4 +149,5 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
     public String getAccessTransformerClass() {
         return "zone.rong.loliasm.core.LoliTransformer";
     }
+
 }

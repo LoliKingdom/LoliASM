@@ -9,7 +9,7 @@ import zone.rong.mixinbooter.MixinLoader;
 public class LoliMixinLoader {
 
     {
-        if (LoliConfig.instance.squashBakedQuads) {
+        if (LoliTransformer.squashBakedQuads) {
             Mixins.addConfiguration("mixins.bakedquadsquasher.json");
         }
         if (Loader.isModLoaded("immersiveengineering") && LoliConfig.instance.fixBlockIEBaseArrayIndexOutOfBoundsException) {

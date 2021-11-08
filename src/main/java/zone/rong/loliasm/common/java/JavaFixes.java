@@ -10,6 +10,7 @@ import zone.rong.loliasm.api.LoliStringPool;
 
 import java.lang.invoke.MethodHandle;
 import java.security.*;
+import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.HashMap;
 
@@ -40,9 +41,9 @@ public class JavaFixes {
 
 
     private void run() {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         try {
             LoliStringPool.establishPool(LoliStringPool.FILE_PERMISSIONS_ID, 512);
-            Stopwatch stopwatch = Stopwatch.createStarted();
             HashMap<CodeSource, ProtectionDomain> pdcache = (HashMap<CodeSource, ProtectionDomain>) SECURECLASSLOADER$PDCACHE$GETTER.invoke(Launch.classLoader);
             for (ProtectionDomain pd : pdcache.values()) {
                 PermissionCollection pc = pd.getPermissions();
@@ -54,11 +55,13 @@ public class JavaFixes {
                     }
                 }
             }
-            LoliLogger.instance.info("Took {} to canonicalize Java's FilePermission caches.", stopwatch.stop());
             LoliStringPool.purgePool(LoliStringPool.FILE_PERMISSIONS_ID);
-        } catch (Throwable t) {
+        }
+        catch (ConcurrentModificationException ignored) { } // Swallow it, we don't care enough about the CME here
+        catch (Throwable t) {
             t.printStackTrace();
         }
+        LoliLogger.instance.info("Took {} to canonicalize Java's FilePermission caches.", stopwatch.stop());
     }
 
     @SubscribeEvent

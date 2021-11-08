@@ -22,14 +22,20 @@ import static org.objectweb.asm.Opcodes.*;
 
 public class LoliTransformer implements IClassTransformer {
 
+    public static boolean squashBakedQuads = LoliConfig.instance.squashBakedQuads;
+
     Multimap<String, Function<byte[], byte[]>> transformations;
 
     public LoliTransformer() {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
+        boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
+        if (squashBakedQuads && (squashBakedQuads = !isOptifineInstalled)) {
+            LoliLogger.instance.info("Optifine is installed. BakedQuads won't be squashed as it is incompatible with OptiFine.");
+        }
         transformations = MultimapBuilder.hashKeys(30).arrayListValues(1).build();
         if (LoliLoadingPlugin.isClient) {
             // addTransformation("codechicken.lib.model.loader.blockstate.CCBlockStateLoader", bytes -> stripSubscribeEventAnnotation(bytes, "onModelBake", "onTextureStitchPre"));
-            if (LoliLoadingPlugin.squashBakedQuads) {
+            if (squashBakedQuads) {
                 addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", BakedQuadPatch::rewriteBakedQuad);
                 addTransformation("net.minecraft.client.renderer.block.model.BakedQuadRetextured", BakedQuadRetexturedPatch::patchBakedQuadRetextured);
                 addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad);

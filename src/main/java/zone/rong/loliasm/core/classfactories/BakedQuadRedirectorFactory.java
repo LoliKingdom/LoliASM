@@ -7,6 +7,7 @@ import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.bakedquad.BakedQuadClassFactory;
 import zone.rong.loliasm.core.LoliLoadingPlugin;
+import zone.rong.loliasm.core.LoliTransformer;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -21,7 +22,7 @@ public class BakedQuadRedirectorFactory {
         AnnotationVisitor mixinVisitor = writer.visitAnnotation("Lorg/spongepowered/asm/mixin/Mixin;", false);
         AnnotationVisitor valueVisitor = mixinVisitor.visitArray("value");
 
-        if (!LoliLoadingPlugin.squashBakedQuads) {
+        if (!LoliTransformer.squashBakedQuads) {
             LoliLogger.instance.info("Defining a mock NewBakedQuadCallsRedirector Mixin.");
 
             valueVisitor.visit(null, Type.getType("Lnet/minecraft/client/renderer/block/model/FaceBakery;"));

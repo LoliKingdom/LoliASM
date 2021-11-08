@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.*;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -207,6 +208,10 @@ public class LoliReflector {
             return true;
         } catch (ClassNotFoundException ignored) { }
         return false;
+    }
+
+    public static boolean doesTweakExist(String tweakName) {
+        return ((List<String>) Launch.blackboard.get("TweakClasses")).contains(tweakName);
     }
 
     public static Optional<Class<?>> getClass(String className) {
