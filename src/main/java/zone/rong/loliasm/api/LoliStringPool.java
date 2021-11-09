@@ -14,7 +14,6 @@ import java.util.Locale;
 
 public class LoliStringPool {
 
-    public static final int JEI_ID = 0;
     public static final int FILE_PERMISSIONS_ID = 1;
 
     private static final Int2ObjectMap<Internal> POOLS = new Int2ObjectArrayMap<>();

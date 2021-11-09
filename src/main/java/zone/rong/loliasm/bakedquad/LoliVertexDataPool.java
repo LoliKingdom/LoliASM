@@ -54,6 +54,9 @@ public class LoliVertexDataPool {
     }
 
     public static void invalidate() {
+        if (POOL == null) { // Roost runs listeners again for some reason, this is a guard against that
+            return;
+        }
         uniqueCount = POOL.size();
         // previousUniqueCount += POOL.size();
         // POOL.clear();
