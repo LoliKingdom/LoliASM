@@ -8,8 +8,6 @@ import java.lang.reflect.Field;
 public class UnsafeLolis {
 
     private static final Unsafe $ = UnsafeAccess.UNSAFE;
-    private static final long baseOffset = $.arrayBaseOffset(Object[].class);
-    private static final long headerSize = baseOffset - 8;
 
     public static void removeFMLSecurityManager() {
         LoliLogger.instance.warn("Detaching FMLSecurityManager.");

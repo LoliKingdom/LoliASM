@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.Mixins;
 import zone.rong.loliasm.UnsafeLolis;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.spark.LoliSparker;
 
 import java.io.File;
@@ -27,7 +26,7 @@ import java.util.zip.ZipFile;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class LoliLoadingPlugin implements IFMLLoadingPlugin {
 
-    public static final String VERSION = "4.3";
+    public static final String VERSION = "4.3.1";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
 
