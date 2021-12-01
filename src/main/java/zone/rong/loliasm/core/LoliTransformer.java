@@ -22,13 +22,14 @@ import static org.objectweb.asm.Opcodes.*;
 
 public class LoliTransformer implements IClassTransformer {
 
+    public static boolean isOptifineInstalled;
     public static boolean squashBakedQuads = LoliConfig.instance.squashBakedQuads;
 
     Multimap<String, Function<byte[], byte[]>> transformations;
 
     public LoliTransformer() {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
-        boolean isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
+        isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
         if (squashBakedQuads && (squashBakedQuads = !isOptifineInstalled)) {
             LoliLogger.instance.info("Optifine is installed. BakedQuads won't be squashed as it is incompatible with OptiFine.");
         }

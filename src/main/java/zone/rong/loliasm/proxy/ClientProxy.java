@@ -22,6 +22,7 @@ import zone.rong.loliasm.client.screenshot.ScreenshotListener;
 import zone.rong.loliasm.client.sprite.FramesTextureData;
 import zone.rong.loliasm.common.modfixes.qmd.QMDEventHandler;
 import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.loliasm.core.LoliTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public class ClientProxy extends CommonProxy {
         if (Loader.isModLoaded("jei")) {
             releaseSpriteFramesCache();
         }
-        if (LoliConfig.instance.vertexDataCanonicalization) {
+        if (!LoliTransformer.isOptifineInstalled && LoliConfig.instance.vertexDataCanonicalization) {
             LoliLogger.instance.info("{} total quads processed. {} unique vertex data array in LoliVertexDataPool, {} vertex data arrays deduplicated altogether during game load.", LoliVertexDataPool.getDeduplicatedCount(), LoliVertexDataPool.getSize(), LoliVertexDataPool.getDeduplicatedCount() - LoliVertexDataPool.getSize());
             MinecraftForge.EVENT_BUS.register(LoliVertexDataPool.class);
         }
@@ -99,7 +100,7 @@ public class ClientProxy extends CommonProxy {
                     }
                     canReload = true;
                 }
-                if (LoliConfig.instance.vertexDataCanonicalization) {
+                if (!LoliTransformer.isOptifineInstalled && LoliConfig.instance.vertexDataCanonicalization) {
                     LoliVertexDataPool.invalidate();
                 }
             }
