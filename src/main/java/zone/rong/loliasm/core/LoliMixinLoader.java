@@ -24,6 +24,9 @@ public class LoliMixinLoader {
         if (Loader.isModLoaded("evilcraftcompat") && LoliConfig.instance.repairEvilCraftEIOCompat) {
             Mixins.addConfiguration("mixins.modfixes_evilcraftcompat.json");
         }
+        if (Loader.isModLoaded("ebwizardry") && LoliConfig.instance.optimizeArcaneLockRendering) {
+            Mixins.addConfiguration("mixins.modfixes_ebwizardry.json");
+        }
     }
 
 }
