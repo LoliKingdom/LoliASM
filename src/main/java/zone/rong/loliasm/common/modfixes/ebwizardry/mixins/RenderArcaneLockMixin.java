@@ -50,12 +50,7 @@ public abstract class RenderArcaneLockMixin {
             return;
         }
         for (Iterator<WeakReference<TileEntity>> iter = ArcaneLocks.ARCANE_LOCKED_TILES.iterator(); iter.hasNext();) {
-            WeakReference<TileEntity> weakRef = iter.next();
-            if (weakRef.isEnqueued()) {
-                iter.remove();
-                continue;
-            }
-            TileEntity lockedTile = weakRef.get();
+            TileEntity lockedTile = iter.next().get();
             if (lockedTile == null || lockedTile.isInvalid()) {
                 iter.remove();
                 continue;

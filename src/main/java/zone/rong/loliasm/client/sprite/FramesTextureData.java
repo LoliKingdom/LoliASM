@@ -13,31 +13,35 @@ import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.proxy.ClientProxy;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Set;
 
 public class FramesTextureData extends ArrayList<int[][]> {
 
-    public static Set<TextureAtlasSprite> scheduledToReleaseCache;
+    public static Set<WeakReference<TextureAtlasSprite>> scheduledToReleaseCache;
 
     @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.END && FramesTextureData.scheduledToReleaseCache != null) {
-            for (TextureAtlasSprite sprite : scheduledToReleaseCache) {
-                try {
-                    sprite.clearFramesTextureData();
-                } catch (NullPointerException e) {
-                    LoliLogger.instance.error("NullPointerException: Trying to clear {}'s FramesTextureData but unable to!", sprite.getIconName());
+            for (WeakReference<TextureAtlasSprite> weakRef : scheduledToReleaseCache) {
+                TextureAtlasSprite sprite = weakRef.get();
+                if (sprite != null) {
+                    try {
+                        sprite.clearFramesTextureData();
+                    } catch (NullPointerException e) {
+                        LoliLogger.instance.error("NullPointerException: Trying to clear {}'s FramesTextureData but unable to!", sprite.getIconName());
+                    }
                 }
             }
             scheduledToReleaseCache = null;
         }
     }
 
-    private final TextureAtlasSprite sprite;
+    private final WeakReference<TextureAtlasSprite> weakSprite;
 
     public FramesTextureData(TextureAtlasSprite sprite) {
-        this.sprite = sprite;
+        this.weakSprite = new WeakReference<>(sprite);
     }
 
     @Override
@@ -47,7 +51,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
             if (scheduledToReleaseCache == null) {
                 scheduledToReleaseCache = new ObjectArraySet<>();
             }
-            scheduledToReleaseCache.add(sprite);
+            scheduledToReleaseCache.add(weakSprite);
         }
         return super.get(index);
     }
@@ -59,7 +63,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
             if (scheduledToReleaseCache == null) {
                 scheduledToReleaseCache = new ObjectArraySet<>();
             }
-            scheduledToReleaseCache.add(sprite);
+            scheduledToReleaseCache.add(weakSprite);
         }
         return super.size();
     }
@@ -71,7 +75,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
             if (scheduledToReleaseCache == null) {
                 scheduledToReleaseCache = new ObjectArraySet<>();
             }
-            scheduledToReleaseCache.add(sprite);
+            scheduledToReleaseCache.add(weakSprite);
         }
         return super.isEmpty();
     }
@@ -86,6 +90,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
         ResourceLocation location = getLocation();
         IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
         TextureMap textureMap = Minecraft.getMinecraft().getTextureMapBlocks();
+        TextureAtlasSprite sprite = weakSprite.get();
         if (sprite.hasCustomLoader(resourceManager, location)) {
             sprite.load(resourceManager, location, rl -> textureMap.getAtlasSprite(rl.toString()));
         } else {
@@ -98,7 +103,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
     }
 
     private ResourceLocation getLocation() {
-        String[] parts = ResourceLocation.splitObjectName(sprite.getIconName());
+        String[] parts = ResourceLocation.splitObjectName(weakSprite.get().getIconName());
         return new ResourceLocation(parts[0], String.format("%s/%s%s", Minecraft.getMinecraft().getTextureMapBlocks().getBasePath(), parts[1], ".png"));
     }
 }
