@@ -3,7 +3,6 @@ package zone.rong.loliasm.proxy;
 import betterwithmods.module.gameplay.Gameplay;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.HttpUtil;
@@ -29,43 +28,10 @@ import java.util.Set;
 
 public class CommonProxy {
 
-    public final File loliCachesFolder = new File(Launch.minecraftHome, "cache/lolicaches");
-
-    public boolean consistentModList = false;
-
-    public void construct(FMLConstructionEvent event) throws IOException, ClassNotFoundException {
-        loliCachesFolder.mkdirs();
-        File modListCache = new File(loliCachesFolder, "modlist.bin");
-        Map<String, String> modList = new Object2ObjectOpenHashMap<>();
-        Loader.instance().getActiveModList().forEach(mc -> modList.put(mc.getModId(), mc.getVersion()));
-        if (modListCache.createNewFile()) {
-            FileOutputStream fileOutputStream = new FileOutputStream(modListCache);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(modList);
-            objectOutputStream.flush();
-            objectOutputStream.close();
-        } else {
-            FileInputStream fileInputStream = new FileInputStream(modListCache);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            Map<String, String> readModList = (Map<String, String>) objectInputStream.readObject();
-            objectInputStream.close();
-            if (modList.equals(readModList)) {
-                consistentModList = true;
-                LoliLogger.instance.info("Mod list is the same as last launch.");
-            } else {
-                FileOutputStream fileOutputStream = new FileOutputStream(modListCache);
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                objectOutputStream.writeObject(modList);
-                objectOutputStream.flush();
-                objectOutputStream.close();
-                LoliLogger.instance.info("Refreshing Mod list cache.");
-            }
-        }
-
+    public void construct(FMLConstructionEvent event) {
         if (LoliConfig.instance.cleanupLaunchClassLoaderEarly) {
             cleanupLaunchClassLoader();
         }
-
         /*
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
