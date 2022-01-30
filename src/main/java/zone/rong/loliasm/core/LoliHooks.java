@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.discovery.ModCandidate;
 import zone.rong.loliasm.LoliASM;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.api.LoliStringPool;
+import zone.rong.loliasm.bakedquad.BakedQuadFactory;
 import zone.rong.loliasm.bakedquad.SupportingBakedQuad;
 import zone.rong.loliasm.config.LoliConfig;
 
@@ -71,7 +72,7 @@ public class LoliHooks {
     private static Set<Class<?>> classesThatExtendBakedQuad;
 
     public static void inform(Class<?> clazz) {
-        if (clazz == SupportingBakedQuad.class) {
+        if (clazz == SupportingBakedQuad.class || clazz == BakedQuadFactory.class) {
             return;
         }
         if (classesThatCallBakedQuadCtor == null) {
