@@ -71,11 +71,10 @@ public class HashingStrategies {
         return hash * 31 + ((Float.floatToIntBits(vector.translation.getX())) * 31 + Float.floatToIntBits(vector.translation.getY())) * 31 + Float.floatToIntBits(vector.translation.getZ());
     }
 
-    // TODO: For OreDictionary mapping as well, as both uses metadata wildcards (this is so cancer)
     public static final Hash.Strategy<ItemStack> FURNACE_INPUT_HASH = new Hash.Strategy<ItemStack>() {
         @Override
         public int hashCode(ItemStack o) {
-            return 31 * o.getItem().hashCode(); // Purposefully allow certain hash collisions
+            return 31 * o.getItem().hashCode();
         }
         @Override
         public boolean equals(ItemStack a, ItemStack b) {

@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * FurnaceRecipes are only item/meta sensitive, hence a simple Strategy is used.
  *
- * getSmeltingResult is now only a hash lookup.
+ * getSmeltingResult/getSmeltingExperience is now only a hash lookup.
  * experienceList doesn't have its floats boxed now.
  */
 @Mixin(FurnaceRecipes.class)
@@ -54,7 +54,7 @@ public abstract class FurnaceRecipesMixin {
     public float getSmeltingExperience(ItemStack stack) {
         float exp = stack.getItem().getSmeltingExperience(stack);
         if (exp == -1) {
-            exp = ((Object2FloatMap<ItemStack>) this.experienceList).getFloat(stack);
+            return ((Object2FloatMap<ItemStack>) this.experienceList).getFloat(stack);
         }
         return exp;
     }
