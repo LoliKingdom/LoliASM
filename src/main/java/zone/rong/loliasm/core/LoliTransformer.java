@@ -340,7 +340,7 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        for (MethodNode method : node.methods) {
+        outer: for (MethodNode method : node.methods) {
             if (method.name.equals("<init>")) {
                 ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
                 boolean isExperienceList = false;
@@ -356,6 +356,9 @@ public class LoliTransformer implements IClassTransformer {
                                 iter.add(new InsnNode(DUP));
                                 iter.add(new FieldInsnNode(GETSTATIC, "zone/rong/loliasm/api/HashingStrategies", "FURNACE_INPUT_HASH", "Lit/unimi/dsi/fastutil/Hash$Strategy;"));
                                 iter.add(new MethodInsnNode(INVOKESPECIAL, "it/unimi/dsi/fastutil/objects/Object2ObjectOpenCustomHashMap", "<init>", "(Lit/unimi/dsi/fastutil/Hash$Strategy;)V", false));
+                                if (LoliConfig.instance.furnaceExperienceVanilla) {
+                                    break outer;
+                                }
                                 isExperienceList = true;
                             } else {
                                 iter.add(new TypeInsnNode(NEW, "it/unimi/dsi/fastutil/objects/Object2FloatOpenCustomHashMap"));

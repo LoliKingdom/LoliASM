@@ -1,13 +1,11 @@
 package zone.rong.loliasm.common.recipes.mixins;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.fml.common.FMLLog;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
+import zone.rong.loliasm.config.LoliConfig;
 
 import java.util.Map;
 
@@ -23,6 +21,8 @@ public abstract class FurnaceRecipesMixin {
     @Shadow @Final private Map<ItemStack, ItemStack> smeltingList;
     @Shadow @Final private Map<ItemStack, Float> experienceList;
 
+    @Shadow protected abstract boolean compareItemStacks(ItemStack stack1, ItemStack stack2);
+
     /**
      * @author Rongmario
      * @reason Use Object2FloatMap#put
@@ -33,7 +33,16 @@ public abstract class FurnaceRecipesMixin {
             FMLLog.log.info("Ignored smelting recipe with conflicting input: {} = {}", input, stack); return;
         }
         this.smeltingList.put(input, stack);
-        ((Object2FloatMap<ItemStack>) this.experienceList).put(stack, experience);
+        if (LoliConfig.instance.furnaceExperienceMost) {
+            float prevExperience = ((Object2FloatMap<ItemStack>) experienceList).getFloat(stack);
+            if (experience > prevExperience) {
+                ((Object2FloatMap<ItemStack>) experienceList).put(stack, experience);
+            }
+        } else if (LoliConfig.instance.furnaceExperienceVanilla) {
+            this.experienceList.put(stack, experience);
+        } else {
+            this.experienceList.putIfAbsent(stack, experience);
+        }
     }
 
     /**
@@ -54,7 +63,15 @@ public abstract class FurnaceRecipesMixin {
     public float getSmeltingExperience(ItemStack stack) {
         float exp = stack.getItem().getSmeltingExperience(stack);
         if (exp == -1) {
-            return ((Object2FloatMap<ItemStack>) this.experienceList).getFloat(stack);
+            if (LoliConfig.instance.furnaceExperienceVanilla) {
+                for (Map.Entry<ItemStack, Float> entry : this.experienceList.entrySet()) {
+                    if (this.compareItemStacks(stack, entry.getKey())) {
+                        return entry.getValue();
+                    }
+                }
+            } else {
+                return ((Object2FloatMap<ItemStack>) this.experienceList).getFloat(stack);
+            }
         }
         return exp;
     }

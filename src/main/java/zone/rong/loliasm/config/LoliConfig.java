@@ -74,6 +74,7 @@ public class LoliConfig {
     public boolean fixAmuletHolderCapability;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
     public boolean sparkProfileEntireGameLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads;
+    public boolean furnaceExperienceFCFS, furnaceExperienceVanilla, furnaceExperienceMost;
 
     private void initialize() {
         configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
@@ -154,6 +155,10 @@ public class LoliConfig {
         sparkProfileLoadCompleteStage = getBoolean("sparkProfileLoadCompleteStage", "spark", "When Spark is installed, profile the loading of FMLLoadCompleteEvent stage", false);
         includeAllThreadsWhenProfiling = getBoolean("includeAllThreadsWhenProfiling", "spark", "Allow LoliASM's Spark profiling to include all threads that are present", true);
         sparkSummarizeHeapSpaceAfterGameLoads = getBoolean("sparkSummarizeHeapSpaceAfterGameLoads", "spark", "When Spark is installed, summarize the heap space (/spark heapsummary) when the game finishes loading", false);
+
+        furnaceExperienceFCFS = getBoolean("furnaceExperienceFCFS", "furnace", "When optimizeFurnaceRecipeStore is true, experience is determined by who registers the entry first, this is also the fallback option if all three options aren't true", true);
+        furnaceExperienceVanilla = getBoolean("furnaceExperienceVanilla", "furnace", "When optimizeFurnaceRecipeStore is true, experience is determined the vanilla way, this method is the most inefficient and random", false);
+        furnaceExperienceMost = getBoolean("furnaceExperienceMost", "furnace", "When optimizeFurnaceRecipeStore is true, experience is determined by whichever entry gives the most experience", false);
 
         configuration.save();
     }
