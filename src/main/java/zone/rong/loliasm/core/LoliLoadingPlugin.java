@@ -1,22 +1,23 @@
 package zone.rong.loliasm.core;
 
+import com.google.common.collect.Lists;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.SystemUtils;
-import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.mixin.Mixins;
 import zone.rong.loliasm.UnsafeLolis;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.spark.LoliSparker;
+import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -24,9 +25,9 @@ import java.util.zip.ZipFile;
 
 @IFMLLoadingPlugin.Name("LoliASM")
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
-public class LoliLoadingPlugin implements IFMLLoadingPlugin {
+public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
-    public static final String VERSION = "4.6";
+    public static final String VERSION = "4.7";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
 
@@ -89,41 +90,6 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
                 }
             }
         }
-        MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.internal.json");
-        Mixins.addConfiguration("mixins.vanities.json");
-        if (LoliConfig.instance.optimizeRegistries) {
-            Mixins.addConfiguration("mixins.registries.json");
-        }
-        if (LoliConfig.instance.stripNearUselessItemStackFields) {
-            Mixins.addConfiguration("mixins.stripitemstack.json");
-        }
-        if (LoliConfig.instance.lockCodeCanonicalization) {
-            Mixins.addConfiguration("mixins.lockcode.json");
-        }
-        if (LoliConfig.instance.optimizeFurnaceRecipeStore) {
-            Mixins.addConfiguration("mixins.recipes.json");
-        }
-        if (LoliConfig.instance.quickerEnableUniversalBucketCheck) {
-            Mixins.addConfiguration("mixins.misc_fluidregistry.json");
-        }
-        if (LoliConfig.instance.fixFillBucketEventNullPointerException || LoliConfig.instance.fixTileEntityOnLoadCME) {
-            Mixins.addConfiguration("mixins.forgefixes.json");
-        }
-        if (isClient) {
-            if (LoliConfig.instance.reuseBucketQuads) {
-                Mixins.addConfiguration("mixins.bucket.json");
-            }
-            if (LoliConfig.instance.optimizeSomeRendering) {
-                Mixins.addConfiguration("mixins.rendering.json");
-            }
-            if (LoliConfig.instance.moreModelManagerCleanup) {
-                Mixins.addConfiguration("mixins.datastructures_modelmanager.json");
-            }
-            if (LoliConfig.instance.releaseScreenshotCache) {
-                Mixins.addConfiguration("mixins.screenshot.json");
-            }
-        }
     }
 
     @Override
@@ -147,6 +113,63 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin {
     @Override
     public String getAccessTransformerClass() {
         return "zone.rong.loliasm.core.LoliTransformer";
+    }
+
+    @Override
+    public List<String> getMixinConfigs() {
+        List<String> mixinConfigs = Lists.newArrayList(
+                "mixins.internal.json",
+                "mixins.vanities.json",
+                "mixins.registries.json",
+                "mixins.stripitemstack.json",
+                "mixins.lockcode.json",
+                "mixins.recipes.json",
+                "mixins.misc_fluidregistry.json",
+                "mixins.forgefixes.json");
+        if (isClient) {
+            mixinConfigs.add("mixins.bucket.json");
+            mixinConfigs.add("mixins.rendering.json");
+            mixinConfigs.add("mixins.datastructures_modelmanager.json");
+            mixinConfigs.add("mixins.screenshot.json");
+        }
+        return mixinConfigs;
+    }
+
+    @Override
+    public boolean shouldMixinConfigQueue(String mixinConfig) {
+        if (isClient) {
+            if ("mixins.bucket.json".equals(mixinConfig)) {
+                return LoliConfig.instance.reuseBucketQuads;
+            }
+            if ("mixins.rendering.json".equals(mixinConfig)) {
+                return LoliConfig.instance.optimizeSomeRendering;
+            }
+            if ("mixins.datastructures_modelmanager.json".equals(mixinConfig)) {
+                return LoliConfig.instance.moreModelManagerCleanup;
+            }
+            if ("mixins.screenshot.json".equals(mixinConfig)) {
+                return LoliConfig.instance.releaseScreenshotCache;
+            }
+        }
+        if ("mixins.registries.json".equals(mixinConfig)) {
+            return LoliConfig.instance.optimizeRegistries;
+        }
+        if ("mixins.stripitemstack.json".equals(mixinConfig)) {
+            return LoliConfig.instance.stripNearUselessItemStackFields;
+        }
+        if ("mixins.lockcode.json".equals(mixinConfig)) {
+            return LoliConfig.instance.lockCodeCanonicalization;
+        }
+        if ("mixins.recipes.json".equals(mixinConfig)) {
+            return LoliConfig.instance.optimizeFurnaceRecipeStore;
+        }
+        if ("mixins.misc_fluidregistry.json".equals(mixinConfig)) {
+            return LoliConfig.instance.quickerEnableUniversalBucketCheck;
+        }
+        if ("mixins.forgefixes.json".equals(mixinConfig)) {
+            return LoliConfig.instance.fixFillBucketEventNullPointerException || LoliConfig.instance.fixTileEntityOnLoadCME;
+        }
+        return true;
     }
 
 }

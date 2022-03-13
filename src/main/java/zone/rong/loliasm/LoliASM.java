@@ -12,7 +12,7 @@ import zone.rong.loliasm.proxy.CommonProxy;
 import java.io.*;
 import java.util.*;
 
-@Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION, dependencies = "required-after:mixinbooter;after:jei;after:spark@[1.5.2,)")
+@Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION, dependencies = "required-after:mixinbooter@[4.2,);after:jei;after:spark@[1.5.2,)")
 @Mod.EventBusSubscriber
 public class LoliASM {
 
