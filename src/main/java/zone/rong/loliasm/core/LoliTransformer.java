@@ -30,7 +30,8 @@ public class LoliTransformer implements IClassTransformer {
     public LoliTransformer() {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
         isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
-        if (squashBakedQuads && (squashBakedQuads = !isOptifineInstalled)) {
+        if (squashBakedQuads && isOptifineInstalled) {
+            squashBakedQuads = false;
             LoliLogger.instance.info("Optifine is installed. BakedQuads won't be squashed as it is incompatible with OptiFine.");
         }
         transformations = MultimapBuilder.hashKeys(30).arrayListValues(1).build();

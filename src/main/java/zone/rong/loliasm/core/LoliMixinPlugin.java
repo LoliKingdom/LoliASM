@@ -13,7 +13,7 @@ import java.util.Set;
 public class LoliMixinPlugin implements IMixinConfigPlugin {
 
     static {
-        if (LoliTransformer.squashBakedQuads) {
+        if (LoliLoadingPlugin.isClient && LoliTransformer.squashBakedQuads) {
             BakedQuadRedirectorFactory.generateRedirectorClass();
         }
     }
