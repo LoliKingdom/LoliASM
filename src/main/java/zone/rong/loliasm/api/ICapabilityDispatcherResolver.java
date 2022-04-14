@@ -12,4 +12,9 @@ public interface ICapabilityDispatcherResolver {
 
     CapabilityDispatcher initDispatcher(ResourceLocation capabilityKey, ICapabilityProvider provider);
 
+    CapabilityDispatcher getCap();
+
+    Boolean isInited();
+
+    void initCaps();
 }
