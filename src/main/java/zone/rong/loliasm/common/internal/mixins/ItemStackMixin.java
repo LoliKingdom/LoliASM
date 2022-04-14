@@ -9,7 +9,6 @@ import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.registries.IRegistryDelegate;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,7 +19,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 
 @Mixin( value = ItemStack.class, remap = false )
-public class ItemStackMixin implements ICapabilityDispatcherResolver
+public abstract class ItemStackMixin implements ICapabilityDispatcherResolver
 {
 
 	public boolean initedCaps = false;
@@ -30,9 +29,8 @@ public class ItemStackMixin implements ICapabilityDispatcherResolver
 	private CapabilityDispatcher capabilities;
 	@Shadow
 	private IRegistryDelegate<Item> delegate;
-	@Final
-	@Shadow
-	private Item item;
+
+	@Shadow @Nullable protected abstract Item getItemRaw();
 
 	@Override
 	public CapabilityDispatcher getCap()
@@ -126,6 +124,7 @@ public class ItemStackMixin implements ICapabilityDispatcherResolver
 	@Overwrite
 	private void forgeInit()
 	{
+		Item item = this.getItemRaw();
 		if( item != null )
 		{
 			this.delegate = item.delegate;
@@ -135,12 +134,16 @@ public class ItemStackMixin implements ICapabilityDispatcherResolver
 	public void initCaps()
 	{
 		initedCaps = true;
-		ICapabilityProvider provider = item.initCapabilities( (ItemStack) (Object) this, this.capNBT );
-		this.capabilities = ForgeEventFactory.gatherCapabilities( ( (ItemStack) (Object) this ), provider );
-        if( this.capNBT != null && this.capabilities != null )
-        {
-            this.capabilities.deserializeNBT( this.capNBT );
-        }
+		Item item = this.getItemRaw();
+		if ( item != null )
+		{
+			ICapabilityProvider provider = item.initCapabilities( (ItemStack) (Object) this, this.capNBT );
+			this.capabilities = ForgeEventFactory.gatherCapabilities( ( (ItemStack) (Object) this ), provider );
+			if( this.capNBT != null && this.capabilities != null )
+			{
+				this.capabilities.deserializeNBT( this.capNBT );
+			}
+		}
 	}
 
 	@Override
