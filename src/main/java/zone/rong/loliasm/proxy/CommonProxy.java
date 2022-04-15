@@ -87,7 +87,7 @@ public class CommonProxy {
         if (LoliConfig.instance.filePermissionsCacheCanonicalization) {
             MinecraftForge.EVENT_BUS.register(JavaFixes.INSTANCE);
         }
-        if (LoliConfig.instance.sparkSummarizeHeapSpaceAfterGameLoads) {
+        if (LoliConfig.instance.sparkSummarizeHeapSpaceAfterGameLoads && Loader.isModLoaded("spark")) {
             LoliSparker.checkHeap(true, true);
         }
     }
