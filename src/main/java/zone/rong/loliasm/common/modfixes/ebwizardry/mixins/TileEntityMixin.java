@@ -3,7 +3,6 @@ package zone.rong.loliasm.common.modfixes.ebwizardry.mixins;
 import electroblob.wizardry.spell.ArcaneLock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Mixin;

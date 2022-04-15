@@ -7,7 +7,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
 
-public interface IDelayCapabilityDispatcher {
+/**
+ * {@link net.minecraftforge.common.capabilities.CapabilityDispatcher} implements this at runtime.
+ *
+ * This interface allows internal manipulation of capabilities, mainly injection and stripping of capabilities.
+ */
+public interface ICapabilityDispatcherManipulator {
 
     void injectCapability(String name, ICapabilityProvider provider);
 

@@ -125,7 +125,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 "mixins.lockcode.json",
                 "mixins.recipes.json",
                 "mixins.misc_fluidregistry.json",
-                "mixins.forgefixes.json");
+                "mixins.forgefixes.json",
+                "mixins.capability.json");
         if (isClient) {
             mixinConfigs.add("mixins.bucket.json");
             mixinConfigs.add("mixins.rendering.json");
@@ -138,36 +139,32 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     @Override
     public boolean shouldMixinConfigQueue(String mixinConfig) {
         if (isClient) {
-            if ("mixins.bucket.json".equals(mixinConfig)) {
-                return LoliConfig.instance.reuseBucketQuads;
-            }
-            if ("mixins.rendering.json".equals(mixinConfig)) {
-                return LoliConfig.instance.optimizeSomeRendering;
-            }
-            if ("mixins.datastructures_modelmanager.json".equals(mixinConfig)) {
-                return LoliConfig.instance.moreModelManagerCleanup;
-            }
-            if ("mixins.screenshot.json".equals(mixinConfig)) {
-                return LoliConfig.instance.releaseScreenshotCache;
+            switch (mixinConfig) {
+                case "mixins.bucket.json":
+                    return LoliConfig.instance.reuseBucketQuads;
+                case "mixins.rendering.json":
+                    return LoliConfig.instance.optimizeSomeRendering;
+                case "mixins.datastructures_modelmanager.json":
+                    return LoliConfig.instance.moreModelManagerCleanup;
+                case "mixins.screenshot.json":
+                    return LoliConfig.instance.releaseScreenshotCache;
             }
         }
-        if ("mixins.registries.json".equals(mixinConfig)) {
-            return LoliConfig.instance.optimizeRegistries;
-        }
-        if ("mixins.stripitemstack.json".equals(mixinConfig)) {
-            return LoliConfig.instance.stripNearUselessItemStackFields;
-        }
-        if ("mixins.lockcode.json".equals(mixinConfig)) {
-            return LoliConfig.instance.lockCodeCanonicalization;
-        }
-        if ("mixins.recipes.json".equals(mixinConfig)) {
-            return LoliConfig.instance.optimizeFurnaceRecipeStore;
-        }
-        if ("mixins.misc_fluidregistry.json".equals(mixinConfig)) {
-            return LoliConfig.instance.quickerEnableUniversalBucketCheck;
-        }
-        if ("mixins.forgefixes.json".equals(mixinConfig)) {
-            return LoliConfig.instance.fixFillBucketEventNullPointerException || LoliConfig.instance.fixTileEntityOnLoadCME;
+        switch (mixinConfig) {
+            case "mixins.registries.json":
+                return LoliConfig.instance.optimizeRegistries;
+            case "mixins.stripitemstack.json":
+                return LoliConfig.instance.stripNearUselessItemStackFields;
+            case "mixins.lockcode.json":
+                return LoliConfig.instance.lockCodeCanonicalization;
+            case "mixins.recipes.json":
+                return LoliConfig.instance.optimizeFurnaceRecipeStore;
+            case "mixins.misc_fluidregistry.json":
+                return LoliConfig.instance.quickerEnableUniversalBucketCheck;
+            case "mixins.forgefixes.json":
+                return LoliConfig.instance.fixFillBucketEventNullPointerException || LoliConfig.instance.fixTileEntityOnLoadCME;
+            case "mixins.capability.json":
+                return LoliConfig.instance.delayItemStackCapabilityInit;
         }
         return true;
     }

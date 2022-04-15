@@ -6,8 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
-import zone.rong.loliasm.api.ICapabilityDispatcherResolver;
-import zone.rong.loliasm.api.IDelayCapabilityDispatcher;
+import zone.rong.loliasm.api.IItemStackCapabilityInjector;
+import zone.rong.loliasm.api.ICapabilityDispatcherManipulator;
 
 @Mixin(value = EnchantmentUpgradeHelper.class, remap = false)
 public class EnchantmentUpgradeHelperMixin {
@@ -21,7 +21,7 @@ public class EnchantmentUpgradeHelperMixin {
         AmuletHolderCapability cap = tool.getCapability(AmuletHolderCapability.CAPABILITY_AMULET_HOLDER, null);
         if (cap == null) {
             AmuletHolderCapability.Provider provider = new AmuletHolderCapability.Provider();
-            ((ICapabilityDispatcherResolver) (Object) tool).initDispatcher(AmuletHolderCapability.CAP_AMULETHOLDER_NAME, provider);
+            ((IItemStackCapabilityInjector) (Object) tool).initDispatcher(AmuletHolderCapability.CAP_AMULETHOLDER_NAME, provider);
             ((AmuletHolderCapabilityProviderAccessor) provider).loliasm$defaultImplFastAccess().setHolderUUID(wearer.getUniqueID());
         } else {
             cap.setHolderUUID(wearer.getUniqueID());
@@ -36,7 +36,7 @@ public class EnchantmentUpgradeHelperMixin {
     private static void removeAmuletOwner(ItemStack tool) {
         AmuletHolderCapability cap = tool.getCapability(AmuletHolderCapability.CAPABILITY_AMULET_HOLDER, null);
         if (cap != null) {
-            ((IDelayCapabilityDispatcher) (Object) ((ICapabilityDispatcherResolver) (Object) tool).getDispatcher()).stripCapability(AmuletHolderCapability.CAP_AMULETHOLDER_NAME, AmuletHolderCapability.CAPABILITY_AMULET_HOLDER, null, cap);
+            ((ICapabilityDispatcherManipulator) (Object) ((IItemStackCapabilityInjector) (Object) tool).getDispatcher()).stripCapability(AmuletHolderCapability.CAP_AMULETHOLDER_NAME, AmuletHolderCapability.CAPABILITY_AMULET_HOLDER, null, cap);
         }
     }
 

@@ -71,7 +71,7 @@ public class LoliConfig {
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching, copyScreenshotToClipboard, releaseScreenshotCache;
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash;
-    public boolean fixAmuletHolderCapability;
+    public boolean fixAmuletHolderCapability, delayItemStackCapabilityInit;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
     public boolean sparkProfileEntireGameLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads;
     public boolean furnaceExperienceFCFS, furnaceExperienceVanilla, furnaceExperienceMost;
@@ -141,6 +141,7 @@ public class LoliConfig {
         fixXU2CrafterCrash = getBoolean("fixXU2CrafterCrash", "modfixes", "When Extra Utilities 2 is installed, fix poor semantics in mechanical crafter's rendering that leads to crashes", true);
 
         fixAmuletHolderCapability = getBoolean("fixAmuletHolderCapability", "capability", "Fixes Astral Sorcery applying AmuletHolderCapability to large amount of ItemStacks when it isn't needed. This option will be ignored when Astral Sorcery isn't installed", true);
+        delayItemStackCapabilityInit = getBoolean("delayItemStackCapabilityInit", "capability", "Delays ItemStack's capabilities from being initialized until they needed to be", true);
 
         fixFillBucketEventNullPointerException = getBoolean("fixFillBucketEventNullPointerException", "forgefixes", "Fixes Forge's mistake of annotating FillBucketEvent#getFilledBucket as @Nonnull when the contract isn't fulfilled nor checked. First discovered here: https://github.com/Divine-Journey-2/main/issues/295", true);
         fixTileEntityOnLoadCME = getBoolean("fixTileEntityOnLoadCME", "forgefixes", "Fixes a vanilla-forge code interaction bug leading to a possible ConcurrentModificationException/StackOverflowError crash. First discovered here: https://github.com/GregTechCE/GregTech/issues/1256", true);
