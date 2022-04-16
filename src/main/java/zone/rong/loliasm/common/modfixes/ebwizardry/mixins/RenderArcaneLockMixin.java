@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import zone.rong.loliasm.common.modfixes.ebwizardry.ArcaneLocks;
 
-import java.lang.ref.WeakReference;
 import java.util.Iterator;
 
 @Mixin(value = RenderArcaneLock.class, remap = false)
@@ -40,17 +39,15 @@ public abstract class RenderArcaneLockMixin {
     @Overwrite
     @SubscribeEvent
     public static void onRenderWorldLastEvent(RenderWorldLastEvent event) {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        Vec3d origin = null;
-        boolean hasSetupBuffer = false;
-        boolean lighting = false;
         if (ArcaneLocks.ARCANE_LOCKED_TILES.isEmpty()) {
             return;
         }
-        for (Iterator<WeakReference<TileEntity>> iter = ArcaneLocks.ARCANE_LOCKED_TILES.iterator(); iter.hasNext();) {
-            TileEntity lockedTile = iter.next().get();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = null;
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        Vec3d origin = null;
+        for (Iterator<TileEntity> iter = ArcaneLocks.ARCANE_LOCKED_TILES.iterator(); iter.hasNext();) {
+            TileEntity lockedTile = iter.next();
             if (lockedTile == null || lockedTile.isInvalid()) {
                 iter.remove();
                 continue;
@@ -59,17 +56,16 @@ public abstract class RenderArcaneLockMixin {
                 origin = player.getPositionEyes(event.getPartialTicks());
             }
             if (lockedTile.getDistanceSq(origin.x, origin.y, origin.z) <= lockedTile.getMaxRenderDistanceSquared()) {
-                if (!hasSetupBuffer) {
-                    hasSetupBuffer = true;
+                if (buffer == null) {
+                    buffer = tessellator.getBuffer();
                     GlStateManager.pushMatrix();
                     GlStateManager.enableBlend();
-                    lighting = GL11.glIsEnabled(GL11.GL_LIGHTING);
                     GlStateManager.disableLighting();
                     OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
                     GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                     GlStateManager.translate(-origin.x, -origin.y + player.getEyeHeight(), -origin.z);
                     GlStateManager.color(1, 1, 1, 1);
-                    Minecraft.getMinecraft().renderEngine.bindTexture(TEXTURES[(player.ticksExisted % (TEXTURES.length * 2))/2]);
+                    Minecraft.getMinecraft().renderEngine.bindTexture(TEXTURES[(player.ticksExisted % (TEXTURES.length * 2)) / 2]);
                     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
                 }
                 Vec3d[] vertices = GeometryUtils.getVertices(lockedTile.getRenderBoundingBox().grow(0.05).offset(lockedTile.getPos()));
@@ -81,13 +77,11 @@ public abstract class RenderArcaneLockMixin {
                 drawFace(buffer, vertices[5], vertices[4], vertices[6], vertices[7], 0, 0, 1, 1); // Top
             }
         }
-        if (hasSetupBuffer) {
+        if (buffer != null) {
             tessellator.draw();
             GlStateManager.disableBlend();
             GlStateManager.enableTexture2D();
-            if (lighting) {
-                GlStateManager.enableLighting();
-            }
+            GlStateManager.enableLighting();
             GlStateManager.disableRescaleNormal();
             GlStateManager.popMatrix();
         }

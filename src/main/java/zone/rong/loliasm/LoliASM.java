@@ -1,6 +1,8 @@
 package zone.rong.loliasm;
 
 import codechicken.asm.ClassHierarchyManager;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -11,6 +13,7 @@ import zone.rong.loliasm.proxy.CommonProxy;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 @Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION, dependencies = "required-after:mixinbooter@[4.2,);after:jei;after:spark@[1.5.2,)")
 @Mod.EventBusSubscriber
@@ -20,6 +23,8 @@ public class LoliASM {
     public static CommonProxy proxy;
 
     public static List<RegistrySimpleExtender> simpleRegistryInstances = new ArrayList<>();
+
+    public static BiConsumer<TileEntity, NBTTagCompound> customTileDataConsumer;
 
     static {
         if (LoliConfig.instance.cleanupChickenASMClassHierarchyManager && LoliReflector.doesClassExist("codechicken.asm.ClassHierarchyManager")) {

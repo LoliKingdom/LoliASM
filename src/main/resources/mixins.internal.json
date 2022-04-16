@@ -8,5 +8,8 @@
     "CapabilityDispatcherMixin",
     "ItemStackMixin",
     "LoadControllerMixin"
+  ],
+  "client": [
+    "TileEntityMixin"
   ]
 }

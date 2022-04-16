@@ -18,6 +18,7 @@ import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
 import zone.rong.loliasm.common.java.JavaFixes;
 import zone.rong.loliasm.common.modfixes.betterwithmods.BWMBlastingOilOptimization;
+import zone.rong.loliasm.common.modfixes.ebwizardry.ArcaneLocks;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.spark.LoliSparker;
 
@@ -66,6 +67,9 @@ public class CommonProxy {
             if (!Gameplay.disableBlastingOilEvents) {
                 MinecraftForge.EVENT_BUS.register(BWMBlastingOilOptimization.class);
             }
+        }
+        if (Loader.isModLoaded("ebwizardry") && LoliConfig.instance.optimizeArcaneLockRendering) {
+            LoliASM.customTileDataConsumer = ArcaneLocks.TRACK_ARCANE_TILES;
         }
     }
 
