@@ -113,6 +113,8 @@ dependencies {
     deobfProvided "curse.maven:treasure2-289760:3758107"
     deobfProvided "curse.maven:time-speed-mod-221053:2991593"
     deobfCompile "curse.maven:gregtech-ce-unofficial-557242:3745499"
+    deobfCompile "curse.maven:storage-drawers-223852:2952606" // Storage Drawers 5.4.2
+    compile "curse.maven:chameleon-230497:2450900" // Chameleon Lib4.1.3
 }
 
 processResources {
