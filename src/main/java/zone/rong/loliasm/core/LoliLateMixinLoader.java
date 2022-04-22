@@ -2,7 +2,6 @@ package zone.rong.loliasm.core;
 
 import com.google.common.collect.Lists;
 import net.minecraftforge.fml.common.Loader;
-import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.mixinbooter.ILateMixinLoader;
 
@@ -37,7 +36,7 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
             return LoliConfig.instance.optimizeArcaneLockRendering && Loader.isModLoaded("ebwizardry");
         }
         if ("mixins.modfixes_xu2.json".equals(mixinConfig)) {
-            return LoliConfig.instance.fixXU2CrafterCrash && Loader.isModLoaded("extrautils2");
+            return (LoliConfig.instance.fixXU2CrafterCrash || LoliConfig.instance.disableXU2CrafterRendering) && Loader.isModLoaded("extrautils2");
         }
         if (Loader.isModLoaded("astralsorcery")) {
             if ("mixins.modfixes_astralsorcery.json".equals(mixinConfig)) {

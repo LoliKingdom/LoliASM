@@ -138,7 +138,8 @@ public class LoliConfig {
         optimizeQMDBeamRenderer = getBoolean("optimizeQMDBeamRenderer", "modfixes", "When QMD is installed, optimize its BeamRenderer. The original implementation harms client performance heavily (takes ~5% of each tick time). This option will be ignored when QMD isn't installed", true);
         repairEvilCraftEIOCompat = getBoolean("repairEvilCraftEIOCompat", "modfixes", "When EvilCraft Compat + EnderIO is installed, repair the compatibility module", true);
         optimizeArcaneLockRendering = getBoolean("optimizeArcaneLockRendering", "modfixes", "When Electroblob's Wizardry is installed, optimize the search for arcane locked tile entities to render", true);
-        fixXU2CrafterCrash = getBoolean("fixXU2CrafterCrash", "modfixes", "When Extra Utilities 2 is installed, fix poor semantics in mechanical crafter's rendering that leads to crashes", true);
+        fixXU2CrafterCrash = getBoolean("fixXU2CrafterCrash", "modfixes", "When Extra Utilities 2 is installed, fix and optimize mechanical crafter's rendering", true);
+        disableXU2CrafterRendering = getBoolean("disableXU2CrafterRendering", "modfixes", "When Extra Utilities 2 is installed, disable the crafter's rendering of the item being crafted, this can reduce lag, ignores fixXU2CrafterCrash config option", false);
 
         fixAmuletHolderCapability = getBoolean("fixAmuletHolderCapability", "capability", "Fixes Astral Sorcery applying AmuletHolderCapability to large amount of ItemStacks when it isn't needed. This option will be ignored when Astral Sorcery isn't installed", true);
         delayItemStackCapabilityInit = getBoolean("delayItemStackCapabilityInit", "capability", "Delays ItemStack's capabilities from being initialized until they needed to be", true);
