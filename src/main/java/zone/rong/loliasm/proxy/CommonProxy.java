@@ -20,7 +20,6 @@ import zone.rong.loliasm.common.java.JavaFixes;
 import zone.rong.loliasm.common.modfixes.betterwithmods.BWMBlastingOilOptimization;
 import zone.rong.loliasm.common.modfixes.ebwizardry.ArcaneLocks;
 import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.spark.LoliSparker;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -90,9 +89,6 @@ public class CommonProxy {
         }
         if (LoliConfig.instance.filePermissionsCacheCanonicalization) {
             MinecraftForge.EVENT_BUS.register(JavaFixes.INSTANCE);
-        }
-        if (LoliConfig.instance.sparkSummarizeHeapSpaceAfterGameLoads && Loader.isModLoaded("spark")) {
-            LoliSparker.checkHeap(true, true);
         }
     }
 

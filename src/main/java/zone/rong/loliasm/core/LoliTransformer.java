@@ -44,7 +44,9 @@ public class LoliTransformer implements IClassTransformer {
                 addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad$Builder", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad$Builder);
                 addTransformation("zone.rong.loliasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
                 for (String classThatExtendBakedQuad : LoliConfig.instance.classesThatExtendBakedQuad) {
-                    addTransformation(classThatExtendBakedQuad, this::extendSupportingBakedQuadInstead);
+                    if (!classThatExtendBakedQuad.trim().isEmpty()) {
+                        addTransformation(classThatExtendBakedQuad, this::extendSupportingBakedQuadInstead);
+                    }
                 }
             } else if (LoliConfig.instance.vertexDataCanonicalization) {
                 addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", this::canonicalizeVertexData);

@@ -70,10 +70,10 @@ public class LoliConfig {
     public boolean releaseSpriteFramesCache;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching, copyScreenshotToClipboard, releaseScreenshotCache;
-    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash;
+    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash, disableXU2CrafterRendering;
     public boolean fixAmuletHolderCapability, delayItemStackCapabilityInit;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
-    public boolean sparkProfileEntireGameLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads;
+    public boolean sparkProfileEntireGameLoad, sparkProfileEntireWorldLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, sparkProfileFinalizingStage, sparkProfileWorldAboutToStartStage, sparkProfileWorldStartingStage, sparkProfileWorldStartedStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads, sparkSummarizeHeapSpaceAfterWorldLoads;
     public boolean furnaceExperienceFCFS, furnaceExperienceVanilla, furnaceExperienceMost;
 
     private void initialize() {
@@ -149,14 +149,20 @@ public class LoliConfig {
         fasterEntitySpawnPreparation = getBoolean("fasterEntitySpawnPreparation", "forgefixes", "Fixes Forge's EntityEntry calling a slow Constructor::newInstance call every time an entity spawns, it is replaced with a fast Function::get generated from LambdaMetafactory#metafactory", true);
 
         sparkProfileEntireGameLoad = getBoolean("sparkProfileEntireGameLoad", "spark", "When Spark is installed, profile the loading of the game in its entirety", false);
+        sparkProfileEntireWorldLoad = getBoolean("sparkProfileEntireWorldLoad", "spark", "When Spark is installed, profile the loading of the world in its entirety", false);
         sparkProfileCoreModLoading = getBoolean("sparkProfileCoreModLoading", "spark", "When Spark is installed, profile the loading of coremods, but only those that load after LoliASM", false);
         sparkProfileConstructionStage = getBoolean("sparkProfileConstructionStage", "spark", "When Spark is installed, profile the loading of FMLConstructionEvent stage", false);
         sparkProfilePreInitializationStage = getBoolean("sparkProfilePreInitializationStage", "spark", "When Spark is installed, profile the loading of FMLPreInitializationEvent stage", false);
         sparkProfileInitializationStage = getBoolean("sparkProfileInitializationStage", "spark", "When Spark is installed, profile the loading of FMLInitializationEvent stage", false);
         sparkProfilePostInitializationStage = getBoolean("sparkProfilePostInitializationStage", "spark", "When Spark is installed, profile the loading of FMLPostInitializationEvent stage", false);
         sparkProfileLoadCompleteStage = getBoolean("sparkProfileLoadCompleteStage", "spark", "When Spark is installed, profile the loading of FMLLoadCompleteEvent stage", false);
+        sparkProfileFinalizingStage = getBoolean("sparkProfileFinalizingStage",  "spark", "When Spark is installed, profile the loading of FMLModIdMappingEvent stage, this is the last event fired before the game is finalized", false);
+        sparkProfileWorldAboutToStartStage = getBoolean("sparkProfileWorldAboutToStartStage", "spark", "When Spark is installed, profile the loading of FMLServerAboutToStartEvent stage", false);
+        sparkProfileWorldStartingStage = getBoolean("sparkProfileWorldStartingStage", "spark", "When Spark is installed, profile the loading of FMLServerStartingEvent stage", false);
+        sparkProfileWorldStartedStage = getBoolean("sparkProfileWorldStartedStage", "spark", "When Spark is installed, profile the loading of FMLServerStartedEvent stage", false);
         includeAllThreadsWhenProfiling = getBoolean("includeAllThreadsWhenProfiling", "spark", "Allow LoliASM's Spark profiling to include all threads that are present", true);
         sparkSummarizeHeapSpaceAfterGameLoads = getBoolean("sparkSummarizeHeapSpaceAfterGameLoads", "spark", "When Spark is installed, summarize the heap space (/spark heapsummary) when the game finishes loading", false);
+        sparkSummarizeHeapSpaceAfterWorldLoads = getBoolean("sparkSummarizeHeapSpaceAfterWorldLoads", "spark", "When Spark is installed, summarize the heap space (/spark heapsummary) when the world finishes loading", false);
 
         furnaceExperienceFCFS = getBoolean("furnaceExperienceFCFS", "furnace", "When optimizeFurnaceRecipeStore is true, experience is determined by who registers the entry first, this is also the fallback option if all three options aren't true", true);
         furnaceExperienceVanilla = getBoolean("furnaceExperienceVanilla", "furnace", "When optimizeFurnaceRecipeStore is true, experience is determined the vanilla way, this method is the most inefficient and random", false);
