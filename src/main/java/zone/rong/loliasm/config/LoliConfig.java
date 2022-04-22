@@ -70,7 +70,7 @@ public class LoliConfig {
     public boolean releaseSpriteFramesCache, onDemandAnimatedTextures;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching, copyScreenshotToClipboard, releaseScreenshotCache, asyncScreenshot, removeExcessiveGCCalls, smoothDimensionChange;
-    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash, disableXU2CrafterRendering, fixTFCFallingBlockFalseStartingTEPos;
+    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash, disableXU2CrafterRendering, fixTFCFallingBlockFalseStartingTEPos, fixDrawersItemHandlers;
     public boolean fixAmuletHolderCapability, delayItemStackCapabilityInit;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
     public boolean fixMC30845, fixMC31681, fixMC129057, fixMC129556, resolveMC2071, limitSkinDownloadingThreads, fixMC88176;
@@ -150,6 +150,7 @@ public class LoliConfig {
         fixXU2CrafterCrash = getBoolean("fixXU2CrafterCrash", "modfixes", "When Extra Utilities 2 is installed, fix and optimize mechanical crafter's rendering", true);
         disableXU2CrafterRendering = getBoolean("disableXU2CrafterRendering", "modfixes", "When Extra Utilities 2 is installed, disable the crafter's rendering of the item being crafted, this can reduce lag, ignores fixXU2CrafterCrash config option", false);
         fixTFCFallingBlockFalseStartingTEPos = getBoolean("fixTFCFallingBlockFalseStartingTEPos", "modfixes", "When TerraFirmaCraft is installed, fix the falling block's false starting position ", true);
+        fixDrawersItemHandlers = getBoolean("fixDrawersItemHandlers", "modfixes", "When Drawers is installed, fix the item handler issues of the Storage Drawers mod", true);
 
         fixAmuletHolderCapability = getBoolean("fixAmuletHolderCapability", "capability", "Fixes Astral Sorcery applying AmuletHolderCapability to large amount of ItemStacks when it isn't needed. This option will be ignored when Astral Sorcery isn't installed", true);
         delayItemStackCapabilityInit = getBoolean("delayItemStackCapabilityInit", "capability", "Delays ItemStack's capabilities from being initialized until they needed to be", true);

@@ -20,6 +20,7 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
                 "mixins.modfixes_ebwizardry.json",
                 "mixins.modfixes_xu2.json",
                 "mixins.modfixes_b3m.json",
+                "mixins.modfixes_storagedrawers.json",
                 "mixins.searchtree_mod.json");
     }
 
@@ -45,6 +46,8 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
                 return LoliConfig.instance.fixAmuletHolderCapability && Loader.isModLoaded("astralsorcery");
             case "mixins.modfixes_b3m.json":
                 return LoliConfig.instance.resourceLocationCanonicalization && Loader.isModLoaded("B3M"); // Stupid
+            case "mixins.modfixes_storagedrawers.json":
+                return LoliConfig.instance.fixDrawersItemHandlers && Loader.isModLoaded("StorageDrawers");
         }
         return false;
     }

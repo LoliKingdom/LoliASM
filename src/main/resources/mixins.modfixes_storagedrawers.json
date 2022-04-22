@@ -1,0 +1,15 @@
+{
+  "package": "zone.rong.loliasm.common.modfixes.storagedrawers.mixins",
+  "refmap": "mixins.loliasm.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ControllerDataMixin",
+    "DrawerItemHandlerMixin",
+    "FractionalDrawerGroupMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
