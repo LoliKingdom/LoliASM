@@ -22,3 +22,5 @@ eclipse
 run
 
 libs/spark-forge-deobf.jar
+
+logs/
