@@ -1,30 +1,15 @@
 package zone.rong.loliasm.core;
 
-import com.google.common.base.Stopwatch;
-import it.unimi.dsi.fastutil.chars.Char2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import it.unimi.dsi.fastutil.chars.Char2ObjectMaps;
-import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
-import mezz.jei.suffixtree.GeneralizedSuffixTree;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ModCandidate;
-import zone.rong.loliasm.LoliASM;
-import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.api.LoliStringPool;
 import zone.rong.loliasm.bakedquad.BakedQuadFactory;
 import zone.rong.loliasm.bakedquad.SupportingBakedQuad;
 import zone.rong.loliasm.config.LoliConfig;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("unused")
 public class LoliHooks {
@@ -58,6 +43,10 @@ public class LoliHooks {
 
     public static <K, V> Object2ObjectArrayMap<K, V> createArrayMap() {
         return new Object2ObjectArrayMap<>();
+    }
+
+    public static <K, V> Object2ObjectLinkedOpenHashMap<K, V> createLinkedMap() {
+        return new Object2ObjectLinkedOpenHashMap<>();
     }
 
     public static <K, V> Object2ObjectOpenHashMap<K, V> createHashMap() {

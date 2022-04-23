@@ -808,8 +808,8 @@ public class LoliTransformer implements IClassTransformer {
                                 break;
                             case "newLinkedHashMap":
                                 methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
-                                methodNode.name = "createArrayMap";
-                                methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/Object2ObjectArrayMap;";
+                                methodNode.name = "createLinkedMap";
+                                methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/Object2ObjectLinkedOpenHashMap;";
                                 break;
                             case "newHashMap":
                                 methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
