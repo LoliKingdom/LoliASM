@@ -44,7 +44,7 @@ public class ClientProxy extends CommonProxy {
         flushTinkerSpriteFrameTextureData = static$flushTinkerSpriteFrameTextureData;
     }
 
-    public static boolean canReload = false;
+    public static boolean canReload = true;
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
