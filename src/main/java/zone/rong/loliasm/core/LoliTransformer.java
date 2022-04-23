@@ -115,6 +115,9 @@ public class LoliTransformer implements IClassTransformer {
         if (LoliConfig.instance.optimizeQMDBeamRenderer) {
             addTransformation("lach_01298.qmd.render.entity.BeamRenderer", bytes -> stripSubscribeEventAnnotation(bytes, "renderBeamEffects"));
         }
+        if (LoliConfig.instance.fixTFCFallingBlockFalseStartingTEPos) {
+            addTransformation("net.dries007.tfc.objects.entity.EntityFallingBlockTFC", this::fixTFCFallingBlock);
+        }
         addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.nbtBackingMapStringCanonicalization));
     }
 
@@ -830,6 +833,35 @@ public class LoliTransformer implements IClassTransformer {
         }
 
         ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] fixTFCFallingBlock(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        all: for (MethodNode method : node.methods) {
+            if (method.name.equals("<init>") && method.desc.equals("(Lnet/minecraft/world/World;DDDLnet/minecraft/block/state/IBlockState;)V")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == NEW && ((TypeInsnNode) instruction).desc.equals("net/minecraft/util/math/BlockPos")) {
+                        iter.next(); // DUP
+                        iter.next();
+                        iter.set(new VarInsnNode(DLOAD, 2));
+                        iter.add(new VarInsnNode(DLOAD, 4));
+                        iter.add(new VarInsnNode(DLOAD, 6));
+                        MethodInsnNode currentInstruction = (MethodInsnNode) iter.next();
+                        currentInstruction.desc = "(DDD)V";
+                        break all;
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         node.accept(writer);
         return writer.toByteArray();
     }

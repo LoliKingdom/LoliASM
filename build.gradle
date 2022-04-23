@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "4.10"
+version = "4.10.1"
 group = "zone.rong.loliasm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "loliasm"
 
@@ -117,7 +117,7 @@ dependencies {
     deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
     deobfCompile "blusunrize:ImmersiveEngineering:0.12-92-+"
     deobfCompile "curse.maven:astral-sorcery-241721:3044416"
-    // deobfCompile "curse.maven:tfcraft-302973:3268988"
+    deobfCompile "curse.maven:tfcraft-302973:3268988"
     deobfCompile "curse.maven:foamfix-optimization-mod-278494:3327893"
     deobfCompile "curse.maven:electroblobs-wizardry-265642:3189062"
     // deobfCompile "curse.maven:qmd-362056:3474533"

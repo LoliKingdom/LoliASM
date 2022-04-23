@@ -70,7 +70,7 @@ public class LoliConfig {
     public boolean releaseSpriteFramesCache;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching, copyScreenshotToClipboard, releaseScreenshotCache;
-    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash, disableXU2CrafterRendering;
+    public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash, disableXU2CrafterRendering, fixTFCFallingBlockFalseStartingTEPos;
     public boolean fixAmuletHolderCapability, delayItemStackCapabilityInit;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
     public boolean sparkProfileEntireGameLoad, sparkProfileEntireWorldLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, sparkProfileFinalizingStage, sparkProfileWorldAboutToStartStage, sparkProfileWorldStartingStage, sparkProfileWorldStartedStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads, sparkSummarizeHeapSpaceAfterWorldLoads;
@@ -140,6 +140,7 @@ public class LoliConfig {
         optimizeArcaneLockRendering = getBoolean("optimizeArcaneLockRendering", "modfixes", "When Electroblob's Wizardry is installed, optimize the search for arcane locked tile entities to render", true);
         fixXU2CrafterCrash = getBoolean("fixXU2CrafterCrash", "modfixes", "When Extra Utilities 2 is installed, fix and optimize mechanical crafter's rendering", true);
         disableXU2CrafterRendering = getBoolean("disableXU2CrafterRendering", "modfixes", "When Extra Utilities 2 is installed, disable the crafter's rendering of the item being crafted, this can reduce lag, ignores fixXU2CrafterCrash config option", false);
+        fixTFCFallingBlockFalseStartingTEPos = getBoolean("fixTFCFallingBlockFalseStartingTEPos", "modfixes", "When TerraFirmaCraft is installed, fix the falling block's false starting position ", true);
 
         fixAmuletHolderCapability = getBoolean("fixAmuletHolderCapability", "capability", "Fixes Astral Sorcery applying AmuletHolderCapability to large amount of ItemStacks when it isn't needed. This option will be ignored when Astral Sorcery isn't installed", true);
         delayItemStackCapabilityInit = getBoolean("delayItemStackCapabilityInit", "capability", "Delays ItemStack's capabilities from being initialized until they needed to be", true);
