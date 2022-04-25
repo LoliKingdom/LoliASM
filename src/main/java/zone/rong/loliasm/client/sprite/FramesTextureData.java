@@ -16,21 +16,23 @@ import java.util.*;
 
 public class FramesTextureData extends ArrayList<int[][]> {
 
-    public static Set<TextureAtlasSprite> scheduledToReleaseCache;
+    private static final Set<TextureAtlasSprite> scheduledToReleaseCache = Collections.newSetFromMap(new WeakHashMap<>());
 
     @SubscribeEvent
-    public static void onRenderTick(TickEvent.RenderTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && FramesTextureData.scheduledToReleaseCache != null) {
-            for (TextureAtlasSprite sprite : scheduledToReleaseCache) {
-                if (sprite != null) {
-                    try {
-                        sprite.clearFramesTextureData();
-                    } catch (NullPointerException e) {
-                        LoliLogger.instance.error("NullPointerException: Trying to clear {}'s FramesTextureData but unable to!", sprite.getIconName());
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && !FramesTextureData.scheduledToReleaseCache.isEmpty()) {
+            synchronized (scheduledToReleaseCache) {
+                for (TextureAtlasSprite sprite : scheduledToReleaseCache) {
+                    if (sprite != null) {
+                        try {
+                            sprite.clearFramesTextureData();
+                        } catch (NullPointerException e) {
+                            LoliLogger.instance.error("NullPointerException: Trying to clear {}'s FramesTextureData but unable to!", sprite.getIconName());
+                        }
                     }
                 }
+                scheduledToReleaseCache.clear();
             }
-            scheduledToReleaseCache = null;
         }
     }
 
@@ -45,9 +47,6 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public int[][] get(int index) {
         if (ClientProxy.canReload && super.isEmpty()) {
             load();
-            if (scheduledToReleaseCache == null) {
-                scheduledToReleaseCache = Collections.newSetFromMap(new WeakHashMap<>());
-            }
             scheduledToReleaseCache.add(sprite);
         }
         return super.get(index);
@@ -57,9 +56,6 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public int size() {
         if (ClientProxy.canReload && super.isEmpty()) {
             load();
-            if (scheduledToReleaseCache == null) {
-                scheduledToReleaseCache = Collections.newSetFromMap(new WeakHashMap<>());
-            }
             scheduledToReleaseCache.add(sprite);
         }
         return super.size();
@@ -69,9 +65,6 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public boolean isEmpty() {
         if (ClientProxy.canReload && super.isEmpty()) {
             load();
-            if (scheduledToReleaseCache == null) {
-                scheduledToReleaseCache = Collections.newSetFromMap(new WeakHashMap<>());
-            }
             scheduledToReleaseCache.add(sprite);
         }
         return super.isEmpty();
