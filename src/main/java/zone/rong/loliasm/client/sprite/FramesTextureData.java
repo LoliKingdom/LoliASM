@@ -1,6 +1,5 @@
 package zone.rong.loliasm.client.sprite;
 
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -13,10 +12,7 @@ import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.proxy.ClientProxy;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class FramesTextureData extends ArrayList<int[][]> {
 
@@ -95,7 +91,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
             sprite.load(resourceManager, location, rl -> textureMap.getAtlasSprite(rl.toString()));
         } else {
             try (IResource resource = resourceManager.getResource(location)) {
-                sprite.loadSpriteFrames(resource, Minecraft.getMinecraft().gameSettings.mipmapLevels + 1);
+                sprite.loadSpriteFrames(resource, 1);
             } catch (IOException e) {
                 e.printStackTrace();
             }
