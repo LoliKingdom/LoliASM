@@ -27,6 +27,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
@@ -45,6 +47,7 @@ public abstract class TileCrafterMixin extends TileEntity implements ITESRHook, 
     @Shadow @Final private SingleStackHandler ghostOutput;
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void preRender(int destroyStage) {
         if (!LoliConfig.instance.disableXU2CrafterRendering) {
             GlStateManager.blendFunc(770, 1);
@@ -53,6 +56,7 @@ public abstract class TileCrafterMixin extends TileEntity implements ITESRHook, 
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void renderAlt(double x, double y, double z) {
         ItemStack stack = ghostOutput.getStack();
         if (StackHelper.isNull(stack)) {
@@ -107,6 +111,7 @@ public abstract class TileCrafterMixin extends TileEntity implements ITESRHook, 
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void render(IBlockAccess world, BlockPos pos, double x, double y, double z, float partialTicks, int destroyStage, IVertexBuffer buffer, BlockRendererDispatcher dispatcher) {
         if (!LoliConfig.instance.disableXU2CrafterRendering) {
             ItemStack stack = ghostOutput.getStack();
@@ -146,6 +151,7 @@ public abstract class TileCrafterMixin extends TileEntity implements ITESRHook, 
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void postRender(int destroyStage) {
         if (!LoliConfig.instance.disableXU2CrafterRendering) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

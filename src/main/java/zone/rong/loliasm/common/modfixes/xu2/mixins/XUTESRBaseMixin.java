@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,6 +33,7 @@ public abstract class XUTESRBaseMixin<T extends XUTile> extends TESRCompat<T> {
     @Shadow protected abstract VertexFormat getVertexFormat(T te);
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void render(@Nonnull T te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         if (LoliConfig.instance.fixXU2CrafterCrash && te instanceof TileCrafter) {
             ((TileCrafterExtension) te).renderAlt(x, y, z);

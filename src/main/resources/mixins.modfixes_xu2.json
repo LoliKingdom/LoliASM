@@ -4,13 +4,11 @@
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "TileCrafterMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
-    "XUTESRBaseMixin"
+    "XUTESRBaseMixin",
+    "TileCrafterMixin"
   ]
 }
