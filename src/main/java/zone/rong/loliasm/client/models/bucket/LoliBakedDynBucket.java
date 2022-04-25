@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -12,17 +13,24 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.*;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class LoliBakedDynBucket extends BakedItemModel {
+
+    public static final Map<ResourceLocation, Pair<ResourceLocation, BakedQuad[]>> baseQuads = new Object2ObjectOpenHashMap<>();
+    public static final Map<ResourceLocation, Pair<ResourceLocation, BakedQuad[]>> flippedBaseQuads = new Object2ObjectOpenHashMap<>();
+    public static final Map<ResourceLocation, BakedQuad[]> coverQuads = new Object2ObjectOpenHashMap<>();
+    public static final Map<ResourceLocation, BakedQuad[]> flippedCoverQuads = new Object2ObjectOpenHashMap<>();
 
     private final ModelDynBucket parent;
     private final VertexFormat format;

@@ -18,6 +18,7 @@ import slimeknights.tconstruct.library.client.texture.AbstractColoredTexture;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.bakedquad.LoliVertexDataPool;
+import zone.rong.loliasm.client.models.bucket.LoliBakedDynBucket;
 import zone.rong.loliasm.client.screenshot.ScreenshotListener;
 import zone.rong.loliasm.client.sprite.FramesTextureData;
 import zone.rong.loliasm.common.modfixes.qmd.QMDEventHandler;
@@ -84,6 +85,12 @@ public class ClientProxy extends CommonProxy {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener((ISelectiveResourceReloadListener) (manager, predicate) -> {
             if (predicate.test(VanillaResourceType.MODELS)) {
                 refreshAfterModels.forEach(Runnable::run);
+                if (LoliConfig.instance.reuseBucketQuads) {
+                    LoliBakedDynBucket.baseQuads.clear();
+                    LoliBakedDynBucket.flippedBaseQuads.clear();
+                    LoliBakedDynBucket.coverQuads.clear();
+                    LoliBakedDynBucket.flippedCoverQuads.clear();
+                }
                 if (LoliConfig.instance.releaseSpriteFramesCache) {
                     canReload = false;
                     try {
