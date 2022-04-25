@@ -18,6 +18,7 @@ import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -35,30 +36,34 @@ public class EntityEntryMixin {
      */
     @Inject(method = "init", at = @At("HEAD"), cancellable = true)
     private void captureInit(CallbackInfo ci) {
-        try {
-            MethodHandles.Lookup lookup = LoliReflector.LOOKUP;
-            ClassLoader classLoader = this.cls.getClassLoader();
-            if (classLoader != Launch.classLoader) {
-                if (altLookups == null) {
-                    altLookups = new Reference2ReferenceArrayMap<>();
+        if (!Modifier.isAbstract(this.cls.getModifiers())) { // For some reason...
+            try {
+                MethodHandles.Lookup lookup = LoliReflector.LOOKUP;
+                ClassLoader classLoader = this.cls.getClassLoader();
+                if (classLoader != Launch.classLoader) {
+                    if (altLookups == null) {
+                        altLookups = new Reference2ReferenceArrayMap<>();
+                    }
+                    lookup = altLookups.get(classLoader);
+                    if (lookup == null) {
+                        LoliLogger.instance.warn("Building a new MethodHandle::Lookup for ClassLoader: {} with intentions of building a faster Entity constructor replacement", classLoader);
+                        altLookups.put(classLoader, lookup = LoliReflector.getCtor(MethodHandles.Lookup.class, Class.class).newInstance(this.cls));
+                    }
                 }
-                lookup = altLookups.get(classLoader);
-                if (lookup == null) {
-                    LoliLogger.instance.warn("Building a new MethodHandle::Lookup for ClassLoader: {} with intentions of building a faster Entity constructor replacement", classLoader);
-                    altLookups.put(classLoader, lookup = LoliReflector.getCtor(MethodHandles.Lookup.class, Class.class).newInstance(this.cls));
-                }
+                CallSite callSite = LambdaMetafactory.metafactory(
+                        lookup,
+                        "apply",
+                        MethodType.methodType(Function.class),
+                        MethodType.methodType(Object.class, Object.class),
+                        LoliReflector.resolveCtor(this.cls, World.class),
+                        MethodType.methodType(this.cls, World.class));
+                this.factory = (Function) callSite.getTarget().invokeExact();
+                ci.cancel();
+            } catch (Throwable t) {
+                LoliLogger.instance.warn("Could not establish a faster Entity constructor replacement for {}", this.cls, t);
             }
-            CallSite callSite = LambdaMetafactory.metafactory(
-                    lookup,
-                    "apply",
-                    MethodType.methodType(Function.class),
-                    MethodType.methodType(Object.class, Object.class),
-                    LoliReflector.resolveCtor(this.cls, World.class),
-                    MethodType.methodType(this.cls, World.class));
-            this.factory = (Function) callSite.getTarget().invokeExact();
-            ci.cancel();
-        } catch (Throwable t) {
-            LoliLogger.instance.warn("Could not establish a faster Entity constructor replacement for {}", this.cls, t);
+        } else {
+            LoliLogger.instance.warn("Could not establish a faster Entity constructor replacement for {}, as the class is abstract", this.cls);
         }
     }
 
