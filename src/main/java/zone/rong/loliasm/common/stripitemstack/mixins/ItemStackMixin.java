@@ -24,8 +24,8 @@ public abstract class ItemStackMixin {
     @Shadow public abstract boolean hasTagCompound();
     @Shadow private NBTTagCompound stackTagCompound;
 
-    @Unique private static final Cache<ItemStack, Pair<Block, Boolean>> canPlaceCache = CacheBuilder.newBuilder().expireAfterAccess(30, TimeUnit.SECONDS).build();
-    @Unique private static final Cache<ItemStack, Pair<Block, Boolean>> canDestroyCache = CacheBuilder.newBuilder().expireAfterAccess(30, TimeUnit.SECONDS).build();
+    @Unique private static final Cache<ItemStack, Pair<Block, Boolean>> canPlaceCache = CacheBuilder.newBuilder().weakKeys().expireAfterAccess(30, TimeUnit.SECONDS).build();
+    @Unique private static final Cache<ItemStack, Pair<Block, Boolean>> canDestroyCache = CacheBuilder.newBuilder().weakKeys().expireAfterAccess(30, TimeUnit.SECONDS).build();
 
     @Unique private static Map<ItemStack, EntityItemFrame> itemFrames;
 
