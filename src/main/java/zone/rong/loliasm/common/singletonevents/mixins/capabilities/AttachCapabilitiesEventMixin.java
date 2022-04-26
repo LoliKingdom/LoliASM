@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.singletonevents.mixins;
+package zone.rong.loliasm.common.singletonevents.mixins.capabilities;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.util.ResourceLocation;
@@ -22,8 +22,8 @@ public class AttachCapabilitiesEventMixin<T> extends Event implements IRefreshEv
     @Unique private EventPriority loliPriority = null;
 
     @Override
-    public void refresh(Object... data) {
-        this.obj = (T) data[0];
+    public void refreshAttachCapabilities(Object data) {
+        this.obj = (T) data;
         this.caps.clear();
         this.loliPriority = null;
     }

@@ -5,7 +5,9 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AttachCapabilitiesEventMixin",
-    "ForgeEventFactoryMixin"
+    "capabilities.AttachCapabilitiesEventMixin",
+    "blocks.BlockEventMixin",
+    "ForgeEventFactoryMixin",
+    "blocks.NeighborNotifyEventMixin"
   ]
 }

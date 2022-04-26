@@ -1,8 +1,14 @@
 package zone.rong.loliasm.common.singletonevents;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
+
+import java.util.EnumSet;
 
 /**
  * Events will gather this and use as their new values before firing on the EventBus
@@ -16,16 +22,23 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
  */
 public interface IRefreshEvent {
 
+    // TODO: evaluate if we need to check preconditions
+    @Deprecated
     static void checkPrecondition(EventPriority current, EventPriority next) {
         Preconditions.checkNotNull(next, "setPhase argument must not be null");
         Preconditions.checkArgument((current == null ? -1 : current.ordinal()) < next.ordinal(), "Attempted to set event phase to %s when already %s", next, current);
     }
 
-    /**
-     * We want to be as fast as we can here, no check and unsafe.
-     *
-     * @param data attached to the event to be fired
-     */
-    void refresh(Object... data);
+    default void refreshAttachCapabilities(Object data) {
+
+    }
+
+    default void refreshBlockEvent(World world, BlockPos pos, IBlockState state) {
+
+    }
+
+    default void refreshNeighborNotify(EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
+
+    }
 
 }
