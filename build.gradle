@@ -101,29 +101,29 @@ dependencies {
     deobfCompile ("com.enderio:EnderIO:1.12.2-+") {
         transitive = false
     }
-    compile "codechicken:ChickenASM:1.12-1.0.2.9"
-    compile "epicsquid.mysticallib:mysticallib:1.12.2-+"
+    provided "codechicken:ChickenASM:1.12-1.0.2.9"
+    provided "epicsquid.mysticallib:mysticallib:1.12.2-+"
     compile "mezz.jei:jei_1.12.2:4.15.0.293"
     compile "zone.rong:mixinbooter:4.2"
     // compile files("./etc/spark-forge-deobf.jar", "./etc/preview_OptiFine_1.12.2_HD_U_G6_pre1-deobf.jar")
     compile files("./etc/spark-forge-deobf.jar")
 
-    deobfCompile 'slimeknights.mantle:Mantle:1.12-1.3.3.55+'
-    deobfCompile 'slimeknights:TConstruct:1.12.2-2.13.0.183+'
+    deobfProvided 'slimeknights.mantle:Mantle:1.12-1.3.3.55+'
+    deobfProvided 'slimeknights:TConstruct:1.12.2-2.13.0.183+'
 
-    deobfCompile "betterwithmods:BetterWithMods:1.12-2.3.20-1030"
+    deobfProvided "betterwithmods:BetterWithMods:1.12-2.3.20-1030"
 
-    deobfCompile "codechicken:CodeChickenLib:1.12.2-3.1.7.+:universal"
-    deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
-    deobfCompile "blusunrize:ImmersiveEngineering:0.12-92-+"
-    deobfCompile "curse.maven:astral-sorcery-241721:3044416"
-    deobfCompile "curse.maven:tfcraft-302973:3268988"
-    deobfCompile "curse.maven:foamfix-optimization-mod-278494:3327893"
-    deobfCompile "curse.maven:electroblobs-wizardry-265642:3189062"
+    deobfProvided "codechicken:CodeChickenLib:1.12.2-3.1.7.+:universal"
+    deobfProvided "com.azanor.baubles:Baubles:1.12-1.5.2"
+    deobfProvided "blusunrize:ImmersiveEngineering:0.12-92-+"
+    deobfProvided "curse.maven:astral-sorcery-241721:3044416"
+    deobfProvided "curse.maven:tfcraft-302973:3268988"
+    deobfProvided "curse.maven:foamfix-optimization-mod-278494:3327893"
+    deobfProvided "curse.maven:electroblobs-wizardry-265642:3189062"
     // deobfCompile "curse.maven:qmd-362056:3474533"
     // deobfCompile "cofh:CoFHCore:1.12.2-+:universal"
     // compile "com.teamwizardry.librarianlib:librarianlib-1.12:4.0-SNAPSHOT:deobf"
-    deobfCompile "curse.maven:extra-utilities-225561:2678374"
+    deobfProvided "curse.maven:extra-utilities-225561:2678374"
 }
 
 processResources {
