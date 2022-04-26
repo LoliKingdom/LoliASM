@@ -36,7 +36,6 @@ public class AttachCapabilitiesEventMixin<T> extends Event implements IRefreshEv
 
     @Override
     public void setPhase(@Nonnull EventPriority next) {
-        IRefreshEvent.checkPrecondition(this.loliPriority, next);
         this.loliPriority = next;
     }
 
