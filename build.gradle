@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "4.11"
+version = "4.11.1"
 group = "zone.rong.loliasm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "loliasm"
 
@@ -58,9 +58,6 @@ repositories {
         url "https://www.cursemaven.com"
     }
     maven {
-        url "https://repo.spongepowered.org/maven"
-    }
-    maven {
         url "https://dvs1.progwml6.com/files/maven/"
     }
     maven {
@@ -85,18 +82,6 @@ repositories {
 
 dependencies {
     embed "me.nallar.whocalled:WhoCalled:1.1"
-    // implementation ("org.spongepowered:mixin:0.8.3-SNAPSHOT") {
-    /*
-    embed ("org.spongepowered:mixin:0.8") {
-        exclude module: "asm-commons"
-        exclude module: "asm-tree"
-        exclude module: "launchwrapper"
-        exclude module: "guava"
-        exclude module: "log4j-core"
-        exclude module: "gson"
-        exclude module: "commons-io"
-    }
-     */
     deobfCompile "com.enderio.core:EnderCore:1.12.2-+"
     deobfCompile ("com.enderio:EnderIO:1.12.2-+") {
         transitive = false
