@@ -22,16 +22,17 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && !FramesTextureData.scheduledToReleaseCache.isEmpty()) {
             synchronized (scheduledToReleaseCache) {
-                for (TextureAtlasSprite sprite : scheduledToReleaseCache) {
+                for (Iterator<TextureAtlasSprite> iter = scheduledToReleaseCache.iterator(); iter.hasNext();) {
+                    TextureAtlasSprite sprite = iter.next();
                     if (sprite != null) {
                         try {
                             sprite.clearFramesTextureData();
                         } catch (NullPointerException e) {
                             LoliLogger.instance.error("NullPointerException: Trying to clear {}'s FramesTextureData but unable to!", sprite.getIconName());
                         }
+                        iter.remove();
                     }
                 }
-                scheduledToReleaseCache.clear();
             }
         }
     }
