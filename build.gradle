@@ -124,6 +124,8 @@ dependencies {
     // deobfCompile "cofh:CoFHCore:1.12.2-+:universal"
     // compile "com.teamwizardry.librarianlib:librarianlib-1.12:4.0-SNAPSHOT:deobf"
     deobfProvided "curse.maven:extra-utilities-225561:2678374"
+    deobfCompile "curse.maven:gottschcore-272450:3748293"
+    deobfCompile "curse.maven:treasure2-289760:3758107"
 }
 
 processResources {
