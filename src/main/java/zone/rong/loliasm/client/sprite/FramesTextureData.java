@@ -30,8 +30,8 @@ public class FramesTextureData extends ArrayList<int[][]> {
                         } catch (NullPointerException e) {
                             LoliLogger.instance.error("NullPointerException: Trying to clear {}'s FramesTextureData but unable to!", sprite.getIconName());
                         }
-                        iter.remove();
                     }
+                    iter.remove();
                 }
             }
         }
