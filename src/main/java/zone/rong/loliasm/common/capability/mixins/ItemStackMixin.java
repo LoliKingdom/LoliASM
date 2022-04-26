@@ -58,6 +58,7 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 
 	/**
 	 * @author Rongmario
+	 * @reason If capabilities isn't present, copy capNBT as it maybe cached from previous copies while capabilities isn't instantiated yet
 	 */
 	@Overwrite
 	public ItemStack copy() {
@@ -71,6 +72,7 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 
 	/**
 	 * @author Rongmario
+	 * @reason Same sort of reasoning for {@link ItemStackMixin#copy()} but for NBT saving instead
 	 */
 	@Overwrite
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
@@ -96,6 +98,7 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 
 	/**
 	 * @author PrototypeTrousers, Rongmario
+	 * @reason Only query capabilities when needed
 	 */
     @Overwrite(remap = false)
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
@@ -110,6 +113,7 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 
 	/**
 	 * @author PrototypeTrousers, Rongmario
+	 * @reason Only query capabilities when needed
 	 */
 	@Nullable
 	@Overwrite(remap = false)
@@ -125,6 +129,7 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 
 	/**
 	 * @author PrototypeTrousers, Rongmario
+	 * @reason Only query capabilities when needed
 	 */
 	@Overwrite(remap = false)
 	public boolean areCapsCompatible(ItemStack other) {
@@ -142,6 +147,7 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 
 	/**
 	 * @author PrototypeTrousers
+	 * @reason Only query capabilities when needed
 	 */
     @Overwrite(remap = false)
     private void forgeInit() {
