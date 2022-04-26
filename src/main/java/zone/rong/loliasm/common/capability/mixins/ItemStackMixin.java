@@ -3,7 +3,9 @@ package zone.rong.loliasm.common.capability.mixins;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.registries.IRegistryDelegate;
@@ -96,11 +98,14 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 	 * @author PrototypeTrousers, Rongmario
 	 */
     @Overwrite(remap = false)
-    public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, @Nullable net.minecraft.util.EnumFacing facing) {
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		if (this.isEmpty) {
+			return false;
+		}
         if (!initializedCapabilities) {
 			initializeCapabilities();
         }
-        return !this.isEmpty && this.capabilities != null && this.capabilities.hasCapability(capability, facing);
+        return this.capabilities != null && this.capabilities.hasCapability(capability, facing);
     }
 
 	/**
@@ -109,10 +114,13 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 	@Nullable
 	@Overwrite(remap = false)
 	public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable net.minecraft.util.EnumFacing facing) {
+		if (this.isEmpty) {
+			return null;
+		}
 		if (!initializedCapabilities) {
 			initializeCapabilities();
 		}
-		return (this.isEmpty || this.capabilities == null) ? null : this.capabilities.getCapability(capability, facing);
+		return this.capabilities == null ? null : this.capabilities.getCapability(capability, facing);
 	}
 
 	/**
@@ -122,6 +130,9 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 	public boolean areCapsCompatible(ItemStack other) {
 		if (!initializedCapabilities) {
 			initializeCapabilities();
+		}
+		if (!((ItemStackMixin) (Object) other).initializedCapabilities) {
+			((ItemStackMixin) (Object) other).initializeCapabilities();
 		}
 		if (this.capabilities == null) {
 			return ((ItemStackMixin) (Object) other).capabilities == null || ((ItemStackMixin) (Object) other).capabilities.areCompatible(null);
