@@ -16,10 +16,17 @@ public class BlockEventMixin extends Event implements IRefreshEvent {
     @Shadow @Final @Mutable private IBlockState state;
 
     @Override
-    public void refreshBlockEvent(World world, BlockPos pos, IBlockState state) {
+    public void beforeBlockEvent(World world, BlockPos pos, IBlockState state) {
         this.world = world;
         this.pos = pos;
         this.state = state;
+    }
+
+    @Override
+    public void afterBlockEvent() {
+        this.world = null;
+        this.pos = null;
+        this.state = null;
     }
 
 }

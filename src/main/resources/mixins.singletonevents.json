@@ -5,9 +5,13 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "capabilities.AttachCapabilitiesEventMixin",
-    "blocks.BlockEventMixin",
+    "FMLCommonHandlerMixin",
     "ForgeEventFactoryMixin",
-    "blocks.NeighborNotifyEventMixin"
+    "blocks.BlockEventMixin",
+    "blocks.NeighborNotifyEventMixin",
+    "capabilities.AttachCapabilitiesEventMixin",
+    "gameevent.PlayerTickEventMixin",
+    "gameevent.TickEventMixin",
+    "gameevent.WorldTickEventMixin"
   ]
 }

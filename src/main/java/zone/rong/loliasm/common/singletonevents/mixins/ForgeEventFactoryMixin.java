@@ -57,8 +57,10 @@ public abstract class ForgeEventFactoryMixin {
     @Nullable
     @Overwrite
     public static CapabilityDispatcher gatherCapabilities(TileEntity tileEntity) {
-        TE_ATTACH_CAPABILITIES_EVENT_CASTED.refreshAttachCapabilities(tileEntity);
-        return gatherCapabilities(TE_ATTACH_CAPABILITIES_EVENT, null);
+        TE_ATTACH_CAPABILITIES_EVENT_CASTED.beforeAttachCapabilities(tileEntity);
+        MinecraftForge.EVENT_BUS.post(TE_ATTACH_CAPABILITIES_EVENT);
+        TE_ATTACH_CAPABILITIES_EVENT_CASTED.afterAttachCapabilities();
+        return !TE_ATTACH_CAPABILITIES_EVENT.getCapabilities().isEmpty() ? new CapabilityDispatcher(TE_ATTACH_CAPABILITIES_EVENT.getCapabilities(), null) : null;
     }
 
     /**
@@ -68,8 +70,10 @@ public abstract class ForgeEventFactoryMixin {
     @Nullable
     @Overwrite
     public static CapabilityDispatcher gatherCapabilities(Entity entity) {
-        ENTITY_ATTACH_CAPABILITIES_EVENT_CASTED.refreshAttachCapabilities(entity);
-        return gatherCapabilities(ENTITY_ATTACH_CAPABILITIES_EVENT, null);
+        ENTITY_ATTACH_CAPABILITIES_EVENT_CASTED.beforeAttachCapabilities(entity);
+        MinecraftForge.EVENT_BUS.post(ENTITY_ATTACH_CAPABILITIES_EVENT);
+        ENTITY_ATTACH_CAPABILITIES_EVENT_CASTED.afterAttachCapabilities();
+        return !ENTITY_ATTACH_CAPABILITIES_EVENT.getCapabilities().isEmpty() ? new CapabilityDispatcher(ENTITY_ATTACH_CAPABILITIES_EVENT.getCapabilities(), null) : null;
     }
 
     /**
@@ -79,8 +83,10 @@ public abstract class ForgeEventFactoryMixin {
     @Nullable
     @Overwrite
     public static CapabilityDispatcher gatherCapabilities(ItemStack stack, ICapabilityProvider parent) {
-        ITEM_STACK_ATTACH_CAPABILITIES_EVENT_CASTED.refreshAttachCapabilities(stack);
-        return gatherCapabilities(ITEM_STACK_ATTACH_CAPABILITIES_EVENT, parent);
+        ITEM_STACK_ATTACH_CAPABILITIES_EVENT_CASTED.beforeAttachCapabilities(stack);
+        MinecraftForge.EVENT_BUS.post(ITEM_STACK_ATTACH_CAPABILITIES_EVENT);
+        ITEM_STACK_ATTACH_CAPABILITIES_EVENT_CASTED.afterAttachCapabilities();
+        return parent != null || !ITEM_STACK_ATTACH_CAPABILITIES_EVENT.getCapabilities().isEmpty() ? new CapabilityDispatcher(ITEM_STACK_ATTACH_CAPABILITIES_EVENT.getCapabilities(), parent) : null;
     }
 
     /**
@@ -90,8 +96,10 @@ public abstract class ForgeEventFactoryMixin {
     @Nullable
     @Overwrite
     public static CapabilityDispatcher gatherCapabilities(Chunk chunk) {
-        CHUNK_ATTACH_CAPABILITIES_EVENT_CASTED.refreshAttachCapabilities(chunk);
-        return gatherCapabilities(CHUNK_ATTACH_CAPABILITIES_EVENT, null);
+        CHUNK_ATTACH_CAPABILITIES_EVENT_CASTED.beforeAttachCapabilities(chunk);
+        MinecraftForge.EVENT_BUS.post(CHUNK_ATTACH_CAPABILITIES_EVENT);
+        CHUNK_ATTACH_CAPABILITIES_EVENT_CASTED.afterAttachCapabilities();
+        return !CHUNK_ATTACH_CAPABILITIES_EVENT.getCapabilities().isEmpty() ? new CapabilityDispatcher(CHUNK_ATTACH_CAPABILITIES_EVENT.getCapabilities(), null) : null;
     }
 
     /**
@@ -101,9 +109,11 @@ public abstract class ForgeEventFactoryMixin {
     @Nullable
     @Overwrite
     public static NeighborNotifyEvent onNeighborNotify(World world, BlockPos pos, IBlockState state, EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
-        NEIGHBOR_NOTIFY_EVENT_CASTED.refreshBlockEvent(world, pos, state);
-        NEIGHBOR_NOTIFY_EVENT_CASTED.refreshNeighborNotify(notifiedSides, forceRedstoneUpdate);
+        NEIGHBOR_NOTIFY_EVENT_CASTED.beforeBlockEvent(world, pos, state);
+        NEIGHBOR_NOTIFY_EVENT_CASTED.beforeNeighborNotify(notifiedSides, forceRedstoneUpdate);
         MinecraftForge.EVENT_BUS.post(NEIGHBOR_NOTIFY_EVENT);
+        NEIGHBOR_NOTIFY_EVENT_CASTED.afterBlockEvent();
+        NEIGHBOR_NOTIFY_EVENT_CASTED.afterNeighborNotify();
         return NEIGHBOR_NOTIFY_EVENT;
     }
 

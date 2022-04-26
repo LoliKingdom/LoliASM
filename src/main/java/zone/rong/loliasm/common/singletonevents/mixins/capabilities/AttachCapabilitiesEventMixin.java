@@ -22,8 +22,13 @@ public class AttachCapabilitiesEventMixin<T> extends Event implements IRefreshEv
     @Unique private EventPriority loliPriority = null;
 
     @Override
-    public void refreshAttachCapabilities(Object data) {
+    public void beforeAttachCapabilities(Object data) {
         this.obj = (T) data;
+    }
+
+    @Override
+    public void afterAttachCapabilities() {
+        this.obj = null;
         this.caps.clear();
         this.loliPriority = null;
     }

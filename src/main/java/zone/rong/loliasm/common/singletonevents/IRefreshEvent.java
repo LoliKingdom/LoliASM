@@ -2,6 +2,7 @@ package zone.rong.loliasm.common.singletonevents;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -29,15 +30,43 @@ public interface IRefreshEvent {
         Preconditions.checkArgument((current == null ? -1 : current.ordinal()) < next.ordinal(), "Attempted to set event phase to %s when already %s", next, current);
     }
 
-    default void refreshAttachCapabilities(Object data) {
+    default void beforeAttachCapabilities(Object data) {
 
     }
 
-    default void refreshBlockEvent(World world, BlockPos pos, IBlockState state) {
+    default void afterAttachCapabilities() {
 
     }
 
-    default void refreshNeighborNotify(EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
+    default void beforeBlockEvent(World world, BlockPos pos, IBlockState state) {
+
+    }
+
+    default void afterBlockEvent() {
+
+    }
+
+    default void beforeNeighborNotify(EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
+
+    }
+
+    default void afterNeighborNotify() {
+
+    }
+
+    default void beforeWorldTick(World world) {
+
+    }
+
+    default void afterWorldTick() {
+
+    }
+
+    default void beforePlayerTick(EntityPlayer player) {
+
+    }
+
+    default void afterPlayerTick() {
 
     }
 

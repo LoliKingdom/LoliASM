@@ -20,9 +20,14 @@ public class NeighborNotifyEventMixin extends Event implements IRefreshEvent {
     @Unique private EventPriority loliPriority = null;
 
     @Override
-    public void refreshNeighborNotify(EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
+    public void beforeNeighborNotify(EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
         this.notifiedSides = notifiedSides;
         this.forceRedstoneUpdate = forceRedstoneUpdate;
+    }
+
+    @Override
+    public void afterNeighborNotify() {
+        this.notifiedSides = null;
     }
 
     @Nullable
