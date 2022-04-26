@@ -75,6 +75,7 @@ public class LoliConfig {
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
     public boolean sparkProfileEntireGameLoad, sparkProfileEntireWorldLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, sparkProfileFinalizingStage, sparkProfileWorldAboutToStartStage, sparkProfileWorldStartingStage, sparkProfileWorldStartedStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads, sparkSummarizeHeapSpaceAfterWorldLoads;
     public boolean furnaceExperienceFCFS, furnaceExperienceVanilla, furnaceExperienceMost;
+    public boolean makeEventsSingletons;
 
     private void initialize() {
         configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
@@ -169,6 +170,8 @@ public class LoliConfig {
         furnaceExperienceFCFS = getBoolean("furnaceExperienceFCFS", "furnace", "When optimizeFurnaceRecipeStore is true, experience is determined by who registers the entry first, this is also the fallback option if all three options aren't true", true);
         furnaceExperienceVanilla = getBoolean("furnaceExperienceVanilla", "furnace", "When optimizeFurnaceRecipeStore is true, experience is determined the vanilla way, this method is the most inefficient and random", false);
         furnaceExperienceMost = getBoolean("furnaceExperienceMost", "furnace", "When optimizeFurnaceRecipeStore is true, experience is determined by whichever entry gives the most experience", false);
+
+        makeEventsSingletons = getBoolean("makeEventsSingletons", "events", "Stops mass object creation when Forge is firing events, this can decrease Garbage Collection pressure", true);
 
         configuration.save();
     }

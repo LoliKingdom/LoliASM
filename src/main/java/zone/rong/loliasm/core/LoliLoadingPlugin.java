@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -117,7 +118,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public List<String> getMixinConfigs() {
-        List<String> mixinConfigs = Lists.newArrayList(
+        return isClient ? Arrays.asList(
                 "mixins.devenv.json",
                 "mixins.internal.json",
                 "mixins.vanities.json",
@@ -127,14 +128,24 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 "mixins.recipes.json",
                 "mixins.misc_fluidregistry.json",
                 "mixins.forgefixes.json",
-                "mixins.capability.json");
-        if (isClient) {
-            mixinConfigs.add("mixins.bucket.json");
-            mixinConfigs.add("mixins.rendering.json");
-            mixinConfigs.add("mixins.datastructures_modelmanager.json");
-            mixinConfigs.add("mixins.screenshot.json");
-        }
-        return mixinConfigs;
+                "mixins.capability.json",
+                "mixins.singletonevents.json",
+                "mixins.bucket.json",
+                "mixins.rendering.json",
+                "mixins.datastructures_modelmanager.json",
+                "mixins.screenshot.json") :
+                Arrays.asList(
+                        "mixins.devenv.json",
+                        "mixins.internal.json",
+                        "mixins.vanities.json",
+                        "mixins.registries.json",
+                        "mixins.stripitemstack.json",
+                        "mixins.lockcode.json",
+                        "mixins.recipes.json",
+                        "mixins.misc_fluidregistry.json",
+                        "mixins.forgefixes.json",
+                        "mixins.capability.json",
+                        "mixins.singletonevents.json");
     }
 
     @Override
@@ -169,6 +180,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 return LoliConfig.instance.fixFillBucketEventNullPointerException || LoliConfig.instance.fixTileEntityOnLoadCME;
             case "mixins.capability.json":
                 return LoliConfig.instance.delayItemStackCapabilityInit;
+            case "mixins.singletonevents.json":
+                return LoliConfig.instance.makeEventsSingletons;
         }
         return true;
     }
