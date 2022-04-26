@@ -113,7 +113,7 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 	 */
 	@Nullable
 	@Overwrite(remap = false)
-	public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable net.minecraft.util.EnumFacing facing) {
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
 		if (this.isEmpty) {
 			return null;
 		}
