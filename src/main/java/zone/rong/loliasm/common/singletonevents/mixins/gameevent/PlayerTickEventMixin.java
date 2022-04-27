@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import zone.rong.loliasm.common.singletonevents.IRefreshEvent;
 
-@Mixin(PlayerTickEvent.class)
+@Mixin(value = PlayerTickEvent.class, remap = true)
 public class PlayerTickEventMixin implements IRefreshEvent {
 
     @Shadow @Final @Mutable public EntityPlayer player;

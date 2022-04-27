@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.EnumSet;
 
@@ -54,6 +55,11 @@ public interface IRefreshEvent {
 
     }
 
+    // Special-case for PlayerTickEvents
+    default IRefreshEvent setTickSide(Side side) {
+        return this;
+    }
+
     default void beforeWorldTick(World world) {
 
     }
@@ -67,6 +73,10 @@ public interface IRefreshEvent {
     }
 
     default void afterPlayerTick() {
+
+    }
+
+    default void beforeRenderTick(float timer) {
 
     }
 

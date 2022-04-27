@@ -11,6 +11,7 @@
     "blocks.NeighborNotifyEventMixin",
     "capabilities.AttachCapabilitiesEventMixin",
     "gameevent.PlayerTickEventMixin",
+    "gameevent.RenderTickEventMixin",
     "gameevent.TickEventMixin",
     "gameevent.WorldTickEventMixin"
   ]

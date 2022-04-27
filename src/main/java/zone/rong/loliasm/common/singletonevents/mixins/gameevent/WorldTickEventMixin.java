@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import zone.rong.loliasm.common.singletonevents.IRefreshEvent;
 
-@Mixin(WorldTickEvent.class)
+@Mixin(value = WorldTickEvent.class, remap = false)
 public class WorldTickEventMixin implements IRefreshEvent {
 
     @Shadow @Final @Mutable public World world;

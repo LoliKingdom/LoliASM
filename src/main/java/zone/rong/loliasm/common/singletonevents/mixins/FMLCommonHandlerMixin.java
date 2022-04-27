@@ -1,11 +1,10 @@
 package zone.rong.loliasm.common.singletonevents.mixins;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.animation.Animation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.*;
 import net.minecraftforge.fml.relauncher.Side;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,6 +20,7 @@ public abstract class FMLCommonHandlerMixin {
 
     @Unique private static final ClientTickEvent START_CLIENT_TICK_EVENT = new ClientTickEvent(Phase.START);
     @Unique private static final ClientTickEvent END_CLIENT_TICK_EVENT = new ClientTickEvent(Phase.END);
+
     @Unique private static final ServerTickEvent START_SERVER_TICK_EVENT = new ServerTickEvent(Phase.START);
     @Unique private static final ServerTickEvent END_SERVER_TICK_EVENT = new ServerTickEvent(Phase.END);
 
@@ -28,6 +28,21 @@ public abstract class FMLCommonHandlerMixin {
     @Unique private static final WorldTickEvent END_WORLD_TICK_EVENT = new WorldTickEvent(Side.SERVER, Phase.END, null);
     @Unique private static final IRefreshEvent START_WORLD_TICK_EVENT_CASTED = (IRefreshEvent) START_WORLD_TICK_EVENT;
     @Unique private static final IRefreshEvent END_WORLD_TICK_EVENT_CASTED = (IRefreshEvent) END_WORLD_TICK_EVENT;
+
+    @Unique private static final PlayerTickEvent CLIENT_START_PLAYER_TICK_EVENT = new PlayerTickEvent(Phase.START, null);
+    @Unique private static final PlayerTickEvent CLIENT_END_PLAYER_TICK_EVENT = new PlayerTickEvent(Phase.END, null);
+
+    @Unique private static final PlayerTickEvent SERVER_START_PLAYER_TICK_EVENT = new PlayerTickEvent(Phase.START, null);
+    @Unique private static final PlayerTickEvent SERVER_END_PLAYER_TICK_EVENT = new PlayerTickEvent(Phase.END, null);
+
+    @Unique private static final IRefreshEvent CLIENT_START_PLAYER_TICK_EVENT_CASTED = (IRefreshEvent) CLIENT_START_PLAYER_TICK_EVENT;
+    @Unique private static final IRefreshEvent CLIENT_END_PLAYER_TICK_EVENT_CASTED = (IRefreshEvent) CLIENT_END_PLAYER_TICK_EVENT;
+    @Unique private static final IRefreshEvent SERVER_START_PLAYER_TICK_EVENT_CASTED = ((IRefreshEvent) SERVER_START_PLAYER_TICK_EVENT).setTickSide(Side.SERVER);
+    @Unique private static final IRefreshEvent SERVER_END_PLAYER_TICK_EVENT_CASTED = ((IRefreshEvent) SERVER_END_PLAYER_TICK_EVENT).setTickSide(Side.SERVER);
+
+    @Unique private static final RenderTickEvent START_RENDER_TICK_EVENT = new RenderTickEvent(Phase.START, 0F);
+    @Unique private static final RenderTickEvent END_RENDER_TICK_EVENT = new RenderTickEvent(Phase.END, 0F);
+    @Unique private static final IRefreshEvent START_RENDER_TICK_EVENT_CASTED = (IRefreshEvent) START_RENDER_TICK_EVENT;
 
     /**
      * @author Rongmario
@@ -93,8 +108,8 @@ public abstract class FMLCommonHandlerMixin {
      */
     @Overwrite
     public void onRenderTickStart(float timer) {
-        Animation.setClientPartialTickTime(timer);
-        bus().post(new TickEvent.RenderTickEvent(Phase.START, timer));
+        START_RENDER_TICK_EVENT_CASTED.beforeRenderTick(timer);
+        bus().post(START_RENDER_TICK_EVENT);
     }
 
     /**
@@ -103,7 +118,7 @@ public abstract class FMLCommonHandlerMixin {
      */
     @Overwrite
     public void onRenderTickEnd(float timer) {
-        bus().post(new TickEvent.RenderTickEvent(Phase.END, timer));
+        bus().post(END_RENDER_TICK_EVENT);
     }
 
     /**
@@ -112,7 +127,15 @@ public abstract class FMLCommonHandlerMixin {
      */
     @Overwrite
     public void onPlayerPreTick(EntityPlayer player) {
-        bus().post(new TickEvent.PlayerTickEvent(Phase.START, player));
+        if (player instanceof EntityPlayerMP) {
+            SERVER_START_PLAYER_TICK_EVENT_CASTED.beforePlayerTick(player);
+            bus().post(SERVER_START_PLAYER_TICK_EVENT);
+            SERVER_START_PLAYER_TICK_EVENT_CASTED.afterPlayerTick();
+        } else {
+            CLIENT_START_PLAYER_TICK_EVENT_CASTED.beforePlayerTick(player);
+            bus().post(CLIENT_START_PLAYER_TICK_EVENT);
+            CLIENT_START_PLAYER_TICK_EVENT_CASTED.afterPlayerTick();
+        }
     }
 
     /**
@@ -121,7 +144,15 @@ public abstract class FMLCommonHandlerMixin {
      */
     @Overwrite
     public void onPlayerPostTick(EntityPlayer player) {
-        bus().post(new TickEvent.PlayerTickEvent(Phase.END, player));
+        if (player instanceof EntityPlayerMP) {
+            SERVER_END_PLAYER_TICK_EVENT_CASTED.beforePlayerTick(player);
+            bus().post(SERVER_END_PLAYER_TICK_EVENT);
+            SERVER_END_PLAYER_TICK_EVENT_CASTED.afterPlayerTick();
+        } else {
+            CLIENT_END_PLAYER_TICK_EVENT_CASTED.beforePlayerTick(player);
+            bus().post(CLIENT_END_PLAYER_TICK_EVENT);
+            CLIENT_END_PLAYER_TICK_EVENT_CASTED.afterPlayerTick();
+        }
     }
 
 }
