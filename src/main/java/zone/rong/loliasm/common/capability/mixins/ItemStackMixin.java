@@ -4,7 +4,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -68,32 +67,6 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 			((ItemStackMixin) (Object) stack).stackTagCompound = this.stackTagCompound.copy();
 		}
 		return stack;
-	}
-
-	/**
-	 * @author Rongmario
-	 * @reason Same sort of reasoning for {@link ItemStackMixin#copy()} but for NBT saving instead
-	 */
-	@Overwrite
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		ResourceLocation resourcelocation = Item.REGISTRY.getNameForObject(getItemRaw());
-		nbt.setString("id", resourcelocation == null ? "minecraft:air" : resourcelocation.toString());
-		nbt.setByte("Count", (byte) this.stackSize);
-		nbt.setShort("Damage", (short) this.itemDamage);
-		if (this.stackTagCompound != null) {
-			nbt.setTag("tag", this.stackTagCompound);
-		}
-		if (this.capabilities != null) {
-			NBTTagCompound cnbt = this.capabilities.serializeNBT();
-			if (!cnbt.isEmpty()) {
-				nbt.setTag("ForgeCaps", cnbt);
-			}
-		} else if (this.capNBT != null) {
-			if (!this.capNBT.isEmpty()) {
-				nbt.setTag("ForgeCaps", this.capNBT);
-			}
-		}
-		return nbt;
 	}
 
 	/**

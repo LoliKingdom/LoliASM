@@ -118,6 +118,9 @@ public class LoliTransformer implements IClassTransformer {
         if (LoliConfig.instance.fixTFCFallingBlockFalseStartingTEPos) {
             addTransformation("net.dries007.tfc.objects.entity.EntityFallingBlockTFC", this::fixTFCFallingBlock);
         }
+        if (LoliConfig.instance.delayItemStackCapabilityInit) {
+            addTransformation("net.minecraft.item.ItemStack", this::delayItemStackCapabilityInit);
+        }
         addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.nbtBackingMapStringCanonicalization));
     }
 
@@ -862,6 +865,63 @@ public class LoliTransformer implements IClassTransformer {
         }
 
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] delayItemStackCapabilityInit(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        String writeToNBT = !LoliLoadingPlugin.isDeobf ? "func_77955_b" : "writeToNBT";
+        String isEmpty = !LoliLoadingPlugin.isDeobf ? "func_82582_d" : "isEmpty";
+        String setTag = !LoliLoadingPlugin.isDeobf ? "func_74782_a" : "setTag";
+
+        LabelNode branchLabel = new LabelNode(new Label());
+        LabelNode returnLabel = null;
+
+        all: for (MethodNode method : node.methods) {
+            if (method.name.equals(writeToNBT)) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                boolean found = false;
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (!found && instruction.getOpcode() == GETFIELD) {
+                        FieldInsnNode fieldInsnNode = (FieldInsnNode) instruction;
+                        if (fieldInsnNode.name.equals("capabilities")) {
+                            JumpInsnNode jumpInsnNode = (JumpInsnNode) iter.next(); // IFNULL L9
+                            returnLabel = jumpInsnNode.label;
+                            jumpInsnNode.label = branchLabel;
+                            found = true;
+                        }
+                    } else if (found && instruction == returnLabel) {
+                        InsnList instructions = new InsnList();
+                        instructions.add(new JumpInsnNode(GOTO, returnLabel));
+                        instructions.add(branchLabel);
+                        instructions.add(new FrameNode(F_SAME, -1, null, -1, null));
+                        instructions.add(new VarInsnNode(ALOAD, 0));
+                        instructions.add(new FieldInsnNode(GETFIELD, "net/minecraft/item/ItemStack", "capNBT", "Lnet/minecraft/nbt/NBTTagCompound;"));
+                        instructions.add(new JumpInsnNode(IFNULL, returnLabel));
+                        instructions.add(new VarInsnNode(ALOAD, 0));
+                        instructions.add(new FieldInsnNode(GETFIELD, "net/minecraft/item/ItemStack", "capNBT", "Lnet/minecraft/nbt/NBTTagCompound;"));
+                        instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", isEmpty, "()Z", false));
+                        instructions.add(new JumpInsnNode(IFNE, returnLabel));
+                        LabelNode branchNode = new LabelNode(new Label());
+                        instructions.add(branchNode);
+                        instructions.add(new VarInsnNode(ALOAD, 1));
+                        instructions.add(new LdcInsnNode("ForgeCaps"));
+                        instructions.add(new VarInsnNode(ALOAD, 0));
+                        instructions.add(new FieldInsnNode(GETFIELD, "net/minecraft/item/ItemStack", "capNBT", "Lnet/minecraft/nbt/NBTTagCompound;"));
+                        instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", setTag, "(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", false));
+                        method.instructions.insertBefore(instruction, instructions);
+                        break all;
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
         node.accept(writer);
         return writer.toByteArray();
     }
