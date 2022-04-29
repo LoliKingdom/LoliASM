@@ -133,7 +133,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 "mixins.bucket.json",
                 "mixins.rendering.json",
                 "mixins.datastructures_modelmanager.json",
-                "mixins.screenshot.json") :
+                "mixins.screenshot.json",
+                "mixins.sprites.json") :
                 Arrays.asList(
                         "mixins.devenv.json",
                         "mixins.internal.json",
@@ -163,6 +164,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                     return LoliConfig.instance.moreModelManagerCleanup;
                 case "mixins.screenshot.json":
                     return LoliConfig.instance.releaseScreenshotCache;
+                case "mixins.sprites.json":
+                    return LoliConfig.instance.onDemandAnimatedTextures;
             }
         }
         switch (mixinConfig) {
