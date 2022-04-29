@@ -1,0 +1,26 @@
+{
+  "package": "zone.rong.loliasm.vanillafix.bugfixes.mixins",
+  "required": true,
+  "refmap": "mixins.loliasm.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.7",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinEnchantmentHelper",
+    "MixinEntityPlayerMP",
+    "MixinEntity",
+    "MixinInventoryPlayer",
+    "MixinBlockStateContainer",
+    "MixinEntityTrackerEntry"
+  ],
+  "client": [
+    "client.MixinMinecraft",
+    "client.MixinNetHandlerPlayClient",
+    "client.MixinEntityPlayerSP",
+    "client.MixinIntegratedServer",
+    "client.MixinEntityRenderer"
+  ],
+  "injectors": {
+    "maxShiftBy": 10
+  }
+}

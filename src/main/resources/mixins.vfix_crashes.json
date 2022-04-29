@@ -1,0 +1,24 @@
+{
+  "package": "zone.rong.loliasm.vanillafix.crashes.mixins",
+  "required": true,
+  "refmap": "mixins.loliasm.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.6",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinCrashReport",
+    "MixinIntegratedServer",
+    "MixinUtil",
+    "MixinCrashReportCategory",
+    "MixinEntity",
+    "MixinTileEntity"
+  ],
+  "client": [
+    "client.MixinMinecraft",
+    "client.MixinBufferBuilder",
+    "client.MixinTileEntityRenderDispatcher"
+  ],
+  "injectors": {
+    "maxShiftBy": 10
+  }
+}
