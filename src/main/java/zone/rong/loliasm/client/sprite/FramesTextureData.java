@@ -21,18 +21,16 @@ public class FramesTextureData extends ArrayList<int[][]> {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && !FramesTextureData.scheduledToReleaseCache.isEmpty()) {
-            synchronized (scheduledToReleaseCache) {
-                for (Iterator<TextureAtlasSprite> iter = scheduledToReleaseCache.iterator(); iter.hasNext();) {
-                    TextureAtlasSprite sprite = iter.next();
-                    if (sprite != null) {
-                        try {
-                            sprite.clearFramesTextureData();
-                        } catch (NullPointerException e) {
-                            LoliLogger.instance.error("NullPointerException: Trying to clear {}'s FramesTextureData but unable to!", sprite.getIconName());
-                        }
+            for (Iterator<TextureAtlasSprite> iter = scheduledToReleaseCache.iterator(); iter.hasNext();) {
+                TextureAtlasSprite sprite = iter.next();
+                if (sprite != null) {
+                    try {
+                        sprite.clearFramesTextureData();
+                    } catch (NullPointerException e) {
+                        LoliLogger.instance.error("NullPointerException: Trying to clear {}'s FramesTextureData but unable to!", sprite.getIconName());
                     }
-                    iter.remove();
                 }
+                iter.remove();
             }
         }
     }
@@ -48,9 +46,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public int[][] get(int index) {
         if (ClientProxy.canReload && super.isEmpty()) {
             load();
-            synchronized (scheduledToReleaseCache) {
-                scheduledToReleaseCache.add(sprite);
-            }
+            Minecraft.getMinecraft().addScheduledTask(() -> scheduledToReleaseCache.add(sprite));
         }
         return super.get(index);
     }
@@ -59,9 +55,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public int size() {
         if (ClientProxy.canReload && super.isEmpty()) {
             load();
-            synchronized (scheduledToReleaseCache) {
-                scheduledToReleaseCache.add(sprite);
-            }
+            Minecraft.getMinecraft().addScheduledTask(() -> scheduledToReleaseCache.add(sprite));
         }
         return super.size();
     }
@@ -70,9 +64,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public boolean isEmpty() {
         if (ClientProxy.canReload && super.isEmpty()) {
             load();
-            synchronized (scheduledToReleaseCache) {
-                scheduledToReleaseCache.add(sprite);
-            }
+            Minecraft.getMinecraft().addScheduledTask(() -> scheduledToReleaseCache.add(sprite));
         }
         return super.isEmpty();
     }
