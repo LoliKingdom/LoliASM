@@ -48,7 +48,9 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public int[][] get(int index) {
         if (ClientProxy.canReload && super.isEmpty()) {
             load();
-            scheduledToReleaseCache.add(sprite);
+            synchronized (scheduledToReleaseCache) {
+                scheduledToReleaseCache.add(sprite);
+            }
         }
         return super.get(index);
     }
@@ -57,7 +59,9 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public int size() {
         if (ClientProxy.canReload && super.isEmpty()) {
             load();
-            scheduledToReleaseCache.add(sprite);
+            synchronized (scheduledToReleaseCache) {
+                scheduledToReleaseCache.add(sprite);
+            }
         }
         return super.size();
     }
@@ -66,7 +70,9 @@ public class FramesTextureData extends ArrayList<int[][]> {
     public boolean isEmpty() {
         if (ClientProxy.canReload && super.isEmpty()) {
             load();
-            scheduledToReleaseCache.add(sprite);
+            synchronized (scheduledToReleaseCache) {
+                scheduledToReleaseCache.add(sprite);
+            }
         }
         return super.isEmpty();
     }
