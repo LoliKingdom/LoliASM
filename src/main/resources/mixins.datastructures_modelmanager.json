@@ -1,5 +1,5 @@
 {
-  "package": "zone.rong.loliasm.client.models.datastructures_modelmanager.mixins",
+  "package": "zone.rong.loliasm.client.models.datastructures.modelmanager.mixins",
   "refmap": "mixins.loliasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",

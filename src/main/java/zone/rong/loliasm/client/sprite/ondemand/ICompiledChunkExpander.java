@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite;
+package zone.rong.loliasm.client.sprite.ondemand;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.apache.commons.lang3.tuple.Pair;
@@ -9,12 +9,17 @@ import java.util.Set;
 public interface ICompiledChunkExpander {
 
     @Nullable
-    Set<Pair<Float, Float>> getVisibleTexturesCoords();
+    @Deprecated
+    default Set<Pair<Float, Float>> getVisibleTexturesCoords() {
+        return null;
+    }
 
-    @Nullable
     Set<TextureAtlasSprite> getVisibleTextures();
 
-    void resolve(Set<TextureAtlasSprite> visibleTextures);
+    @Deprecated
+    default void resolve(Set<TextureAtlasSprite> visibleTextures) {
+
+    }
 
     void resolve(TextureAtlasSprite sprite);
 

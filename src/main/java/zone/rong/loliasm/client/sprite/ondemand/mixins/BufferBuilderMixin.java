@@ -1,6 +1,5 @@
-package zone.rong.loliasm.client.sprite.mixins;
+package zone.rong.loliasm.client.sprite.ondemand.mixins;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -9,8 +8,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import zone.rong.loliasm.client.sprite.IAnimatedSpritePrimer;
-import zone.rong.loliasm.client.sprite.IBufferPrimerConfigurator;
+import zone.rong.loliasm.client.sprite.ondemand.IAnimatedSpritePrimer;
+import zone.rong.loliasm.client.sprite.ondemand.IBufferPrimerConfigurator;
 
 import java.nio.ByteBuffer;
 

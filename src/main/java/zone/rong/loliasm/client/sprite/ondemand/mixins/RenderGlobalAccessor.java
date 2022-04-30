@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.mixins;
+package zone.rong.loliasm.client.sprite.ondemand.mixins;
 
 import net.minecraft.client.renderer.RenderGlobal;
 import org.spongepowered.asm.mixin.Mixin;

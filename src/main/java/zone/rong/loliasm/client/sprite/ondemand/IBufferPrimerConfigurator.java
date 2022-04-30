@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite;
+package zone.rong.loliasm.client.sprite.ondemand;
 
 public interface IBufferPrimerConfigurator {
 

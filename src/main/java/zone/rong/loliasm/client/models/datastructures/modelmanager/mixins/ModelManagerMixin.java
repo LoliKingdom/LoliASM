@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.models.datastructures_modelmanager.mixins;
+package zone.rong.loliasm.client.models.datastructures.modelmanager.mixins;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.renderer.block.model.ModelBakery;

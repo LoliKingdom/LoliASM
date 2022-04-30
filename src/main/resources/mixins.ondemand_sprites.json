@@ -1,5 +1,5 @@
 {
-  "package": "zone.rong.loliasm.client.sprite.mixins",
+  "package": "zone.rong.loliasm.client.sprite.ondemand.mixins",
   "plugin": "zone.rong.loliasm.core.LoliMixinPlugin",
   "refmap": "mixins.loliasm.refmap.json",
   "target": "@env(DEFAULT)",
@@ -7,11 +7,13 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "BlockFluidRendererMixin",
+    "BlockModelRendererMixin",
     "BufferBuilderMixin",
     "CompiledChunkMixin",
     "ContainerLocalRenderInformationAccessor",
     "ForgeBlockModelRendererMixin",
     "RenderGlobalAccessor",
+    "TextureAtlasSpriteMixin",
     "TextureManagerMixin",
     "TextureMapMixin"
   ]

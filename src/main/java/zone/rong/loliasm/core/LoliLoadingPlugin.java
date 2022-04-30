@@ -1,6 +1,5 @@
 package zone.rong.loliasm.core;
 
-import com.google.common.collect.Lists;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
@@ -134,7 +133,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 "mixins.rendering.json",
                 "mixins.datastructures_modelmanager.json",
                 "mixins.screenshot.json",
-                "mixins.sprites.json") :
+                "mixins.ondemand_sprites.json") :
                 Arrays.asList(
                         "mixins.devenv.json",
                         "mixins.internal.json",
@@ -164,7 +163,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                     return LoliConfig.instance.moreModelManagerCleanup;
                 case "mixins.screenshot.json":
                     return LoliConfig.instance.releaseScreenshotCache;
-                case "mixins.sprites.json":
+                case "mixins.ondemand_sprites.json":
                     return LoliConfig.instance.onDemandAnimatedTextures;
             }
         }

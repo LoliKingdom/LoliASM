@@ -1,11 +1,11 @@
-package zone.rong.loliasm.client.sprite;
+package zone.rong.loliasm.client.sprite.ondemand;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 
-public class VertexBufferConsumerWrappedSpriteDispatcher extends VertexBufferConsumer {
+public class VertexBufferConsumerSpriteDispatcher extends VertexBufferConsumer {
 
     @Override
     public void setTexture(TextureAtlasSprite texture) {
