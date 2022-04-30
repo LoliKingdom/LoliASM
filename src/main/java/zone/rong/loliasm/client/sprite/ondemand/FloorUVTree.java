@@ -78,6 +78,7 @@ public class FloorUVTree {
                 root = new Entry<>(key, value, null);
                 size = 1;
                 modCount++;
+                return;
             }
             if (key == nullKey) {
                 throw new NullPointerException();
@@ -92,6 +93,9 @@ public class FloorUVTree {
                     t = t.left;
                 } else if (cmp > 0) {
                     t = t.right;
+                } else {
+                    t.setValue(value);
+                    return;
                 }
             } while (t != null);
             Entry<V> e = new Entry<>(key, value, parent);
