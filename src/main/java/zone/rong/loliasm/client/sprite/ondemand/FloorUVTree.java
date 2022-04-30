@@ -73,17 +73,11 @@ public class FloorUVTree {
         int size = 0;
         int modCount = 0;
 
-        int size() {
-            return size;
-        }
-
-        @Nullable
-        V put(float key, V value) {
+        void put(float key, V value) {
             if (root == null) {
                 root = new Entry<>(key, value, null);
                 size = 1;
                 modCount++;
-                return null;
             }
             if (key == nullKey) {
                 throw new NullPointerException();
@@ -98,8 +92,6 @@ public class FloorUVTree {
                     t = t.left;
                 } else if (cmp > 0) {
                     t = t.right;
-                } else {
-                    return t.setValue(value);
                 }
             } while (t != null);
             Entry<V> e = new Entry<>(key, value, parent);
@@ -111,7 +103,6 @@ public class FloorUVTree {
             fixAfterInsertion(e);
             size++;
             modCount++;
-            return null;
         }
 
         final V get(float key) {
