@@ -16,8 +16,8 @@ public class FloorUV {
     @Override
     public int hashCode() {
         long bits = 1L;
-        bits = 31L * bits + (long) ((u == 0.0F) ? 0F : Float.floatToIntBits(u));
-        bits = 31L * bits + (long) ((v == 0.0F) ? 0F : Float.floatToIntBits(v));
+        bits = 31L * bits + (long) Float.floatToIntBits(u);
+        bits = 31L * bits + (long) Float.floatToIntBits(v);
         return (int) (bits ^ (bits >> 32));
     }
 
