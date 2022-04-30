@@ -1,0 +1,33 @@
+package zone.rong.loliasm.client.sprite.ondemand;
+
+public class FloorUV {
+
+    public static FloorUV of(float u, float v) {
+        return new FloorUV(u, v);
+    }
+
+    public final float u, v;
+
+    private FloorUV(float u, float v) {
+        this.u = u;
+        this.v = v;
+    }
+
+    @Override
+    public int hashCode() {
+        long bits = 1L;
+        bits = 31L * bits + (long) ((u == 0.0F) ? 0F : Float.floatToIntBits(u));
+        bits = 31L * bits + (long) ((v == 0.0F) ? 0F : Float.floatToIntBits(v));
+        return (int) (bits ^ (bits >> 32));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof FloorUV)) {
+            return false;
+        }
+        FloorUV uv = (FloorUV) o;
+        return this.u == uv.u && this.v == uv.v;
+    }
+
+}
