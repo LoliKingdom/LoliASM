@@ -11,39 +11,33 @@ public class FloorUVTree {
 
     private static final float nullKey = -1;
     
-    private final Tree<Tree<TextureAtlasSprite>> tree = new Tree<>();
+    private final Tree<Tree<TextureAtlasSprite>> uTree = new Tree<>();
     
     public void put(float minU, float minV, TextureAtlasSprite sprite) {
-        Tree<TextureAtlasSprite> uTree = tree.get(minU);
-        if (uTree == null) {
-            tree.put(minU, uTree = new Tree<>());
+        Tree<TextureAtlasSprite> vTree = uTree.get(minU);
+        if (vTree == null) {
+            uTree.put(minU, vTree = new Tree<>());
         }
-        uTree.put(minV, sprite);
+        vTree.put(minV, sprite);
     }
 
     @Nullable
     public TextureAtlasSprite getNearestFloorSprite(FloorUV uv) {
-        Tree<TextureAtlasSprite> uTree = tree.getFloor(uv.u);
-        if (uTree == null) {
+        Tree<TextureAtlasSprite> vTree = uTree.getFloor(uv.u);
+        if (vTree == null) {
             return null;
         }
-        return uTree.get(uv.v);
+        return vTree.getFloor(uv.v);
     }
 
     @Nullable
     public TextureAtlasSprite getNearestFloorSprite(float u, float v) {
-        Tree<TextureAtlasSprite> uTree = tree.getFloor(u);
-        if (uTree == null) {
+        Tree<TextureAtlasSprite> vTree = uTree.getFloor(u);
+        if (vTree == null) {
             return null;
         }
-        return uTree.get(v);
+        return vTree.getFloor(v);
     }
-
-    /*
-    static final class UTree extends Tree<VTree> { }
-
-    static final class VTree extends Tree<TextureAtlasSprite> { }
-     */
 
     private static class Tree<V> {
 
@@ -285,8 +279,8 @@ public class FloorUVTree {
             if (!(o instanceof Map.Entry)) {
                 return false;
             }
-            Map.Entry<?,?> e = (Map.Entry<?,?>) o;
-            return Objects.equals(key, e.getKey()) && Objects.equals(value, e.getValue());
+            Entry<?> e = (Entry<?>) o;
+            return Objects.equals(key, e.getFloatKey()) && Objects.equals(value, e.getValue());
         }
 
         @Override

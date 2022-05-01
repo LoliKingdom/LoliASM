@@ -5,48 +5,38 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.*;
-import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zone.rong.loliasm.client.sprite.ondemand.IAnimatedSpriteActivator;
-import zone.rong.loliasm.client.sprite.ondemand.IAnimatedSpritePrimer;
-import zone.rong.loliasm.client.sprite.ondemand.IBufferPrimerConfigurator;
-import zone.rong.loliasm.client.sprite.ondemand.ICompiledChunkExpander;
+import zone.rong.loliasm.client.sprite.ondemand.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.Map.Entry;
 
 @Mixin(TextureMap.class)
 public abstract class TextureMapMixin extends AbstractTexture implements IAnimatedSpritePrimer {
 
     @Shadow @Final public Map<String, TextureAtlasSprite> mapUploadedSprites;
 
-    @Unique private final TreeMap<Float, TreeMap<Float, TextureAtlasSprite>> animatedSpritesUVRanges = new TreeMap<>();
-    @Unique private final Set<Pair<Float, Float>> queuedUVCoords = new ObjectOpenHashSet<>(8);
+    @Unique private final FloorUVTree animatedSpritesUVRanges = new FloorUVTree();
+    @Unique private final Set<FloorUV> queuedUVCoords = new ObjectOpenHashSet<>(8);
 
     @Override
     public void registerUVRanges(float minU, float minV, TextureAtlasSprite sprite) {
-        animatedSpritesUVRanges.computeIfAbsent(minU, k -> new TreeMap<>()).put(minV, sprite);
+        animatedSpritesUVRanges.put(minU, minV, sprite);
     }
 
     @Override
     public void addAnimatedSprite(float u, float v) {
-        this.queuedUVCoords.add(Pair.of(u, v));
+        this.queuedUVCoords.add(FloorUV.of(u, v));
     }
 
     @Nullable
     @Override
     public TextureAtlasSprite getAnimatedSprite(float u, float v) {
-        Entry<Float, TreeMap<Float, TextureAtlasSprite>> vMapping = animatedSpritesUVRanges.floorEntry(u);
-        if (vMapping != null) {
-            Entry<Float, TextureAtlasSprite> uMapping = vMapping.getValue().floorEntry(v);
-            return uMapping == null ? null : uMapping.getValue();
-        }
-        return null;
+        return this.animatedSpritesUVRanges.getNearestFloorSprite(u, v);
     }
 
     @Inject(method = "<init>(Ljava/lang/String;Lnet/minecraft/client/renderer/texture/ITextureMapPopulator;Z)V", at = @At("RETURN"))
@@ -68,42 +58,34 @@ public abstract class TextureMapMixin extends AbstractTexture implements IAnimat
      */
     @Overwrite
     public void updateAnimations() {
-        if ((Object) this == Minecraft.getMinecraft().getTextureMapBlocks()) {
+        if ((Object) this == Minecraft.getMinecraft().getTextureMapBlocks()) { // Only run once, in main TextureMap, not in its subclasses
+
+            // Activate all animated sprites send from the block, fluid renderer in various render worker threads
             for (Object info : ((RenderGlobalAccessor) Minecraft.getMinecraft().renderGlobal).getRenderInfos()) {
                 for (TextureAtlasSprite sprite : ((ICompiledChunkExpander) ((ContainerLocalRenderInformationAccessor) info).getRenderChunk().compiledChunk).getVisibleTextures()) {
                     ((IAnimatedSpriteActivator) sprite).setActive(true);
                 }
             }
 
-            Iterator<Pair<Float, Float>> iter = this.queuedUVCoords.iterator();
+            // Mark all captured sprites
+            Iterator<FloorUV> iter = this.queuedUVCoords.iterator();
             while (iter.hasNext()) {
-                Pair<Float, Float> pair = iter.next();
-                TextureAtlasSprite sprite = getAnimatedSprite(pair.getLeft(), pair.getRight());
-                if (sprite != null && sprite.hasAnimationMetadata()) {
+                TextureAtlasSprite sprite = this.animatedSpritesUVRanges.getNearestFloorSprite(iter.next());
+                if (sprite != null && sprite.hasAnimationMetadata()) { // Only activate animated sprites
                     ((IAnimatedSpriteActivator) sprite).setActive(true);
                 }
-                iter.remove();
+                iter.remove(); // Pop off queue
             }
 
-            GlStateManager.bindTexture(this.getGlTextureId());
+            GlStateManager.bindTexture(this.getGlTextureId()); // Bind TextureMap texture
 
             for (TextureAtlasSprite sprite : this.mapUploadedSprites.values()) {
                 if (((IAnimatedSpriteActivator) sprite).isActive()) {
-                    sprite.updateAnimation();
-                    ((IAnimatedSpriteActivator) sprite).setActive(false);
+                    sprite.updateAnimation(); // Update Animation
+                    ((IAnimatedSpriteActivator) sprite).setActive(false); // Unactivated
                 }
             }
 
-            /*
-            for (TextureAtlasSprite sprite : this.listAnimatedSprites) {
-                if (((IAnimatedSpriteActivator) sprite).isActive()) {
-                    sprite.updateAnimation();
-                    ((IAnimatedSpriteActivator) sprite).setActive(false);
-                }
-            }
-             */
-
-            // this.listAnimatedSprites.clear();
         }
     }
 
