@@ -66,7 +66,7 @@ public class LoliConfig {
     public boolean cleanupLaunchClassLoaderEarly, cleanupLaunchClassLoaderLate, noResourceCache, noClassCache, weakResourceCache, weakClassCache, disablePackageManifestMap, cleanCachesOnGameLoad/*, cleanCachesOnWorldLoad*/;
     public boolean resourceLocationCanonicalization, modelConditionCanonicalization, nbtTagStringBackingStringCanonicalization, nbtBackingMapStringCanonicalization, packageStringCanonicalization, lockCodeCanonicalization, spriteNameCanonicalization, asmDataStringCanonicalization, vertexDataCanonicalization, filePermissionsCacheCanonicalization;
     public boolean optimizeFMLRemapper;
-    public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields, moreModelManagerCleanup, efficientHashing;
+    public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields, moreModelManagerCleanup, efficientHashing, replaceSearchTreeWithJEISearching;
     public boolean releaseSpriteFramesCache, onDemandAnimatedTextures;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching, copyScreenshotToClipboard, releaseScreenshotCache;
@@ -119,6 +119,7 @@ public class LoliConfig {
         stripNearUselessItemStackFields = getBoolean("stripNearUselessItemStackFields", "datastructures", "EXPERIMENTAL: Strips ItemStack of some of its fields as it stores some near-useless references", true);
         moreModelManagerCleanup = getBoolean("moreModelManagerCleanup", "datastructures", "Clears and trims ModelManager data structures after models are loaded and baked", true);
         efficientHashing = getBoolean("efficientHashing", "datastructures", "Improve hashing performances of various objects", true);
+        replaceSearchTreeWithJEISearching = getBoolean("replaceSearchTreeWithJEISearching", "datastructures", "If JEI/HEI is installed, replace vanilla search trees with JEI's, decreases memory usage, loading time and adds more features to normal creative menu searching", true);
 
         releaseSpriteFramesCache = getBoolean("releaseSpriteFramesCache", "textures", "Releases TextureAtlasSprite's framesTextureData. Won't touch custom TextureAtlasSprite implementations", true);
         onDemandAnimatedTextures = getBoolean("onDemandAnimatedTextures", "textures", "Calculate and send animated textures only when needed to the GPU, better than VanillaFix's textureFixes config", true);

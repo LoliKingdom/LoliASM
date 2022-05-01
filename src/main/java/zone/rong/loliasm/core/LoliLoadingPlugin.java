@@ -129,11 +129,13 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 "mixins.forgefixes.json",
                 "mixins.capability.json",
                 "mixins.singletonevents.json",
+                "mixins.efficienthashing.json",
                 "mixins.bucket.json",
                 "mixins.rendering.json",
                 "mixins.datastructures_modelmanager.json",
                 "mixins.screenshot.json",
-                "mixins.ondemand_sprites.json") :
+                "mixins.ondemand_sprites.json",
+                "mixins.searchtree_vanilla.json") :
                 Arrays.asList(
                         "mixins.devenv.json",
                         "mixins.internal.json",
@@ -145,7 +147,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                         "mixins.misc_fluidregistry.json",
                         "mixins.forgefixes.json",
                         "mixins.capability.json",
-                        "mixins.singletonevents.json");
+                        "mixins.singletonevents.json",
+                        "mixins.efficienthashing.json");
     }
 
     @Override
@@ -165,6 +168,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                     return LoliConfig.instance.releaseScreenshotCache;
                 case "mixins.ondemand_sprites.json":
                     return LoliConfig.instance.onDemandAnimatedTextures;
+                case "mixins.searchtree_vanilla.json":
+                    return LoliConfig.instance.replaceSearchTreeWithJEISearching;
             }
         }
         switch (mixinConfig) {
@@ -184,6 +189,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 return LoliConfig.instance.delayItemStackCapabilityInit;
             case "mixins.singletonevents.json":
                 return LoliConfig.instance.makeEventsSingletons;
+            case "mixins.efficienthashing.json":
+                return LoliConfig.instance.efficientHashing;
         }
         return true;
     }

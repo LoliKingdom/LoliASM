@@ -2,26 +2,24 @@ package zone.rong.loliasm.client.searchtree;
 
 import mezz.jei.Internal;
 import mezz.jei.gui.ingredients.IIngredientListElement;
-import mezz.jei.ingredients.IngredientFilter;
 import net.minecraft.client.util.SearchTree;
 import net.minecraft.item.ItemStack;
-import zone.rong.loliasm.LoliReflector;
+import zone.rong.loliasm.client.searchtree.mixins.mod.IngredientFilterInvoker;
 
-import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class JEIRedirectSearchTree extends SearchTree<ItemStack> {
 
-    private static final MethodHandle handle_getIngredientListUncached = LoliReflector.resolveMethod(IngredientFilter.class, "getIngredientListUncached", String.class);
+    private String lastSearch = "";
+    private final List<ItemStack> resultsCache = new ArrayList<>();
 
     @SuppressWarnings("ConstantConditions")
     public JEIRedirectSearchTree() {
         super(null, null);
         this.byName = null;
         this.byId = null;
-        // TODO: make `List<T> contents = Lists.<T>newArrayList();` `numericContents = new Object2IntOpenHashMap<T>();` protected and set to null
     }
 
     @Override
@@ -33,17 +31,21 @@ public class JEIRedirectSearchTree extends SearchTree<ItemStack> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ItemStack> search(String searchText) {
+        if (lastSearch.equals(searchText)) {
+            return resultsCache;
+        }
         try {
-            final List<ItemStack> results = new ArrayList<>();
-            for (final IIngredientListElement<?> element : ((List<IIngredientListElement<?>>) handle_getIngredientListUncached.invokeExact(Internal.getIngredientFilter(), searchText))) {
+            resultsCache.clear();
+            for (IIngredientListElement element : ((IngredientFilterInvoker) Internal.getIngredientFilter()).invokeGetIngredientListUncached(searchText)) {
                 if (element.getIngredient() instanceof ItemStack) {
-                    results.add((ItemStack) element.getIngredient());
+                    resultsCache.add((ItemStack) element.getIngredient());
                 }
             }
-            return results;
+            lastSearch = searchText;
+            return resultsCache;
         } catch (Throwable t) {
-            t.printStackTrace();
             return Collections.emptyList();
         }
     }
+
 }

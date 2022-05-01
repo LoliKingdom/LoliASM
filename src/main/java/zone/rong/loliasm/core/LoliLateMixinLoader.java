@@ -18,7 +18,8 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
                 "mixins.capability_astralsorcery.json",
                 "mixins.modfixes_evilcraftcompat.json",
                 "mixins.modfixes_ebwizardry.json",
-                "mixins.modfixes_xu2.json");
+                "mixins.modfixes_xu2.json",
+                "mixins.searchtree_mod.json");
     }
 
     @Override
@@ -37,6 +38,9 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
         }
         if ("mixins.modfixes_xu2.json".equals(mixinConfig)) {
             return (LoliConfig.instance.fixXU2CrafterCrash || LoliConfig.instance.disableXU2CrafterRendering) && Loader.isModLoaded("extrautils2");
+        }
+        if ("mixins.searchtree_mod.json".equals(mixinConfig)) {
+            return LoliConfig.instance.replaceSearchTreeWithJEISearching && Loader.isModLoaded("jei");
         }
         if (Loader.isModLoaded("astralsorcery")) {
             if ("mixins.modfixes_astralsorcery.json".equals(mixinConfig)) {
