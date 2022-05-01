@@ -1,5 +1,6 @@
 package zone.rong.loliasm.client.sprite.ondemand.mixins;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -50,7 +51,7 @@ public abstract class BufferBuilderMixin implements IBufferPrimerConfigurator {
                 float fv = (float) v;
                 this.byteBuffer.putFloat(i, fu);
                 this.byteBuffer.putFloat(i + 4, fv);
-                if (primer != null && drawMode == GL11.GL_QUADS || IAnimatedSpritePrimer.PRIMED.get()) {
+                if (primer != null && drawMode == GL11.GL_QUADS && IAnimatedSpritePrimer.PRIMED.get()) {
                     if (++vertexCountOfQuad == 4) {
                         vertexCountOfQuad = 0;
                         primer.addAnimatedSprite(minUOfQuad, minVOfQuad);
@@ -96,12 +97,9 @@ public abstract class BufferBuilderMixin implements IBufferPrimerConfigurator {
             this.isDrawing = false;
             this.byteBuffer.position(0);
             this.byteBuffer.limit(this.getBufferSize() * 4);
-            IAnimatedSpritePrimer.PRIMED.set(false);
-            /*
             if (Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
                 IAnimatedSpritePrimer.PRIMED.set(false);
             }
-             */
         }
     }
 

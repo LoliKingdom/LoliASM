@@ -9,12 +9,14 @@
     "BlockFluidRendererMixin",
     "BlockModelRendererMixin",
     "BufferBuilderMixin",
+    "ChunkCompileTaskGeneratorMixin",
     "CompiledChunkMixin",
     "ContainerLocalRenderInformationAccessor",
     "ForgeBlockModelRendererMixin",
     "RenderGlobalAccessor",
     "TextureAtlasSpriteMixin",
     "TextureManagerMixin",
-    "TextureMapMixin"
+    "TextureMapMixin",
+    "VertexLighterFlatMixin"
   ]
 }
