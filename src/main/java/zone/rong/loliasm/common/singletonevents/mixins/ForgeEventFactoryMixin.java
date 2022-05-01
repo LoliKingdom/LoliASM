@@ -37,9 +37,9 @@ public abstract class ForgeEventFactoryMixin {
     @Unique private static final AttachCapabilitiesEvent<ItemStack> ITEM_STACK_ATTACH_CAPABILITIES_EVENT = new AttachCapabilitiesEvent<>(ItemStack.class, null);
     @Unique private static final AttachCapabilitiesEvent<Chunk> CHUNK_ATTACH_CAPABILITIES_EVENT = new AttachCapabilitiesEvent<>(Chunk.class, null);
     @Unique private static final IRefreshEvent TE_ATTACH_CAPABILITIES_EVENT_CASTED = (IRefreshEvent) TE_ATTACH_CAPABILITIES_EVENT;
-    @Unique private static final IRefreshEvent ENTITY_ATTACH_CAPABILITIES_EVENT_CASTED = (IRefreshEvent) TE_ATTACH_CAPABILITIES_EVENT;
-    @Unique private static final IRefreshEvent ITEM_STACK_ATTACH_CAPABILITIES_EVENT_CASTED = (IRefreshEvent) TE_ATTACH_CAPABILITIES_EVENT;
-    @Unique private static final IRefreshEvent CHUNK_ATTACH_CAPABILITIES_EVENT_CASTED = (IRefreshEvent) TE_ATTACH_CAPABILITIES_EVENT;
+    @Unique private static final IRefreshEvent ENTITY_ATTACH_CAPABILITIES_EVENT_CASTED = (IRefreshEvent) ENTITY_ATTACH_CAPABILITIES_EVENT;
+    @Unique private static final IRefreshEvent ITEM_STACK_ATTACH_CAPABILITIES_EVENT_CASTED = (IRefreshEvent) ITEM_STACK_ATTACH_CAPABILITIES_EVENT;
+    @Unique private static final IRefreshEvent CHUNK_ATTACH_CAPABILITIES_EVENT_CASTED = (IRefreshEvent) CHUNK_ATTACH_CAPABILITIES_EVENT;
 
     @Unique private static final NeighborNotifyEvent NEIGHBOR_NOTIFY_EVENT = new NeighborNotifyEvent(null, null, null, null, false);
     @Unique private static final IRefreshEvent NEIGHBOR_NOTIFY_EVENT_CASTED = (IRefreshEvent) new NeighborNotifyEvent(null, null, null, null, false);
