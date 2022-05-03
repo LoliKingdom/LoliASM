@@ -6,6 +6,7 @@ import com.google.common.cache.CacheBuilder;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.util.HttpUtil;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.*;
@@ -16,34 +17,48 @@ import zone.rong.loliasm.api.LoliStringPool;
 import zone.rong.loliasm.api.datastructures.DummyMap;
 import zone.rong.loliasm.api.datastructures.ResourceCache;
 import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
+import zone.rong.loliasm.client.LoliIncompatibilityHandler;
 import zone.rong.loliasm.common.java.JavaFixes;
 import zone.rong.loliasm.common.modfixes.betterwithmods.BWMBlastingOilOptimization;
 import zone.rong.loliasm.common.modfixes.ebwizardry.ArcaneLocks;
 import zone.rong.loliasm.config.LoliConfig;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class CommonProxy {
 
+    /**
+     * This has to be called after FMLPreInitializationEvent as FMLConstructionEvent is wrapped in a different try - catch that behaves differently...
+     */
+    public void throwIncompatibility() {
+        boolean texFix = Loader.isModLoaded("texfix");
+        boolean vanillaFix = Loader.isModLoaded("vanillafix");
+        if (texFix || vanillaFix) {
+            List<String> messages = new ArrayList<>();
+            if (texFix && LoliConfig.instance.releaseSpriteFramesCache) {
+                String str = "%sTexFix: %sfunctionality replaced and improved with %sreleaseSpriteFramesCache";
+                messages.add(String.format(str, TextFormatting.BOLD, TextFormatting.RESET, TextFormatting.GOLD));
+            }
+            if (vanillaFix && LoliConfig.instance.onDemandAnimatedTextures) {
+                String str = "%sVanillaFix: %sfunctionality replaced and improved with %sonDemandAnimatedTextures";
+                messages.add(String.format(str, TextFormatting.BOLD, TextFormatting.RESET, TextFormatting.GOLD));
+            }
+            if (!messages.isEmpty()) {
+                messages.add(0, "Incompatible Mods:");
+                messages.add(1, "");
+                LoliIncompatibilityHandler.loliHaetPizza(messages);
+            }
+        }
+    }
+
     public void construct(FMLConstructionEvent event) {
         if (LoliConfig.instance.cleanupLaunchClassLoaderEarly) {
             cleanupLaunchClassLoader();
         }
-        /*
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                File classesCache = new File(loliCachesFolder, "classes.bin");
-                if (classesCache.createNewFile()) {
-                    Map<String, byte[]> classesToCache = new Object2ObjectOpenHashMap<>();
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }));
-         */
     }
 
     public void preInit(FMLPreInitializationEvent event) { }

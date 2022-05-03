@@ -11,7 +11,6 @@ import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.core.LoliLoadingPlugin;
 import zone.rong.loliasm.proxy.CommonProxy;
 
-import java.io.*;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -39,12 +38,13 @@ public class LoliASM {
     }
 
     @Mod.EventHandler
-    public void construct(FMLConstructionEvent event) throws IOException, ClassNotFoundException {
+    public void construct(FMLConstructionEvent event) {
         proxy.construct(event);
     }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        proxy.throwIncompatibility();
         proxy.preInit(event);
     }
 
