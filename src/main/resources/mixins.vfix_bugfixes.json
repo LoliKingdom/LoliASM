@@ -6,7 +6,6 @@
   "minVersion": "0.7",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinEnchantmentHelper",
     "MixinEntityPlayerMP",
     "MixinEntity",
     "MixinInventoryPlayer",
