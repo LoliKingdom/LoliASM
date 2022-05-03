@@ -2,7 +2,6 @@ package zone.rong.loliasm.common.stripitemstack.mixins;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.item.ItemStack;
@@ -15,19 +14,17 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
 
-    @Shadow public abstract boolean hasTagCompound();
     @Shadow private NBTTagCompound stackTagCompound;
 
-    @Unique private static final Cache<ItemStack, Pair<Block, Boolean>> canPlaceCache = CacheBuilder.newBuilder().weakKeys().expireAfterAccess(30, TimeUnit.SECONDS).build();
-    @Unique private static final Cache<ItemStack, Pair<Block, Boolean>> canDestroyCache = CacheBuilder.newBuilder().weakKeys().expireAfterAccess(30, TimeUnit.SECONDS).build();
+    @Shadow public abstract boolean hasTagCompound();
 
-    @Unique private static Map<ItemStack, EntityItemFrame> itemFrames;
+    @Unique private static Cache<ItemStack, EntityItemFrame> itemFrames;
+    @Unique private static Cache<ItemStack, Pair<Block, Boolean>> canPlaceCache;
+    @Unique private static Cache<ItemStack, Pair<Block, Boolean>> canDestroyCache;
 
     /**
      * @author Rongmario
@@ -35,7 +32,7 @@ public abstract class ItemStackMixin {
      */
     @Overwrite
     public boolean isOnItemFrame() {
-        return itemFrames != null && itemFrames.containsKey(this);
+        return itemFrames != null && itemFrames.getIfPresent((ItemStack) (Object) this) != null;
     }
 
     /**
@@ -45,9 +42,13 @@ public abstract class ItemStackMixin {
     @Overwrite
     public void setItemFrame(EntityItemFrame frame) {
         if (itemFrames == null) {
-            itemFrames = new Reference2ReferenceOpenHashMap<>();
+            itemFrames = CacheBuilder.newBuilder().weakKeys().weakValues().build();
         }
-        itemFrames.put((ItemStack) (Object) this, frame);
+        if (frame == null) {
+            itemFrames.invalidate((ItemStack) (Object) this);
+        } else {
+            itemFrames.put((ItemStack) (Object) this, frame);
+        }
     }
 
     /**
@@ -57,18 +58,19 @@ public abstract class ItemStackMixin {
     @Nullable
     @Overwrite
     public EntityItemFrame getItemFrame() {
-        return itemFrames == null ? null : itemFrames.get(this);
+        return itemFrames == null ? null : itemFrames.getIfPresent((ItemStack) (Object) this);
     }
 
     /**
      * @author Rongmario
      * @reason Use the global map
-     *
-     * TODO: not have a pair value cache but just have a Block value
      */
     @Overwrite
     public boolean canPlaceOn(Block blockIn) {
-        Pair<Block, Boolean> placeInfo = canPlaceCache.getIfPresent(this);
+        if (canPlaceCache == null) {
+            canPlaceCache = CacheBuilder.newBuilder().weakKeys().build();
+        }
+        Pair<Block, Boolean> placeInfo = canPlaceCache.getIfPresent((ItemStack) (Object) this);
         if (placeInfo != null && placeInfo.getLeft() == blockIn) {
             return placeInfo.getRight();
         }
@@ -89,12 +91,13 @@ public abstract class ItemStackMixin {
     /**
      * @author Rongmario
      * @reason Use the global map
-     *
-     * TODO: not have a pair value cache but just have a Block value
      */
     @Overwrite
     public boolean canDestroy(Block blockIn) {
-        Pair<Block, Boolean> destroyInfo = canDestroyCache.getIfPresent(this);
+        if (canDestroyCache == null) {
+            canDestroyCache = CacheBuilder.newBuilder().weakKeys().build();
+        }
+        Pair<Block, Boolean> destroyInfo = canDestroyCache.getIfPresent((ItemStack) (Object) this);
         if (destroyInfo != null && destroyInfo.getLeft() == blockIn) {
             return destroyInfo.getRight();
         }
