@@ -21,7 +21,7 @@ public class GuiCrashScreen extends GuiProblemScreen {
         super.initGui();
         GuiOptionButton mainMenuButton = new GuiOptionButton(0, width / 2 - 155, height / 4 + 120 + 12, I18n.format("gui.toTitle"));
         buttonList.add(mainMenuButton);
-        if (!LoliConfig.instance.allowMainMenuInCrashes) {
+        if (!LoliConfig.instance.returnToMainMenuAfterCrash) {
             mainMenuButton.enabled = false;
             mainMenuButton.displayString = I18n.format("loliasm.gui.disabledByConfig");
         }

@@ -98,6 +98,9 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         if (LoliConfig.instance.removeForgeSecurityManager) {
             UnsafeLolis.removeFMLSecurityManager();
         }
+        if (LoliConfig.instance.crashReportImprovements) {
+            initStacktraceDeobfuscator();
+        }
         boolean needToDGSFFFF = isVMOpenJ9 && SystemUtils.IS_JAVA_1_8;
         int buildAppendIndex = SystemUtils.JAVA_VERSION.indexOf("_");
         if (needToDGSFFFF && buildAppendIndex != -1) {
@@ -114,9 +117,6 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                     LoliLogger.instance.fatal("Either use '-Xjit:disableGuardedStaticFinalFieldFolding' as part of your java arguments, or update OpenJ9!");
                 }
             }
-        }
-        if(LoliConfig.instance.crashReportImprovements) {
-            initStacktraceDeobfuscator();
         }
     }
 

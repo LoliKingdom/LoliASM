@@ -76,8 +76,7 @@ public class LoliConfig {
     public boolean sparkProfileEntireGameLoad, sparkProfileEntireWorldLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, sparkProfileFinalizingStage, sparkProfileWorldAboutToStartStage, sparkProfileWorldStartingStage, sparkProfileWorldStartedStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads, sparkSummarizeHeapSpaceAfterWorldLoads;
     public boolean furnaceExperienceFCFS, furnaceExperienceVanilla, furnaceExperienceMost;
     public boolean makeEventsSingletons;
-
-    public boolean crashReportImprovements, fixVanillaBugs, allowMainMenuInCrashes;
+    public boolean crashReportImprovements, returnToMainMenuAfterCrash;
 
     private void initialize() {
         configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
@@ -178,10 +177,8 @@ public class LoliConfig {
 
         makeEventsSingletons = getBoolean("makeEventsSingletons", "events", "[EXPERIMENTAL]: Stops mass object creation when Forge is firing events, this can decrease Garbage Collection pressure", false);
 
-        crashReportImprovements = getBoolean("crashReportImprovements", "crashes", "Allow the game to keep running after it crashes and provide deobf crash reports. Thanks to VanillaFix for the original implementation of this, many parts of which are reused.", true);
-        allowMainMenuInCrashes = getBoolean("allowMainMenu", "crashes", "Allow the user to return to the main menu and play again when a crash occurs.", true);
-
-        fixVanillaBugs = getBoolean("fixVanillaBugs", "improvements", "Fixes some assorted bugs and memory leaks in vanilla code. Thanks to VanillaFix for this code.", true);
+        crashReportImprovements = getBoolean("crashReportImprovements", "crashes", "Allow the game to keep running after crashes and deobfuscate crash reports. Thanks to VanillaFix for the original implementation of this", true);
+        returnToMainMenuAfterCrash = getBoolean("returnToMainMenuAfterCrash", "crashes", "When crashReportImprovements is true, allow the player to return to the main menu when a crash occurs", true);
 
         configuration.save();
     }
