@@ -82,8 +82,8 @@ repositories {
 
 dependencies {
     embed "me.nallar.whocalled:WhoCalled:1.1"
-    deobfCompile "com.enderio.core:EnderCore:1.12.2-+"
-    deobfCompile ("com.enderio:EnderIO:1.12.2-+") {
+    deobfProvided "com.enderio.core:EnderCore:1.12.2-+"
+    deobfProvided ("com.enderio:EnderIO:1.12.2-+") {
         transitive = false
     }
     provided "codechicken:ChickenASM:1.12-1.0.2.9"

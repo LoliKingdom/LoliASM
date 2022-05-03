@@ -1,0 +1,81 @@
+loliasm.gui.getLink=Get link
+loliasm.gui.failed=[Failed]
+loliasm.gui.keepPlaying=Keep playing
+loliasm.gui.restart=Restart Minecraft
+loliasm.gui.disabledByConfig=Disabled by config
+
+loliasm.crashscreen.title=Minecraft crashed!
+loliasm.crashscreen.summary=Minecraft ran into a problem and crashed.
+
+loliasm.crashscreen.paragraph1.line1=The following mod(s) have been identified as potential causes:
+
+loliasm.crashscreen.unknownCause=Unknown
+loliasm.crashscreen.identificationErrored=[Error identifying, report to LoliASM]
+
+loliasm.crashscreen.paragraph2.line1=Click any mod in the list to go to their website for support. A
+loliasm.crashscreen.paragraph2.line2=report has been generated with this name in your crash folder.
+
+loliasm.crashscreen.reportSaveFailed=[Error saving report, see log]
+
+loliasm.crashscreen.paragraph3.line1=Click the "Get link" button to open it in your browser. You're
+loliasm.crashscreen.paragraph3.line2=encouraged to send this report to the mod's author to help
+loliasm.crashscreen.paragraph3.line3=them fix the issue. Since LoliASM is installed, you can keep
+loliasm.crashscreen.paragraph3.line4=playing despite the crash.
+
+loliasm.initerrorscreen.title=Minecraft failed to start!
+loliasm.initerrorscreen.summary=An error during startup prevented Minecraft from starting
+
+loliasm.initerrorscreen.paragraph3.line1=Click the "Get link" button to open it in your browser. You're
+loliasm.initerrorscreen.paragraph3.line2=encouraged to send this report to the mod's author to help
+loliasm.initerrorscreen.paragraph3.line3=them fix the issue. Unfortunately, it is not possible to keep
+loliasm.initerrorscreen.paragraph3.line4=loading Minecraft due to this error.
+
+loliasm.warnscreen.title=Potential problem found!
+loliasm.warnscreen.summary=Minecraft ran into a problem.
+
+loliasm.warnscreen.paragraph1.line1=This did not cause a crash, but there will likely still be
+loliasm.warnscreen.paragraph1.line2=consequences such as world corruption or broken features.
+loliasm.warnscreen.paragraph1.line3=The following mod(s) have been identified as potential causes:
+
+loliasm.warnscreen.paragraph3.line1=Click the "Get link" button to open it in your browser. You're
+loliasm.warnscreen.paragraph3.line2=encouraged to send this report to the mod's author to help
+loliasm.warnscreen.paragraph3.line3=them fix the issue. You can keep playing, but be aware that
+loliasm.warnscreen.paragraph3.line4=you will likely encounter some problems later on. This warning
+loliasm.warnscreen.paragraph3.line5=can be disabled in Mods > LoliASM > Config > Crashes.
+
+loliasm.notification.title.unknown=An unknown problem occured!
+loliasm.notification.title.mod=%s ran into a problem!
+loliasm.notification.description=Press Ctrl + I for more info
+
+loliasm.fixes=Enable/Disable Fixes
+loliasm.fixes.tooltip=Control which fixes are enabled and disabled.
+loliasm.crashes=Crash Options
+loliasm.crashes.tooltip=Options on how crashes are handled
+loliasm.crashes.disableReturnToMainMenu=Disable Return to Main Menu
+loliasm.crashes.disableReturnToMainMenu.tooltip=Disables the "Return to Main Menu" button on the crash screen, forcing the user to close the game after a crash. The crash screen will still show the suspected mods and offer to upload the crash report.
+loliasm.crashes.problemAction.log=Log
+loliasm.crashes.problemAction.notification=Notification
+loliasm.crashes.problemAction.warningScreen=Warning Screen
+loliasm.crashes.problemAction.crash=Crash
+loliasm.crashes.scheduledTaskproblemAction=Scheduled task exception action
+loliasm.crashes.scheduledTaskproblemAction.tooltip=What should happen when a scheduled task throws an exception
+loliasm.crashes.errorNotificationDuration=Error Notification Duration
+loliasm.crashes.errorNotificationDuration.tooltip=The time in milliseconds to display error notifications for
+loliasm.crashes.replaceErrorNotifications=Replace Error Notifications
+loliasm.crashes.replaceErrorNotifications.tooltip=When several errors occur in a row, replace the notification rather than queuing more notifications
+loliasm.crashes.hasteURL=Haste URL
+loliasm.crashes.hasteURL.tooltip=The URL to the root of the haste instance to upload crash reports to, without a trailing slash.
+loliasm.fixes.bugFixes=Optimizations and vanilla bug fixes
+loliasm.fixes.bugFixes.tooltip=Enable or disable small optimizations and vanilla bug fixes
+loliasm.fixes.crashFixes=Crash improvements
+loliasm.fixes.crashFixes.tooltip=Enable or disable crash improvements (crash screen, mod identification, crash report formatting). Note that you can disable only the "Return to Main Menu" button from the "Crash Options config section".
+loliasm.fixes.modSupport=Mod support
+loliasm.fixes.modSupport.tooltip=Enable or disable support for other mods. Important: This will break some mods' animated textures. Don't disable this unless mod support is causing crashes.
+loliasm.fixes.profiler=Profiler improvements
+loliasm.fixes.profiler.tooltip=Enable or disable improvements to the profiler (Alt + F3 pie chart): Split entities and tile entities by mod, add F3 + S for server profiler pie chart
+loliasm.fixes.textureFixes=Texture optimizations
+loliasm.fixes.textureFixes.tooltip=Enable or disable texture optimizations. This is the feature that increases the game's FPS, so it's not recommended to disable this.
+
+loliasm.debug.switch_profiler.help=F3 + S = Cycle client <-> integrated server profiler
+loliasm.debug.switch_profiler.server=Using server profiler
+loliasm.debug.switch_profiler.client=Using client profiler

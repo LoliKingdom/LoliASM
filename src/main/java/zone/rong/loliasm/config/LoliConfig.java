@@ -77,6 +77,8 @@ public class LoliConfig {
     public boolean furnaceExperienceFCFS, furnaceExperienceVanilla, furnaceExperienceMost;
     public boolean makeEventsSingletons;
 
+    public boolean crashReportImprovements, fixVanillaBugs, allowMainMenuInCrashes;
+
     private void initialize() {
         configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
         load();
@@ -175,6 +177,11 @@ public class LoliConfig {
         furnaceExperienceMost = getBoolean("furnaceExperienceMost", "furnace", "When optimizeFurnaceRecipeStore is true, experience is determined by whichever entry gives the most experience", false);
 
         makeEventsSingletons = getBoolean("makeEventsSingletons", "events", "[EXPERIMENTAL]: Stops mass object creation when Forge is firing events, this can decrease Garbage Collection pressure", false);
+
+        crashReportImprovements = getBoolean("crashReportImprovements", "crashes", "Allow the game to keep running after it crashes and provide deobf crash reports. Thanks to VanillaFix for the original implementation of this, many parts of which are reused.", true);
+        allowMainMenuInCrashes = getBoolean("allowMainMenu", "crashes", "Allow the user to return to the main menu and play again when a crash occurs.", true);
+
+        fixVanillaBugs = getBoolean("fixVanillaBugs", "improvements", "Fixes some assorted bugs and memory leaks in vanilla code. Thanks to VanillaFix for this code.", true);
 
         configuration.save();
     }

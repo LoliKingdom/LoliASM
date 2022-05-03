@@ -10,6 +10,8 @@ import zone.rong.loliasm.UnsafeLolis;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.spark.LoliSparker;
+import zone.rong.loliasm.vanillafix.crashes.DeobfuscatingRewritePolicy;
+import zone.rong.loliasm.vanillafix.crashes.StacktraceDeobfuscator;
 import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import java.io.File;
@@ -61,6 +63,29 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     public static final boolean isVMOpenJ9 = SystemUtils.JAVA_VM_NAME.toLowerCase(Locale.ROOT).contains("openj9");
     public static final boolean isClient = FMLLaunchHandler.side() == Side.CLIENT;
 
+    private static void initStacktraceDeobfuscator() {
+        File modDir = new File(Launch.minecraftHome, "config/loliasm");
+        modDir.mkdirs();
+
+        // Initialize StacktraceDeobfuscator
+        LoliLogger.instance.info("Initializing StacktraceDeobfuscator");
+        try {
+            File mappings = new File(modDir, "methods-stable_39.csv");
+            if (mappings.exists()) {
+                LoliLogger.instance.info("Found MCP method mappings: " + mappings.getName());
+            } else {
+                LoliLogger.instance.info("Downloading MCP method mappings to: " + mappings.getName());
+            }
+            StacktraceDeobfuscator.init(mappings);
+        } catch (Exception e) {
+            LoliLogger.instance.error("Failed to get MCP data!", e);
+        }
+        LoliLogger.instance.info("Done initializing StacktraceDeobfuscator");
+
+        // Install the log exception deobfuscation rewrite policy
+        DeobfuscatingRewritePolicy.install();
+    }
+
     public LoliLoadingPlugin() {
         LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
         LoliLogger.instance.info("Lolis are preparing and loading in mixins since Rongmario's too lazy to write pure ASM at times despite the mod being called 'LoliASM'");
@@ -89,6 +114,9 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                     LoliLogger.instance.fatal("Either use '-Xjit:disableGuardedStaticFinalFieldFolding' as part of your java arguments, or update OpenJ9!");
                 }
             }
+        }
+        if(LoliConfig.instance.crashReportImprovements) {
+            initStacktraceDeobfuscator();
         }
     }
 
@@ -119,6 +147,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     public List<String> getMixinConfigs() {
         return isClient ? Arrays.asList(
                 "mixins.devenv.json",
+                "mixins.vfix_bugfixes.json",
+                "mixins.vfix_crashes.json",
                 "mixins.internal.json",
                 "mixins.vanities.json",
                 "mixins.registries.json",
@@ -138,6 +168,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 "mixins.searchtree_vanilla.json") :
                 Arrays.asList(
                         "mixins.devenv.json",
+                        "mixins.vfix_bugfixes.json",
                         "mixins.internal.json",
                         "mixins.vanities.json",
                         "mixins.registries.json",
@@ -158,6 +189,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         }
         if (isClient) {
             switch (mixinConfig) {
+                case "mixins.vfix_crashes.json":
+                    return LoliConfig.instance.crashReportImprovements;
                 case "mixins.bucket.json":
                     return LoliConfig.instance.reuseBucketQuads;
                 case "mixins.rendering.json":
@@ -173,6 +206,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
             }
         }
         switch (mixinConfig) {
+            case "mixins.vfix_bugfixes.json":
+                return LoliConfig.instance.fixVanillaBugs;
             case "mixins.registries.json":
                 return LoliConfig.instance.optimizeRegistries;
             case "mixins.stripitemstack.json":

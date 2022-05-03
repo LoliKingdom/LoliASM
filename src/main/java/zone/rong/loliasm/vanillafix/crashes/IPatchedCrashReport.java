@@ -1,0 +1,9 @@
+package zone.rong.loliasm.vanillafix.crashes;
+
+import net.minecraftforge.fml.common.ModContainer;
+
+import java.util.Set;
+
+public interface IPatchedCrashReport {
+    Set<ModContainer> getSuspectedMods();
+}
