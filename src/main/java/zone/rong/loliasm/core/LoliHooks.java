@@ -14,21 +14,6 @@ import java.util.Set;
 @SuppressWarnings("unused")
 public class LoliHooks {
 
-    /*
-    private static final MethodHandle STRING_BACKING_CHAR_ARRAY_GETTER = LoliReflector.resolveFieldGetter(String.class, "value");
-    private static final char[] EMPTY_CHAR_ARRAY;
-
-    static {
-        char[] array;
-        try {
-            array = (char[]) STRING_BACKING_CHAR_ARRAY_GETTER.invokeExact("");
-        } catch (Throwable throwable) {
-            array = new char[0];
-        }
-        EMPTY_CHAR_ARRAY = array;
-    }
-     */
-
     public static <K> ObjectArraySet<K> createArraySet() {
         return new ObjectArraySet<>();
     }
@@ -96,21 +81,8 @@ public class LoliHooks {
         return string == null ? null : LoliStringPool.canonicalize(string);
     }
 
-    public static /*char[]*/ String nbtTagString$override$ctor(String data) {
-        /*
-        if (data == null) {
-            throw new NullPointerException("Null string not allowed");
-        }
-         */
+    public static String nbtTagString$override$ctor(String data) {
         return LoliStringPool.canonicalize(data);
-        /*
-        try {
-            return (char[]) STRING_BACKING_CHAR_ARRAY_GETTER.invokeExact(data);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            return EMPTY_CHAR_ARRAY;
-        }
-         */
     }
 
 }
