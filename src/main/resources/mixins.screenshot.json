@@ -1,11 +1,13 @@
 {
-  "package": "zone.rong.loliasm.common.screenshot.mixins",
+  "package": "zone.rong.loliasm.client.screenshot.mixins",
   "plugin": "zone.rong.loliasm.core.LoliMixinPlugin",
   "refmap": "mixins.loliasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "MinecraftMixin",
+    "ScreenShotHelperInvoker",
     "ScreenShotHelperMixin"
   ]
 }

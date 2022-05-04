@@ -29,11 +29,15 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (!LoliConfig.instance.fixTileEntityOnLoadCME && mixinClassName.equals("zone.rong.loliasm.common.forgefixes.mixins.ChunkMixin")) {
-            LoliLogger.instance.info("fixTileEntityOnLoadCME disabled, will not patch {}", targetClassName);
             return false;
         }
         if (!LoliConfig.instance.fasterEntitySpawnPreparation && mixinClassName.equals("zone.rong.loliasm.common.forgefixes.mixins.EntityEntryMixin")) {
-            LoliLogger.instance.info("fasterEntitySpawnPreparation disabled, will not patch {}", targetClassName);
+            return false;
+        }
+        if (!LoliConfig.instance.copyScreenshotToClipboard && mixinClassName.equals("zone.rong.loliasm.client.screenshot.mixins.MinecraftMixin")) {
+            return false;
+        }
+        if (!LoliConfig.instance.releaseScreenshotCache && mixinClassName.equals("zone.rong.loliasm.client.screenshot.mixins.ScreenShotHelperMixin")) {
             return false;
         }
         return true;

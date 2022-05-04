@@ -198,7 +198,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 case "mixins.datastructures_modelmanager.json":
                     return LoliConfig.instance.moreModelManagerCleanup;
                 case "mixins.screenshot.json":
-                    return LoliConfig.instance.releaseScreenshotCache;
+                    return LoliConfig.instance.releaseScreenshotCache || LoliConfig.instance.asyncScreenshot;
                 case "mixins.ondemand_sprites.json":
                     return LoliConfig.instance.onDemandAnimatedTextures;
                 case "mixins.searchtree_vanilla.json":
