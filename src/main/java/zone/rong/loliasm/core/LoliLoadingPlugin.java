@@ -101,7 +101,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         boolean needToDGSFFFF = isVMOpenJ9 && SystemUtils.IS_JAVA_1_8;
         int buildAppendIndex = SystemUtils.JAVA_VERSION.indexOf("_");
         if (needToDGSFFFF && buildAppendIndex != -1) {
-            if (needToDGSFFFF = (Integer.parseInt(SystemUtils.JAVA_VERSION.substring(buildAppendIndex + 1)) < 265)) {
+            if (Integer.parseInt(SystemUtils.JAVA_VERSION.substring(buildAppendIndex + 1)) < 265) {
                 for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
                     if (arg.equals("-Xjit:disableGuardedStaticFinalFieldFolding")) {
                         needToDGSFFFF = false;
