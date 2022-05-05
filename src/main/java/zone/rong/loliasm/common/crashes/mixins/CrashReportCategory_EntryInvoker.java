@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.crashes.mixins;
+package zone.rong.loliasm.common.crashes.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;

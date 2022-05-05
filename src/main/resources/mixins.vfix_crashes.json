@@ -6,9 +6,6 @@
   "minVersion": "0.6",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "CrashReportCategory_EntryInvoker",
-    "MixinCrashReport",
-    "MixinCrashReportCategory",
     "MixinIntegratedServer",
     "MixinUtil"
   ],

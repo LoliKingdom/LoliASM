@@ -86,7 +86,9 @@ public final class StacktraceDeobfuscator {
         while (!queue.isEmpty()) {
             t = queue.remove();
             t.setStackTrace(deobfuscateStacktrace(t.getStackTrace()));
-            if (t.getCause() != null) queue.add(t.getCause());
+            if (t.getCause() != null) {
+                queue.add(t.getCause());
+            }
             Collections.addAll(queue, t.getSuppressed());
         }
     }
@@ -103,7 +105,6 @@ public final class StacktraceDeobfuscator {
         if (srgMcpMethodMap == null) {
             return srgName; // Not initialized
         }
-
         String mcpName = srgMcpMethodMap.get(srgName);
         // log.debug(srgName + " <=> " + mcpName != null ? mcpName : "?"); // Can't do this, it would be a recursive call to log appender
         return mcpName != null ? mcpName : srgName;

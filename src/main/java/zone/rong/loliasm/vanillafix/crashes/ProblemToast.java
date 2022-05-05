@@ -10,10 +10,14 @@ import net.minecraftforge.fml.common.ModContainer;
 import java.util.Set;
 
 public class ProblemToast implements IToast {
+
     private static final int ERROR_REPORT_DURATION = 30000;
+
     public final CrashReport report;
-    private String suspectedModString;
+
     public boolean hide;
+
+    private String suspectedModString;
 
     public ProblemToast(CrashReport report) {
         this.report = report;
@@ -21,18 +25,18 @@ public class ProblemToast implements IToast {
 
     @Override
     public IToast.Visibility draw(GuiToast toastGui, long delta) {
-        if (hide) return Visibility.HIDE;
-        
+        if (hide || delta >= ERROR_REPORT_DURATION) {
+            return Visibility.HIDE;
+        }
         toastGui.getMinecraft().getTextureManager().bindTexture(TEXTURE_TOASTS);
         GlStateManager.color(1.0F, 1.0F, 1.0F);
         toastGui.drawTexturedModalRect(0, 0, 0, 96, 160, 32);
-
-        toastGui.getMinecraft().fontRenderer.drawString(getModCause().equals("")
-                ? I18n.format("loliasm.notification.title.unknown")
-                : I18n.format("loliasm.notification.title.mod", getModCause()), 5, 7, 0xff000000);
-        toastGui.getMinecraft().fontRenderer.drawString(I18n.format("loliasm.notification.description"), 5, 18, 0xff500050);
-
-        return delta >= ERROR_REPORT_DURATION ? IToast.Visibility.HIDE : IToast.Visibility.SHOW;
+        Object cause = getModCause();
+        toastGui.getMinecraft().fontRenderer.drawString(cause.equals("") ?
+                I18n.format("loliasm.notification.title.unknown") :
+                I18n.format("loliasm.notification.title.mod", cause), 5, 7, 0xFF000000);
+        toastGui.getMinecraft().fontRenderer.drawString(I18n.format("loliasm.notification.description"), 5, 18, 0xFF500050);
+        return IToast.Visibility.SHOW;
     }
 
     private Object getModCause() {

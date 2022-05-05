@@ -1,17 +1,14 @@
-package zone.rong.loliasm.vanillafix.crashes.mixins;
+package zone.rong.loliasm.common.crashes.mixins;
 
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.spongepowered.asm.mixin.*;
 import zone.rong.loliasm.vanillafix.ModIdentifier;
 import zone.rong.loliasm.vanillafix.crashes.IPatchedCrashReport;
 import zone.rong.loliasm.vanillafix.crashes.StacktraceDeobfuscator;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -26,16 +23,20 @@ import java.util.Set;
 
 @Mixin(value = CrashReport.class, priority = 500)
 public abstract class MixinCrashReport implements IPatchedCrashReport {
+
     @Shadow @Final private CrashReportCategory systemDetailsCategory;
     @Shadow @Final private Throwable cause;
     @Shadow @Final private List<CrashReportCategory> crashReportSections;
     @Shadow @Final private String description;
 
-    @Shadow private static String getWittyComment() { return null; }
+    @Shadow private static String getWittyComment() {
+        throw new AssertionError();
+    }
 
-    private Set<ModContainer> suspectedMods;
+    @Unique private Set<ModContainer> suspectedMods;
 
-    @Override public Set<ModContainer> getSuspectedMods() {
+    @Override
+    public Set<ModContainer> getSuspectedMods() {
         return suspectedMods;
     }
 
@@ -45,13 +46,11 @@ public abstract class MixinCrashReport implements IPatchedCrashReport {
         systemDetailsCategory.addDetail("Suspected Mods", () -> {
             try {
                 suspectedMods = ModIdentifier.identifyFromStacktrace(cause);
-
                 String modListString = "Unknown";
                 List<String> modNames = new ArrayList<>();
                 for (ModContainer mod : suspectedMods) {
                     modNames.add(mod.getName() + " (" + mod.getModId() + ")");
                 }
-
                 if (!modNames.isEmpty()) {
                     modListString = StringUtils.join(modNames, ", ");
                 }
@@ -62,31 +61,34 @@ public abstract class MixinCrashReport implements IPatchedCrashReport {
         });
     }
 
-    /** @reason Deobfuscates the stacktrace using MCP mappings */
     @Inject(method = "populateEnvironment", at = @At("HEAD"))
     private void beforePopulateEnvironment(CallbackInfo ci) {
         StacktraceDeobfuscator.deobfuscateThrowable(cause);
     }
 
-    /** @reason Improve report formatting */
+    /**
+     * @author VanillaFix
+     * @reason Improve formatting
+     */
     @Overwrite
     public String getCompleteReport() {
         StringBuilder builder = new StringBuilder();
-
         builder.append("---- Minecraft Crash Report ----\n")
-               .append("// LoliASM deobfuscated this stack trace using MCP mappings.\n")
-               .append("// ").append(getVanillaFixComment())
-               .append("\n\n")
-               .append("Time: ").append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").format(new Date())).append("\n")
-               .append("Description: ").append(description)
-               .append("\n\n")
-               .append(stacktraceToString(cause).replace("\t", "    ")) // Vanilla's getCauseStackTraceOrString doesn't print causes and suppressed exceptions
-               .append("\n\nA detailed walkthrough of the error, its code path and all known details is as follows:\n");
-
+                .append("// Lolis deobfuscated this stacktrace using MCP's stable-39 mappings.\n")
+                .append("// ").append(getWittyComment());
+        String blame = getFunnyBlame();
+        if (!blame.isEmpty()) {
+            builder.append("// ").append(blame);
+        }
+        builder.append("\n\n")
+                .append("Time: ").append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").format(new Date())).append("\n")
+                .append("Description: ").append(description)
+                .append("\n\n")
+                .append(stacktraceToString(cause).replace("\t", "    "))
+                .append("\n\nA detailed walkthrough of the error, its code path and all known details is as follows:\n");
         for (int i = 0; i < 87; i++) {
             builder.append("-");
         }
-
         builder.append("\n\n");
         getSectionsInStringBuilder(builder);
         return builder.toString().replace("\t", "    ");
@@ -98,26 +100,29 @@ public abstract class MixinCrashReport implements IPatchedCrashReport {
         return writer.toString();
     }
 
-    /** @reason Improve report formatting, add VanillaFix comment */
+
+    /**
+     * @author VanillFix
+     * @reason Improve report formatting, add blame comment
+     */
     @Overwrite
     public void getSectionsInStringBuilder(StringBuilder builder) {
         for (CrashReportCategory crashreportcategory : crashReportSections) {
             crashreportcategory.appendToStringBuilder(builder);
             builder.append("\n");
         }
-
         systemDetailsCategory.appendToStringBuilder(builder);
     }
 
-    private String getVanillaFixComment() {
+    private String getFunnyBlame() {
         try {
             if (Math.random() < 0.01 && !suspectedMods.isEmpty()) {
                 ModContainer mod = suspectedMods.iterator().next();
                 String author = mod.getMetadata().authorList.get(0);
-                return "I blame " + author + ".";
+                return "The lolis blame " + author + "!";
             }
         } catch (Throwable ignored) {}
-
-        return getWittyComment();
+        return "";
     }
+
 }
