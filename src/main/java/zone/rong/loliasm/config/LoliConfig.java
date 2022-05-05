@@ -69,7 +69,7 @@ public class LoliConfig {
     public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields, moreModelManagerCleanup, efficientHashing, replaceSearchTreeWithJEISearching;
     public boolean releaseSpriteFramesCache, onDemandAnimatedTextures;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
-    public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching, copyScreenshotToClipboard, releaseScreenshotCache, asyncScreenshot;
+    public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching, copyScreenshotToClipboard, releaseScreenshotCache, asyncScreenshot, removeExcessiveGCCalls, smoothDimensionChange;
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash, disableXU2CrafterRendering, fixTFCFallingBlockFalseStartingTEPos;
     public boolean fixAmuletHolderCapability, delayItemStackCapabilityInit;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
@@ -134,6 +134,8 @@ public class LoliConfig {
         copyScreenshotToClipboard = getBoolean("copyScreenshotToClipboard", "misc", "Copy image after screenshotting to clipboard", false);
         releaseScreenshotCache = getBoolean("releaseScreenshotCache", "misc", "For some reason Mojang decided to cache int buffers and arrays after a screenshot is taken, this makes sure they're never cached", true);
         asyncScreenshot = getBoolean("asyncScreenshot", "misc", "Process screenshots and print to chat asynchronously", true);
+        removeExcessiveGCCalls = getBoolean("removeExcessiveGCCalls", "misc", "Removes forced garbage collection calls, inspired by VanillaFix, can make world loading faster", true);
+        smoothDimensionChange = getBoolean("smoothDimensionChange", "misc", "Allows changing of dimensions to be smooth and nearly instantaneous, inspired by VanillaFix", true);
 
         fixBlockIEBaseArrayIndexOutOfBoundsException = getBoolean("fixBlockIEBaseArrayIndexOutOfBoundsException", "modfixes", "When Immersive Engineering is installed, sometimes it or it's addons can induce an ArrayIndexOutOfBoundsException in BlockIEBase#getPushReaction. This option will be ignored when IE isn't installed", true);
         cleanupChickenASMClassHierarchyManager = getBoolean("cleanupChickenASMClassHierarchyManager", "modfixes", "EXPERIMENTAL: When ChickenASM (Library of CodeChickenLib and co.) is installed, ClassHierarchyManager can cache a lot of Strings and seem to be unused in any transformation purposes. This clears ClassHierarchyManager of those redundant strings. This option will be ignored when ChickenASM isn't installed", true);
@@ -178,7 +180,7 @@ public class LoliConfig {
 
         makeEventsSingletons = getBoolean("makeEventsSingletons", "events", "[EXPERIMENTAL]: Stops mass object creation when Forge is firing events, this can decrease Garbage Collection pressure", false);
 
-        crashReportImprovements = getBoolean("crashReportImprovements", "crashes", "Allow the game to keep running after crashes and deobfuscate crash reports. Thanks to VanillaFix for the original implementation of this", true);
+        crashReportImprovements = getBoolean("crashReportImprovements", "crashes", "Allow the game to keep running after crashes as well as adding more information and deobfuscating the crash reports. Thanks to VanillaFix for the original implementation of this", true);
         returnToMainMenuAfterCrash = getBoolean("returnToMainMenuAfterCrash", "crashes", "When crashReportImprovements is true, allow the player to return to the main menu when a crash occurs", true);
 
         configuration.save();

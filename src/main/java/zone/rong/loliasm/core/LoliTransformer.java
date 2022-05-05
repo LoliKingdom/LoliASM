@@ -80,6 +80,12 @@ public class LoliTransformer implements IClassTransformer {
             if (LoliConfig.instance.spriteNameCanonicalization) {
                 addTransformation("net.minecraft.client.renderer.texture.TextureAtlasSprite", this::canonicalizeSpriteNames);
             }
+            if (LoliConfig.instance.removeExcessiveGCCalls) {
+                addTransformation("net.minecraft.client.Minecraft", this::removeExcessiveGCCalls);
+            }
+            if (LoliConfig.instance.smoothDimensionChange) {
+                addTransformation("net.minecraft.client.network.NetHandlerPlayClient", this::smoothDimensionChange);
+            }
         }
         if (LoliConfig.instance.resourceLocationCanonicalization) {
             addTransformation("net.minecraft.util.ResourceLocation", this::canonicalizeResourceLocationStrings);
@@ -916,6 +922,84 @@ public class LoliTransformer implements IClassTransformer {
                         instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", setTag, "(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;)V", false));
                         method.instructions.insertBefore(instruction, instructions);
                         break all;
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] removeExcessiveGCCalls(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        String loadWorld = !LoliLoadingPlugin.isDeobf ? "func_71353_a" : "loadWorld";
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals(loadWorld)) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == INVOKESTATIC) {
+                        MethodInsnNode invokeStatic = (MethodInsnNode) instruction;
+                        if (invokeStatic.owner.equals("java/lang/System") && invokeStatic.name.equals("gc")) {
+                            LabelNode l56 = (LabelNode) iter.next(); // Capture for earlier GOTO
+                            iter.previous();
+                            iter.previous();
+                            iter.remove(); // INVOKESTATIC
+                            iter.previous();
+                            iter.remove(); // FRAME SAME
+                            iter.previous();
+                            iter.remove(); // LINENUMBER
+                            LabelNode l54 = (LabelNode) iter.previous();
+                            iter.remove(); // LABEL L54
+                            while (iter.hasPrevious()) {
+                                AbstractInsnNode previousInstruction = iter.previous();
+                                if (previousInstruction.getOpcode() == GOTO) {
+                                    JumpInsnNode gotoNode = (JumpInsnNode) previousInstruction;
+                                    if (gotoNode.label == l54) {
+                                        gotoNode.label = l56;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] smoothDimensionChange(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        String handleJoinGame = !LoliLoadingPlugin.isDeobf ? "func_147282_a" : "handleJoinGame";
+        String handleRespawn = !LoliLoadingPlugin.isDeobf ? "func_147280_a" : "handleRespawn";
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals(handleJoinGame) || method.name.equals(handleRespawn)) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == INVOKESPECIAL) {
+                        MethodInsnNode invokeSpecial = (MethodInsnNode) instruction;
+                        if (invokeSpecial.owner.equals("net/minecraft/client/gui/GuiDownloadTerrain")) {
+                            iter.remove(); // INVOKESPECIAL
+                            iter.previous();
+                            iter.remove(); // DUP
+                            iter.previous();
+                            iter.set(new InsnNode(ACONST_NULL)); // replaces NEW
+                        }
                     }
                 }
             }
