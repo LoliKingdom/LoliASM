@@ -12,7 +12,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.api.HasteUpload;
-import zone.rong.loliasm.vanillafix.crashes.IPatchedCrashReport;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ public abstract class GuiProblemScreen extends GuiScreen {
 
     protected String getModListString() {
         if (modListString == null) {
-            final Set<ModContainer> suspectedMods = ((IPatchedCrashReport) report).getSuspectedMods();
+            final Set<ModContainer> suspectedMods = ((ICrashReportSuspectGetter) report).getSuspectedMods();
             if (suspectedMods == null) {
                 return modListString = I18n.format("loliasm.crashscreen.identificationErrored");
             }

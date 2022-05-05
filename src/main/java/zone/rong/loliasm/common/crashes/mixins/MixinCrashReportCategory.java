@@ -1,7 +1,7 @@
 package zone.rong.loliasm.common.crashes.mixins;
 
 import net.minecraft.crash.CrashReportCategory;
-import zone.rong.loliasm.vanillafix.crashes.StacktraceDeobfuscator;
+import zone.rong.loliasm.api.StacktraceDeobfuscator;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;

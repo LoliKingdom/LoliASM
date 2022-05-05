@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.crashes;
+package zone.rong.loliasm.common.crashes;
 
 import net.minecraft.client.gui.toasts.GuiToast;
 import net.minecraft.client.gui.toasts.IToast;
@@ -25,7 +25,7 @@ public class ProblemToast implements IToast {
 
     @Override
     public IToast.Visibility draw(GuiToast toastGui, long delta) {
-        if (hide || delta >= ERROR_REPORT_DURATION) {
+        if (hide) {
             return Visibility.HIDE;
         }
         toastGui.getMinecraft().getTextureManager().bindTexture(TEXTURE_TOASTS);
@@ -36,12 +36,12 @@ public class ProblemToast implements IToast {
                 I18n.format("loliasm.notification.title.unknown") :
                 I18n.format("loliasm.notification.title.mod", cause), 5, 7, 0xFF000000);
         toastGui.getMinecraft().fontRenderer.drawString(I18n.format("loliasm.notification.description"), 5, 18, 0xFF500050);
-        return IToast.Visibility.SHOW;
+        return delta >= ERROR_REPORT_DURATION ? IToast.Visibility.HIDE : IToast.Visibility.SHOW;
     }
 
     private Object getModCause() {
         if (suspectedModString == null) {
-            Set<ModContainer> suspectedMods = ((IPatchedCrashReport) report).getSuspectedMods();
+            Set<ModContainer> suspectedMods = ((ICrashReportSuspectGetter) report).getSuspectedMods();
             suspectedModString = suspectedMods.isEmpty() ? "" : suspectedMods.iterator().next().getName();
         }
         return suspectedModString;

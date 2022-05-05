@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.crashes;
+package zone.rong.loliasm.api;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;

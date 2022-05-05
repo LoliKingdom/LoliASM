@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.spongepowered.asm.mixin.*;
 import zone.rong.loliasm.vanillafix.ModIdentifier;
-import zone.rong.loliasm.vanillafix.crashes.IPatchedCrashReport;
-import zone.rong.loliasm.vanillafix.crashes.StacktraceDeobfuscator;
+import zone.rong.loliasm.common.crashes.ICrashReportSuspectGetter;
+import zone.rong.loliasm.api.StacktraceDeobfuscator;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 @Mixin(value = CrashReport.class, priority = 500)
-public abstract class MixinCrashReport implements IPatchedCrashReport {
+public abstract class MixinCrashReport implements ICrashReportSuspectGetter {
 
     @Shadow @Final private CrashReportCategory systemDetailsCategory;
     @Shadow @Final private Throwable cause;

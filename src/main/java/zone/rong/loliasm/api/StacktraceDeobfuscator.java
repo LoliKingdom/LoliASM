@@ -1,4 +1,6 @@
-package zone.rong.loliasm.vanillafix.crashes;
+package zone.rong.loliasm.api;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,21 +13,22 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public final class StacktraceDeobfuscator {
-    private static final boolean DEBUG_IN_DEV = false; // Makes this MCP -> SRG for testing in dev. Don't forget to set to false when done!
-    private static HashMap<String, String> srgMcpMethodMap = null;
+
+    private static Map<String, String> srgMcpMethodMap = null;
 
     /**
      * If the file does not exits, downloads latest method mappings and saves them to it.
      * Initializes a HashMap between obfuscated and deobfuscated names from that file.
      */
     public static void init(File mappings) {
-        if (srgMcpMethodMap != null) return;
-
+        if (srgMcpMethodMap != null) {
+            return;
+        }
         // Download the file if necessary
         if (!mappings.exists()) {
             HttpURLConnection connection = null;
             try {
-                URL mappingsURL = new URL("https://raw.githubusercontent.com/Aizistral-Studios/MCP-Archive/dungeon-master/de/oceanlabs/mcp/mcp_stable_nodoc/39-1.12/mcp_stable_nodoc-39-1.12.zip");
+                URL mappingsURL = new URL("https://raw.githubusercontent.com/CleanroomMC/MCPMappingsArchive/master/mcp_stable_nodoc/39-1.12/mcp_stable_nodoc-39-1.12.zip");
                 connection = (HttpURLConnection) mappingsURL.openConnection();
                 connection.setDoInput(true);
                 connection.connect();
@@ -51,12 +54,13 @@ public final class StacktraceDeobfuscator {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {
-                if (connection != null) connection.disconnect();
+                if (connection != null) {
+                    connection.disconnect();
+                }
             }
         }
-
         // Read the mapping
-        HashMap<String, String> srgMcpMethodMap = new HashMap<>();
+        Map<String, String> srgMcpMethodMap = new Object2ObjectOpenHashMap<>();
         try (Scanner scanner = new Scanner(mappings)) {
             scanner.nextLine(); // Skip CSV header
             while (scanner.hasNext()) {
@@ -64,18 +68,11 @@ public final class StacktraceDeobfuscator {
                 int commaIndex = mappingLine.indexOf(',');
                 String srgName = mappingLine.substring(0, commaIndex);
                 String mcpName = mappingLine.substring(commaIndex + 1, commaIndex + 1 + mappingLine.substring(commaIndex + 1).indexOf(','));
-
-                //System.out.println(srgName + " <=> " + mcpName);
-                if (!DEBUG_IN_DEV) {
-                    srgMcpMethodMap.put(srgName, mcpName);
-                } else {
-                    srgMcpMethodMap.put(mcpName, srgName);
-                }
+                srgMcpMethodMap.put(srgName, mcpName);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         // Set the map only if it's successful, to make sure that it's complete
         StacktraceDeobfuscator.srgMcpMethodMap = srgMcpMethodMap;
     }

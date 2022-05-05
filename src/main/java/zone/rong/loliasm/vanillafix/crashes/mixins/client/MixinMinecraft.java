@@ -32,6 +32,7 @@ import zone.rong.loliasm.LoliASM;
 import zone.rong.loliasm.common.crashes.GuiCrashScreen;
 import zone.rong.loliasm.common.crashes.GuiInitErrorScreen;
 import zone.rong.loliasm.common.crashes.GuiWarningScreen;
+import zone.rong.loliasm.common.crashes.ProblemToast;
 import zone.rong.loliasm.vanillafix.GlUtil;
 import zone.rong.loliasm.vanillafix.crashes.*;
 import org.lwjgl.LWJGLException;
@@ -413,8 +414,9 @@ public abstract class MixinMinecraft implements IThreadListener, ISnooperInfo, I
     @Override
     public void makeErrorNotification(CrashReport report) {
         ProblemToast lastToast = getToastGui().getToast(ProblemToast.class, IToast.NO_TOKEN);
-        if (lastToast != null) lastToast.hide = true;
-
+        if (lastToast != null) {
+            lastToast.hide = true;
+        }
         getToastGui().add(new ProblemToast(report));
     }
 

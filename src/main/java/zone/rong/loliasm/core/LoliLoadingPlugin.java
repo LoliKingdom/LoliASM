@@ -10,8 +10,8 @@ import zone.rong.loliasm.UnsafeLolis;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.spark.LoliSparker;
-import zone.rong.loliasm.vanillafix.crashes.DeobfuscatingRewritePolicy;
-import zone.rong.loliasm.vanillafix.crashes.StacktraceDeobfuscator;
+import zone.rong.loliasm.api.DeobfuscatingRewritePolicy;
+import zone.rong.loliasm.api.StacktraceDeobfuscator;
 import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import java.io.File;
