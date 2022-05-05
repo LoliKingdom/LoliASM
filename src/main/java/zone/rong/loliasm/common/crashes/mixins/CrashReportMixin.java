@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 @Mixin(value = CrashReport.class, priority = 500)
-public abstract class MixinCrashReport implements ICrashReportSuspectGetter {
+public abstract class CrashReportMixin implements ICrashReportSuspectGetter {
 
     @Shadow @Final private CrashReportCategory systemDetailsCategory;
     @Shadow @Final private Throwable cause;

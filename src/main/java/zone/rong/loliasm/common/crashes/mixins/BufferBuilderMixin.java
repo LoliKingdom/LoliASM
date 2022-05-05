@@ -1,16 +1,18 @@
-package zone.rong.loliasm.vanillafix.crashes.mixins.client;
+package zone.rong.loliasm.common.crashes.mixins;
 
 import net.minecraft.client.renderer.BufferBuilder;
-import zone.rong.loliasm.vanillafix.crashes.StateManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import zone.rong.loliasm.common.crashes.IStateful;
 
 @Mixin(BufferBuilder.class)
-public abstract class MixinBufferBuilder implements StateManager.IResettable {
-    @Shadow private boolean isDrawing;
+public abstract class BufferBuilderMixin implements IStateful {
+
+    @Shadow public boolean isDrawing;
+
     @Shadow public abstract void finishDrawing();
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
@@ -19,7 +21,10 @@ public abstract class MixinBufferBuilder implements StateManager.IResettable {
     }
 
     @Override
-    public void resetState() {
-        if (isDrawing) finishDrawing();
+    public void reset() {
+        if (isDrawing) {
+            finishDrawing();
+        }
     }
+
 }

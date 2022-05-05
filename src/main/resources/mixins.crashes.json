@@ -7,8 +7,12 @@
   "mixins": [
     "CrashReportCategory_EntryInvoker",
     "EntityMixin",
-    "MixinCrashReport",
-    "MixinCrashReportCategory",
+    "CrashReportMixin",
+    "CrashReportCategoryMixin",
     "TileEntityMixin"
+  ],
+  "client": [
+    "BufferBuilderMixin",
+    "TileEntityRenderDispatcherMixin"
   ]
 }
