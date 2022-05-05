@@ -6,16 +6,15 @@
   "minVersion": "0.6",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "CrashReportCategory_EntryInvoker",
     "MixinCrashReport",
-    "MixinIntegratedServer",
-    "MixinUtil",
     "MixinCrashReportCategory",
-    "MixinEntity",
-    "MixinTileEntity"
+    "MixinIntegratedServer",
+    "MixinUtil"
   ],
   "client": [
-    "client.MixinMinecraft",
     "client.MixinBufferBuilder",
+    "client.MixinMinecraft",
     "client.MixinTileEntityRenderDispatcher"
   ],
   "injectors": {

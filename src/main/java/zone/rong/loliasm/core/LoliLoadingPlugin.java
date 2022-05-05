@@ -160,6 +160,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 "mixins.capability.json",
                 "mixins.singletonevents.json",
                 "mixins.efficienthashing.json",
+                "mixins.crashes.json",
                 "mixins.bucket.json",
                 "mixins.rendering.json",
                 "mixins.datastructures_modelmanager.json",
@@ -179,7 +180,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                         "mixins.forgefixes.json",
                         "mixins.capability.json",
                         "mixins.singletonevents.json",
-                        "mixins.efficienthashing.json");
+                        "mixins.efficienthashing.json",
+                        "mixins.crashes.json");
     }
 
     @Override
@@ -206,8 +208,6 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
             }
         }
         switch (mixinConfig) {
-            case "mixins.vfix_bugfixes.json":
-                return LoliConfig.instance.fixVanillaBugs;
             case "mixins.registries.json":
                 return LoliConfig.instance.optimizeRegistries;
             case "mixins.stripitemstack.json":
@@ -226,6 +226,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 return LoliConfig.instance.makeEventsSingletons;
             case "mixins.efficienthashing.json":
                 return LoliConfig.instance.efficientHashing;
+            case "mixins.crashes.json":
+                return LoliConfig.instance.crashReportImprovements;
         }
         return true;
     }
