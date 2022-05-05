@@ -16,8 +16,7 @@
     "client.MixinMinecraft",
     "client.MixinNetHandlerPlayClient",
     "client.MixinEntityPlayerSP",
-    "client.MixinIntegratedServer",
-    "client.MixinEntityRenderer"
+    "client.MixinIntegratedServer"
   ],
   "injectors": {
     "maxShiftBy": 10

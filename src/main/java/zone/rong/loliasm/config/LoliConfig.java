@@ -73,6 +73,7 @@ public class LoliConfig {
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash, disableXU2CrafterRendering, fixTFCFallingBlockFalseStartingTEPos;
     public boolean fixAmuletHolderCapability, delayItemStackCapabilityInit;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
+    public boolean fixMC30845, fixMC31681;
     public boolean sparkProfileEntireGameLoad, sparkProfileEntireWorldLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, sparkProfileFinalizingStage, sparkProfileWorldAboutToStartStage, sparkProfileWorldStartingStage, sparkProfileWorldStartedStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads, sparkSummarizeHeapSpaceAfterWorldLoads;
     public boolean furnaceExperienceFCFS, furnaceExperienceVanilla, furnaceExperienceMost;
     public boolean makeEventsSingletons;
@@ -157,6 +158,9 @@ public class LoliConfig {
         fixTileEntityOnLoadCME = getBoolean("fixTileEntityOnLoadCME", "forgefixes", "Fixes a vanilla-forge code interaction bug leading to a possible ConcurrentModificationException/StackOverflowError crash. First discovered here: https://github.com/GregTechCE/GregTech/issues/1256", true);
         removeForgeSecurityManager = getBoolean("removeForgeSecurityManager", "forgefixes", "EXPERIMENTAL: Forcibly remove Forge's FMLSecurityManager that adds very very slight overheads in calls that requires permission checks", false);
         fasterEntitySpawnPreparation = getBoolean("fasterEntitySpawnPreparation", "forgefixes", "Fixes Forge's EntityEntry calling a slow Constructor::newInstance call every time an entity spawns, it is replaced with a fast Function::get generated from LambdaMetafactory#metafactory", true);
+
+        fixMC30845 = getBoolean("fixMC30845", "mcfixes", "Fixes MC30845: https://bugs.mojang.com/browse/MC-30845", true);
+        fixMC31681 = getBoolean("fixMC31681", "mcfixes", "Fixes MC31681: https://bugs.mojang.com/browse/MC-31681", true);
 
         sparkProfileEntireGameLoad = getBoolean("sparkProfileEntireGameLoad", "spark", "When Spark is installed, profile the loading of the game in its entirety", false);
         sparkProfileEntireWorldLoad = getBoolean("sparkProfileEntireWorldLoad", "spark", "When Spark is installed, profile the loading of the world in its entirety", false);

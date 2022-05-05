@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.crashes;
+package zone.rong.loliasm.common.crashes;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
@@ -42,7 +42,9 @@ public class GuiInitErrorScreen extends GuiProblemScreen {
         drawString(fontRenderer, I18n.format("loliasm.crashscreen.paragraph2.line1"), x, y += 11, textColor);
         drawString(fontRenderer, I18n.format("loliasm.crashscreen.paragraph2.line2"), x, y += 9, textColor);
 
-        drawCenteredString(fontRenderer, report.getFile() != null ? "\u00A7n" + report.getFile().getName() : I18n.format("loliasm.crashscreen.reportSaveFailed"), width / 2, y += 11, 0x00FF00);
+        drawCenteredString(fontRenderer, report.getFile() != null ?
+                "\u00A7n" + report.getFile().getName() :
+                I18n.format("loliasm.crashscreen.reportSaveFailed"), width / 2, y += 11, 0x00FF00);
 
         drawString(fontRenderer, I18n.format("loliasm.initerrorscreen.paragraph3.line1"), x, y += 12, textColor);
         drawString(fontRenderer, I18n.format("loliasm.initerrorscreen.paragraph3.line2"), x, y += 9, textColor);

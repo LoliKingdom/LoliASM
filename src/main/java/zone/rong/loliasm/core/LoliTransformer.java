@@ -127,6 +127,12 @@ public class LoliTransformer implements IClassTransformer {
         if (LoliConfig.instance.delayItemStackCapabilityInit) {
             addTransformation("net.minecraft.item.ItemStack", this::delayItemStackCapabilityInit);
         }
+        if (LoliConfig.instance.fixMC30845) {
+            addTransformation("net.minecraft.client.renderer.EntityRenderer", this::fixMC30845);
+        }
+        if (LoliConfig.instance.fixMC31681) {
+            addTransformation("net.minecraft.client.renderer.EntityRenderer", this::fixMC31681);
+        }
         addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.nbtBackingMapStringCanonicalization));
     }
 
@@ -999,6 +1005,84 @@ public class LoliTransformer implements IClassTransformer {
                             iter.remove(); // DUP
                             iter.previous();
                             iter.set(new InsnNode(ACONST_NULL)); // replaces NEW
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] fixMC30845(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        String orientCamera = !LoliLoadingPlugin.isDeobf ? "func_78467_g" : "orientCamera";
+        String rayTraceBlocksOld = !LoliLoadingPlugin.isDeobf ? "func_72933_a" : "rayTraceBlocks";
+        String rayTraceBlocksNew = !LoliLoadingPlugin.isDeobf ? "func_147447_a" : "rayTraceBlocks";
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals(orientCamera)) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == INVOKEVIRTUAL) {
+                        MethodInsnNode invokeVirtual = (MethodInsnNode) instruction;
+                        if (invokeVirtual.name.equals(rayTraceBlocksOld)) {
+                            iter.set(new InsnNode(ICONST_0));
+                            iter.add(new InsnNode(ICONST_1));
+                            iter.add(new InsnNode(ICONST_1));
+                            iter.add(new MethodInsnNode(
+                                    invokeVirtual.getOpcode(),
+                                    invokeVirtual.owner,
+                                    rayTraceBlocksNew,
+                                    "(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;ZZZ)Lnet/minecraft/util/math/RayTraceResult;",
+                                    false));
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] fixMC31681(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        String updateRenderer = !LoliLoadingPlugin.isDeobf ? "func_78464_a" : "updateRenderer";
+        String renderDistanceChunks = !LoliLoadingPlugin.isDeobf ? "field_151451_c" : "renderDistanceChunks";
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals(updateRenderer)) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == GETFIELD) {
+                        FieldInsnNode getField = (FieldInsnNode) instruction;
+                        if (getField.name.equals(renderDistanceChunks)) {
+                            iter.remove(); // GETFIELD
+                            iter.previous();
+                            iter.remove(); // GETFIELD
+                            iter.previous();
+                            iter.remove(); // GETFIELD
+                            iter.previous();
+                            iter.remove(); // ALOAD 0
+                            iter.next();
+                            iter.remove(); // I2F
+                            iter.next();
+                            iter.remove(); // LDC 32.0
+                            iter.next();
+                            iter.set(new InsnNode(ICONST_1)); // Replaces FDIV
+                            iter.add(new InsnNode(I2F));
                         }
                     }
                 }

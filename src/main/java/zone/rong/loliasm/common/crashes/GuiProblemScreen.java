@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.crashes;
+package zone.rong.loliasm.common.crashes;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
@@ -10,9 +10,9 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import zone.rong.loliasm.vanillafix.HasteUpload;
+import zone.rong.loliasm.LoliLogger;
+import zone.rong.loliasm.api.HasteUpload;
+import zone.rong.loliasm.vanillafix.crashes.IPatchedCrashReport;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -21,7 +21,6 @@ import java.util.Set;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiProblemScreen extends GuiScreen {
-    private static final Logger log = LogManager.getLogger();
 
     protected final CrashReport report;
     private String hasteLink = null;
@@ -48,7 +47,7 @@ public abstract class GuiProblemScreen extends GuiScreen {
                 ReflectionHelper.findField(GuiScreen.class, "clickedLinkURI", "field_175286_t").set(this, new URI(hasteLink));
                 mc.displayGuiScreen(new GuiConfirmOpenLink(this, hasteLink, 31102009, false));
             } catch (Throwable e) {
-                log.error("Exception when crash menu button clicked:", e);
+                LoliLogger.instance.error("Exception when crash menu button clicked:", e);
                 button.displayString = I18n.format("loliasm.gui.failed");
                 button.enabled = false;
             }
@@ -56,7 +55,7 @@ public abstract class GuiProblemScreen extends GuiScreen {
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) {}
+    protected void keyTyped(char typedChar, int keyCode) { }
 
     protected String getModListString() {
         if (modListString == null) {
