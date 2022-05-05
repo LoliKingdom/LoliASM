@@ -12,26 +12,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeobfuscatingRewritePolicy implements RewritePolicy {
-    @Override
-    public LogEvent rewrite(LogEvent source) {
-        if (source.getThrown() != null) StacktraceDeobfuscator.deobfuscateThrowable(source.getThrown());
-        return source;
-    }
 
     /** Modifies the log4j config to add the policy **/
     public static void install() {
         Logger rootLogger = (Logger) LogManager.getRootLogger();
         LoggerConfig loggerConfig = rootLogger.get();
-
         // Remove appender refs from config
         List<AppenderRef> appenderRefs = new ArrayList<>(loggerConfig.getAppenderRefs());
         for (AppenderRef appenderRef : appenderRefs) {
             loggerConfig.removeAppender(appenderRef.getRef());
         }
-
         // Create the RewriteAppender, which wraps the appenders
         RewriteAppender rewriteAppender = RewriteAppender.createAppender(
-                "VanillaFixDeobfuscatingAppender",
+                "LoliDeobfuscatingAppender",
                 "true",
                 appenderRefs.toArray(new AppenderRef[0]),
                 rootLogger.getContext().getConfiguration(),
@@ -39,8 +32,16 @@ public class DeobfuscatingRewritePolicy implements RewritePolicy {
                 null
         );
         rewriteAppender.start();
-
         // Add the new appender
         loggerConfig.addAppender(rewriteAppender, null, null);
     }
+
+    @Override
+    public LogEvent rewrite(LogEvent source) {
+        if (source.getThrown() != null) {
+            StacktraceDeobfuscator.deobfuscateThrowable(source.getThrown());
+        }
+        return source;
+    }
+
 }
