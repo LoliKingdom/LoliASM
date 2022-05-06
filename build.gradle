@@ -86,7 +86,7 @@ dependencies {
     deobfProvided ("com.enderio:EnderIO:1.12.2-+") {
         transitive = false
     }
-    provided "codechicken:ChickenASM:1.12-1.0.2.9"
+    compile "codechicken:ChickenASM:1.12-1.0.2.9"
     provided "epicsquid.mysticallib:mysticallib:1.12.2-+"
     compile "mezz.jei:jei_1.12.2:4.15.0.293"
     compile "zone.rong:mixinbooter:4.2"
@@ -98,7 +98,7 @@ dependencies {
 
     deobfProvided "betterwithmods:BetterWithMods:1.12-2.3.20-1030"
 
-    deobfProvided "codechicken:CodeChickenLib:1.12.2-3.1.7.+:universal"
+    deobfCompile "codechicken:CodeChickenLib:1.12.2-3.2.3.358:universal"
     deobfProvided "com.azanor.baubles:Baubles:1.12-1.5.2"
     deobfProvided "blusunrize:ImmersiveEngineering:0.12-92-+"
     deobfProvided "curse.maven:astral-sorcery-241721:3044416"
@@ -109,8 +109,10 @@ dependencies {
     // deobfCompile "cofh:CoFHCore:1.12.2-+:universal"
     // compile "com.teamwizardry.librarianlib:librarianlib-1.12:4.0-SNAPSHOT:deobf"
     deobfProvided "curse.maven:extra-utilities-225561:2678374"
-    deobfCompile "curse.maven:gottschcore-272450:3748293"
-    deobfCompile "curse.maven:treasure2-289760:3758107"
+    deobfProvided "curse.maven:gottschcore-272450:3748293"
+    deobfProvided "curse.maven:treasure2-289760:3758107"
+    deobfProvided "curse.maven:time-speed-mod-221053:2991593"
+    deobfCompile "curse.maven:gregtech-ce-unofficial-557242:3745499"
 }
 
 processResources {
@@ -144,7 +146,7 @@ jar {
     }
     manifest {
         attributes([
-                // "FMLCorePluginContainsFMLMod": true, << enable this when building
+                "FMLCorePluginContainsFMLMod": true,
                 "FMLCorePlugin": 'zone.rong.loliasm.core.LoliLoadingPlugin',
                 "ForceLoadAsMod": true,
                 "TweakClass": 'org.spongepowered.asm.launch.MixinTweaker',
