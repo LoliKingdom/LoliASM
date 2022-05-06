@@ -39,19 +39,16 @@ public class CommonProxy {
         boolean vanillaFix = Loader.isModLoaded("vanillafix");
         if (texFix || vanillaFix) {
             List<String> messages = new ArrayList<>();
-            if (texFix && LoliConfig.instance.releaseSpriteFramesCache) {
-                String str = "%sTexFix: %sfunctionality replaced and improved with %sreleaseSpriteFramesCache";
-                messages.add(String.format(str, TextFormatting.BOLD, TextFormatting.RESET, TextFormatting.GOLD));
+            messages.add("LoliASM has replaced and improved upon functionalities from the following mods.");
+            messages.add("Therefore, these mods are now incompatible with LoliASM:");
+            messages.add("");
+            if (texFix) {
+                messages.add(TextFormatting.BOLD + "TexFix");
             }
-            if (vanillaFix && LoliConfig.instance.onDemandAnimatedTextures) {
-                String str = "%sVanillaFix: %sfunctionality replaced and improved with %sonDemandAnimatedTextures";
-                messages.add(String.format(str, TextFormatting.BOLD, TextFormatting.RESET, TextFormatting.GOLD));
+            if (vanillaFix) {
+                messages.add(TextFormatting.BOLD + "VanillaFix");
             }
-            if (!messages.isEmpty()) {
-                messages.add(0, "Incompatible Mods:");
-                messages.add(1, "");
-                LoliIncompatibilityHandler.loliHaetPizza(messages);
-            }
+            LoliIncompatibilityHandler.loliHaetPizza(messages);
         }
     }
 
