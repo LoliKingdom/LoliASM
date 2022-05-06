@@ -5,6 +5,6 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "Vec3iMixin"
+    "BlockPosMixin"
   ]
 }
