@@ -8,14 +8,10 @@
   "mixins": [
     "MixinEntityPlayerMP",
     "MixinEntity",
-    "MixinInventoryPlayer",
     "MixinBlockStateContainer",
     "MixinEntityTrackerEntry"
   ],
   "client": [
-    "client.MixinMinecraft",
-    "client.MixinNetHandlerPlayClient",
-    "client.MixinEntityPlayerSP",
     "client.MixinIntegratedServer"
   ],
   "injectors": {

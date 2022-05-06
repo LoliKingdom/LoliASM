@@ -1,17 +1,16 @@
-package zone.rong.loliasm.vanillafix.bugfixes.mixins.client;
+package zone.rong.loliasm.common.mcfixes.mixins.mc129556;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.profiler.Profiler;
-import net.minecraft.util.IThreadListener;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
 @Mixin(Minecraft.class)
-public abstract class MixinMinecraft implements IThreadListener, ISnooperInfo {
+public class MinecraftMixin {
 
     @Shadow @Final public Profiler profiler;
 

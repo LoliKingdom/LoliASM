@@ -21,7 +21,7 @@ public abstract class BufferBuilderMixin implements IStateful {
     }
 
     @Override
-    public void reset() {
+    public void resetState() {
         if (isDrawing) {
             finishDrawing();
         }

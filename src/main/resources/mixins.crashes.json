@@ -6,13 +6,16 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CrashReportCategory_EntryInvoker",
-    "EntityMixin",
-    "CrashReportMixin",
     "CrashReportCategoryMixin",
-    "TileEntityMixin"
+    "CrashReportMixin",
+    "EntityMixin",
+    "TileEntityMixin",
+    "UtilMixin"
   ],
   "client": [
     "BufferBuilderMixin",
+    "IntegratedServerMixin",
+    "MinecraftMixin",
     "TileEntityRenderDispatcherMixin"
   ]
 }

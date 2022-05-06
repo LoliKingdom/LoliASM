@@ -1,20 +1,21 @@
-package zone.rong.loliasm.vanillafix.crashes.mixins;
+package zone.rong.loliasm.common.crashes.mixins;
 
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
-import zone.rong.loliasm.vanillafix.crashes.CrashUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import zone.rong.loliasm.common.crashes.CrashUtils;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 @Mixin(Util.class)
-public abstract class MixinUtil {
+public class UtilMixin {
 
     /**
+     * @author VanillaFix
      * @reason Warn the player (configurable to crash or log too) instead of only logging a
      * message a scheduled task throws an exception. The default vanilla behaviour is dangerous
      * as things will fail silently, making future bugs much harder to solve. In fact, it may
@@ -33,4 +34,5 @@ public abstract class MixinUtil {
             return null;
         }
     }
+
 }

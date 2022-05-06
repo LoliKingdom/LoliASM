@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.crashes;
+package zone.rong.loliasm.common.crashes;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
@@ -21,7 +21,7 @@ public final class CrashUtils {
             outputReport(report);
             // Don't inline showWarningScreen, that will cause Java to load the GuiScreen
             // class on servers, because of the lambda!
-            ((IPatchedMinecraft) Minecraft.getMinecraft()).showWarningScreen(report);
+            ((IMinecraftExtender) Minecraft.getMinecraft()).showWarningScreen(report);
             } else {
             LoliLogger.instance.fatal(report.getDescription(), report.getCrashCause());
         }
@@ -30,7 +30,7 @@ public final class CrashUtils {
     public static void notify(CrashReport report) {
         if (FMLLaunchHandler.side().isClient()) {
             outputReport(report);
-            ((IPatchedMinecraft) Minecraft.getMinecraft()).makeErrorNotification(report);
+            ((IMinecraftExtender) Minecraft.getMinecraft()).makeErrorNotification(report);
         } else {
             LoliLogger.instance.fatal(report.getDescription(), report.getCrashCause());
         }

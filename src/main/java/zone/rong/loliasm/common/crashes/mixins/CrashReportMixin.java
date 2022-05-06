@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.spongepowered.asm.mixin.*;
-import zone.rong.loliasm.vanillafix.ModIdentifier;
+import zone.rong.loliasm.common.crashes.ModIdentifier;
 import zone.rong.loliasm.common.crashes.ICrashReportSuspectGetter;
 import zone.rong.loliasm.api.StacktraceDeobfuscator;
 import org.spongepowered.asm.mixin.injection.At;

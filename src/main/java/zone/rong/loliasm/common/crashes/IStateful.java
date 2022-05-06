@@ -18,7 +18,7 @@ public interface IStateful {
         while (iterator.hasNext()) {
             IStateful reference = iterator.next().get();
             if (reference != null) {
-                reference.reset();
+                reference.resetState();
             } else {
                 iterator.remove();
             }
@@ -29,6 +29,6 @@ public interface IStateful {
         INSTANCES.add(new WeakReference<>(this));
     }
 
-    void reset();
+    void resetState();
 
 }

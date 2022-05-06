@@ -144,8 +144,6 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     public List<String> getMixinConfigs() {
         return isClient ? Arrays.asList(
                 "mixins.devenv.json",
-                "mixins.vfix_bugfixes.json",
-                "mixins.vfix_crashes.json",
                 "mixins.internal.json",
                 "mixins.vanities.json",
                 "mixins.registries.json",
@@ -158,12 +156,15 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 "mixins.singletonevents.json",
                 "mixins.efficienthashing.json",
                 "mixins.crashes.json",
+                "mixins.fix_mc129057.json",
                 "mixins.bucket.json",
                 "mixins.rendering.json",
                 "mixins.datastructures_modelmanager.json",
                 "mixins.screenshot.json",
                 "mixins.ondemand_sprites.json",
-                "mixins.searchtree_vanilla.json") :
+                "mixins.searchtree_vanilla.json",
+                "mixins.resolve_mc2071.json",
+                "mixins.fix_mc_skindownloading.json") :
                 Arrays.asList(
                         "mixins.devenv.json",
                         "mixins.vfix_bugfixes.json",
@@ -178,7 +179,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                         "mixins.capability.json",
                         "mixins.singletonevents.json",
                         "mixins.efficienthashing.json",
-                        "mixins.crashes.json");
+                        "mixins.crashes.json",
+                        "mixins.fix_mc129057.json");
     }
 
     @Override
@@ -188,8 +190,6 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         }
         if (isClient) {
             switch (mixinConfig) {
-                case "mixins.vfix_crashes.json":
-                    return LoliConfig.instance.crashReportImprovements;
                 case "mixins.bucket.json":
                     return LoliConfig.instance.reuseBucketQuads;
                 case "mixins.rendering.json":
@@ -202,6 +202,10 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                     return LoliConfig.instance.onDemandAnimatedTextures;
                 case "mixins.searchtree_vanilla.json":
                     return LoliConfig.instance.replaceSearchTreeWithJEISearching;
+                case "mixins.resolve_mc2071.json":
+                    return LoliConfig.instance.resolveMC2071;
+                case "mixins.fix_mc_skindownloading.json":
+                    return LoliConfig.instance.limitSkinDownloadingThreads;
             }
         }
         switch (mixinConfig) {
@@ -225,6 +229,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 return LoliConfig.instance.efficientHashing;
             case "mixins.crashes.json":
                 return LoliConfig.instance.crashReportImprovements;
+            case "mixins.fix_mc129057.json":
+                return LoliConfig.instance.fixMC129057;
         }
         return true;
     }

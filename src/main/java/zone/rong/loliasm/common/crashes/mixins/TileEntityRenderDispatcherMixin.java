@@ -19,7 +19,7 @@ public class TileEntityRenderDispatcherMixin implements IStateful {
     }
 
     @Override
-    public void reset() {
+    public void resetState() {
         if (drawingBatch) {
             drawingBatch = false;
         }

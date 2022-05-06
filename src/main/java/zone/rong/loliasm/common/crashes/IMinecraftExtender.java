@@ -1,8 +1,8 @@
-package zone.rong.loliasm.vanillafix.crashes;
+package zone.rong.loliasm.common.crashes;
 
 import net.minecraft.crash.CrashReport;
 
-public interface IPatchedMinecraft {
+public interface IMinecraftExtender {
 
     boolean shouldCrashIntegratedServerNextTick();
 

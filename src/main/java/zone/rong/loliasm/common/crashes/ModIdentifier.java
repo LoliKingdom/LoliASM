@@ -1,11 +1,14 @@
-package zone.rong.loliasm.vanillafix;
+package zone.rong.loliasm.common.crashes;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import net.minecraftforge.fml.common.FMLContainer;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.MinecraftDummyContainer;
 import net.minecraftforge.fml.common.ModContainer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import zone.rong.loliasm.LoliLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,13 +17,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
-public final class ModIdentifier { // TODO: non-forge mods too
-    private static final Logger log = LogManager.getLogger();
+// TODO: grab packages from ASMDataTable?
+public class ModIdentifier {
 
     public static Set<ModContainer> identifyFromStacktrace(Throwable e) {
         Map<File, Set<ModContainer>> modMap = makeModMap();
-
-        // Get the set of classes
         HashSet<String> classes = new LinkedHashSet<>();
         while (e != null) {
             for (StackTraceElement element : e.getStackTrace()) {
@@ -28,11 +29,12 @@ public final class ModIdentifier { // TODO: non-forge mods too
             }
             e = e.getCause();
         }
-
         Set<ModContainer> mods = new LinkedHashSet<>();
         for (String className : classes) {
             Set<ModContainer> classMods = identifyFromClass(className, modMap);
-            if (classMods != null) mods.addAll(classMods);
+            if (classMods != null) {
+                mods.addAll(classMods);
+            }
         }
         return mods;
     }
@@ -43,20 +45,22 @@ public final class ModIdentifier { // TODO: non-forge mods too
 
     private static Set<ModContainer> identifyFromClass(String className, Map<File, Set<ModContainer>> modMap) {
         // Skip identification for Mixin, one's mod copy of the library is shared with all other mods
-        if (className.startsWith("org.spongepowered.asm.mixin.")) return Collections.emptySet();
-
+        if (className.startsWith("org.spongepowered.asm.mixin.") || className.startsWith("sun.") || className.startsWith("java.")) {
+            return Collections.emptySet();
+        }
         // Get the URL of the class
         final String untrasformedName = untransformName(Launch.classLoader, className);
         URL url = Launch.classLoader.getResource(untrasformedName.replace('.', '/') + ".class");
-        log.debug(className + " = " + untrasformedName + " = " + url);
+        LoliLogger.instance.debug(className + " = " + untrasformedName + " = " + url);
         if (url == null) {
-            log.warn("Failed to identify " + className + " (untransformed name: " + untrasformedName + ")");
+            LoliLogger.instance.warn("Failed to identify " + className + " (untransformed name: " + untrasformedName + ")");
             return Collections.emptySet();
         }
-
         // Get the mod containing that class
         try {
-            if (url.getProtocol().equals("jar")) url = new URL(url.getFile().substring(0, url.getFile().indexOf('!')));
+            if (url.getProtocol().equals("jar")) {
+                url = new URL(url.getFile().substring(0, url.getFile().indexOf('!')));
+            }
             return modMap.get(new File(url.toURI()).getCanonicalFile());
         } catch (URISyntaxException | IOException e) {
             throw new RuntimeException(e);
@@ -64,24 +68,17 @@ public final class ModIdentifier { // TODO: non-forge mods too
     }
 
     private static Map<File, Set<ModContainer>> makeModMap() {
-        Map<File, Set<ModContainer>> modMap = new HashMap<>();
+        Map<File, Set<ModContainer>> modMap = new Object2ObjectOpenHashMap<>();
         for (ModContainer mod : Loader.instance().getModList()) {
-            Set<ModContainer> currentMods = modMap.getOrDefault(mod.getSource(), new HashSet<>());
-            currentMods.add(mod);
+            if (mod instanceof MinecraftDummyContainer || mod instanceof FMLContainer) {
+                continue;
+            }
             try {
-                modMap.put(mod.getSource().getCanonicalFile(), currentMods);
+                modMap.computeIfAbsent(mod.getSource().getCanonicalFile(), k -> new ObjectArraySet<>()).add(mod);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-
-        try {
-            modMap.remove(Loader.instance().getMinecraftModContainer().getSource()); // Ignore minecraft jar (minecraft)
-            modMap.remove(Loader.instance().getIndexedModList().get("FML").getSource()); // Ignore forge jar (FML, forge)
-        } catch (NullPointerException ignored) {
-            // Workaround for https://github.com/MinecraftForge/MinecraftForge/issues/4919
-        }
-
         return modMap;
     }
 
@@ -94,4 +91,5 @@ public final class ModIdentifier { // TODO: non-forge mods too
             throw new RuntimeException(e);
         }
     }
+
 }

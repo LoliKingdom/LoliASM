@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.bugfixes.mixins;
+package zone.rong.loliasm.common.mcfixes.mixins.mc129057;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -7,7 +7,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(InventoryPlayer.class)
-public class MixinInventoryPlayer {
+public class InventoryPlayerMixin {
+
     /**
      * Compare items by item type and meta rather than NBT when looking for items for the
      * crafting recipe. Note that the item is still checked (in findSlotMatchingUnusedItem)
@@ -21,4 +22,5 @@ public class MixinInventoryPlayer {
     private boolean stackEqualExact(InventoryPlayer inventoryPlayer, ItemStack stack1, ItemStack stack2) {
         return stack1.getItem() == stack2.getItem() && (stack1.getMetadata() == 32767 || stack1.getMetadata() == stack2.getMetadata());
     }
+
 }

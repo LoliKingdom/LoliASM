@@ -73,7 +73,7 @@ public class LoliConfig {
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash, disableXU2CrafterRendering, fixTFCFallingBlockFalseStartingTEPos;
     public boolean fixAmuletHolderCapability, delayItemStackCapabilityInit;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
-    public boolean fixMC30845, fixMC31681;
+    public boolean fixMC30845, fixMC31681, fixMC129057, fixMC129556, resolveMC2071, limitSkinDownloadingThreads;
     public boolean sparkProfileEntireGameLoad, sparkProfileEntireWorldLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, sparkProfileFinalizingStage, sparkProfileWorldAboutToStartStage, sparkProfileWorldStartingStage, sparkProfileWorldStartedStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads, sparkSummarizeHeapSpaceAfterWorldLoads;
     public boolean furnaceExperienceFCFS, furnaceExperienceVanilla, furnaceExperienceMost;
     public boolean makeEventsSingletons;
@@ -161,6 +161,10 @@ public class LoliConfig {
 
         fixMC30845 = getBoolean("fixMC30845", "mcfixes", "Fixes MC30845: https://bugs.mojang.com/browse/MC-30845", true);
         fixMC31681 = getBoolean("fixMC31681", "mcfixes", "Fixes MC31681: https://bugs.mojang.com/browse/MC-31681", true);
+        fixMC129057 = getBoolean("fixMC129057", "mcfixes", "Fixes MC-129057: https://bugs.mojang.com/browse/MC-129057", true);
+        fixMC129556 = getBoolean("fixMC129556", "mcfixes", "Fixes MC-129556: https://bugs.mojang.com/browse/MC-129556", true);
+        resolveMC2071 = getBoolean("resolveMC2071", "mcfixes", "Resolves MC2071: https://bugs.mojang.com/browse/MC-2071", true);
+        limitSkinDownloadingThreads = getBoolean("limitSkinDownloadingThreads", "mcfixes", "Limits skin downloading threads to a maximum of half of available CPU cores", true);
 
         sparkProfileEntireGameLoad = getBoolean("sparkProfileEntireGameLoad", "spark", "When Spark is installed, profile the loading of the game in its entirety", false);
         sparkProfileEntireWorldLoad = getBoolean("sparkProfileEntireWorldLoad", "spark", "When Spark is installed, profile the loading of the world in its entirety", false);
