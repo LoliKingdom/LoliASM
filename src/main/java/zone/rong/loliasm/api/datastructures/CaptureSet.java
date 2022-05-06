@@ -1,5 +1,7 @@
 package zone.rong.loliasm.api.datastructures;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +11,7 @@ public class CaptureSet<K> extends HashSet<K> {
 
     public CaptureSet() {
         super();
-        this.backingCaptures = new HashSet<>();
+        this.backingCaptures = new ObjectOpenHashSet<>();
     }
 
     public CaptureSet(Set<K> populate) {

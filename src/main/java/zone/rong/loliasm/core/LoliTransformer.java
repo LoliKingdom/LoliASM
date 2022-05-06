@@ -1081,8 +1081,7 @@ public class LoliTransformer implements IClassTransformer {
                             iter.next();
                             iter.remove(); // LDC 32.0
                             iter.next();
-                            iter.set(new InsnNode(ICONST_1)); // Replaces FDIV
-                            iter.add(new InsnNode(I2F));
+                            iter.set(new InsnNode(FCONST_1)); // Replaces FDIV
                         }
                     }
                 }
