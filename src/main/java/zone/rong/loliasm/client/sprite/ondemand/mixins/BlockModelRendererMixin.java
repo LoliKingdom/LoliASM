@@ -37,7 +37,7 @@ public class BlockModelRendererMixin {
 
     @SuppressWarnings("all")
     @Redirect(method = "renderQuadsFlat", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", ordinal = 0))
-    private BakedQuad sendAnimatedSprites$flat(List<BakedQuad> list, int i) {
+    private Object sendAnimatedSprites$flat(List<BakedQuad> list, int i) {
         BakedQuad bakedquad = list.get(i);
         if (bakedquad.getSprite().hasAnimationMetadata()) {
             CompiledChunk chunk = IAnimatedSpritePrimer.CURRENT_COMPILED_CHUNK.get();
