@@ -86,6 +86,10 @@ public class LoliTransformer implements IClassTransformer {
             if (LoliConfig.instance.smoothDimensionChange) {
                 addTransformation("net.minecraft.client.network.NetHandlerPlayClient", this::smoothDimensionChange);
             }
+            if (LoliConfig.instance.fixMC88176) {
+                addTransformation("net.minecraft.client.renderer.RenderGlobal", this::disappearingEntitiesRenderGlobalFix);
+                addTransformation("net.minecraft.client.renderer.chunk.RenderChunk", this::disappearingEntitiesRenderChunkFix);
+            }
         }
         if (LoliConfig.instance.resourceLocationCanonicalization) {
             addTransformation("net.minecraft.util.ResourceLocation", this::canonicalizeResourceLocationStrings);
@@ -1082,6 +1086,62 @@ public class LoliTransformer implements IClassTransformer {
                             iter.remove(); // LDC 32.0
                             iter.next();
                             iter.set(new InsnNode(FCONST_1)); // Replaces FDIV
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] disappearingEntitiesRenderGlobalFix(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        String setupTerrain = !LoliLoadingPlugin.isDeobf ? "func_174970_a" : "setupTerrain";
+        String renderChunkBoundingBox = !LoliLoadingPlugin.isDeobf ? "field_178591_c" : "boundingBox";
+
+        for (MethodNode method : node.methods) {
+            if (method.name.equals(setupTerrain)) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == GETFIELD) {
+                        FieldInsnNode getField = (FieldInsnNode) instruction;
+                        if (getField.name.equals(renderChunkBoundingBox)) {
+                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/patches/RenderGlobalPatch", "getCorrectBoundingBox", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;)Lnet/minecraft/util/math/AxisAlignedBB;", false));
+                        }
+                    }
+                }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(0);
+        node.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] disappearingEntitiesRenderChunkFix(byte[] bytes) {
+        ClassReader reader = new ClassReader(bytes);
+        ClassNode node = new ClassNode();
+        reader.accept(node, 0);
+
+        String renderChunkBoundingBox = !LoliLoadingPlugin.isDeobf ? "field_178591_c" : "boundingBox";
+
+        for (MethodNode method : node.methods) {
+            /* OptiFine adds this */
+            if (method.name.equals("isBoundingBoxInFrustum")) {
+                ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
+                while (iter.hasNext()) {
+                    AbstractInsnNode instruction = iter.next();
+                    if (instruction.getOpcode() == GETFIELD) {
+                        FieldInsnNode getField = (FieldInsnNode) instruction;
+                        if (getField.name.equals(renderChunkBoundingBox)) {
+                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/patches/RenderGlobalPatch", "getCorrectBoundingBox", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;)Lnet/minecraft/util/math/AxisAlignedBB;", false));
                         }
                     }
                 }
