@@ -25,7 +25,6 @@ public class ControllerDataMixin {
             }
             controller = null;
             host.markDirty();
-            cir.setReturnValue(null);
         }
         if (controllerCoord != null) {
             controller = (TileEntityController) host.getWorld().getTileEntity(controllerCoord);
