@@ -47,7 +47,7 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
             case "mixins.modfixes_b3m.json":
                 return LoliConfig.instance.resourceLocationCanonicalization && Loader.isModLoaded("B3M"); // Stupid
             case "mixins.modfixes_storagedrawers.json":
-                return LoliConfig.instance.fixDrawersItemHandlers && Loader.isModLoaded("StorageDrawers");
+                return LoliConfig.instance.fixDrawersItemHandlers && Loader.isModLoaded("storagedrawers");
         }
         return false;
     }
