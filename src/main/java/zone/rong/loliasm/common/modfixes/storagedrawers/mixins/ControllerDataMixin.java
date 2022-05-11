@@ -22,6 +22,7 @@ public class ControllerDataMixin {
         if (controller != null) {
             if (!controller.isInvalid()) {
                 cir.setReturnValue(controller);
+                return;
             }
             controller = null;
             host.markDirty();

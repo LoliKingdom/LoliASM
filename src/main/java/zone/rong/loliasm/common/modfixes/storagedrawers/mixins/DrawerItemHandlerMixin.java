@@ -16,6 +16,7 @@ public class DrawerItemHandlerMixin {
     public void insertItem(int slot, ItemStack stack, boolean simulate, CallbackInfoReturnable<ItemStack> cir) {
         if (slot == 0) {
             cir.setReturnValue(stack);
+            return;
         }
         cir.setReturnValue(this.insertItemInternal(slot, stack, simulate));
     }
