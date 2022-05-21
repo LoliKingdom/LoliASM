@@ -73,7 +73,7 @@ public class LoliConfig {
     public boolean fixBlockIEBaseArrayIndexOutOfBoundsException, cleanupChickenASMClassHierarchyManager, optimizeAmuletRelatedFunctions, labelCanonicalization, skipCraftTweakerRecalculatingSearchTrees, bwmBlastingOilOptimization, optimizeQMDBeamRenderer, repairEvilCraftEIOCompat, optimizeArcaneLockRendering, fixXU2CrafterCrash, disableXU2CrafterRendering, fixTFCFallingBlockFalseStartingTEPos;
     public boolean fixAmuletHolderCapability, delayItemStackCapabilityInit;
     public boolean fixFillBucketEventNullPointerException, fixTileEntityOnLoadCME, removeForgeSecurityManager, fasterEntitySpawnPreparation;
-    public boolean fixMC30845, fixMC31681, fixMC129057, fixMC129556, resolveMC2071, limitSkinDownloadingThreads, fixMC88176;
+    public boolean fixMC30845, fixMC31681, fixMC88176, fixMC129057, fixMC129556, fixMC186052, resolveMC2071, limitSkinDownloadingThreads;
     public boolean sparkProfileEntireGameLoad, sparkProfileEntireWorldLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, sparkProfileFinalizingStage, sparkProfileWorldAboutToStartStage, sparkProfileWorldStartingStage, sparkProfileWorldStartedStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads, sparkSummarizeHeapSpaceAfterWorldLoads;
     public boolean furnaceExperienceFCFS, furnaceExperienceVanilla, furnaceExperienceMost;
     public boolean makeEventsSingletons;
@@ -159,12 +159,13 @@ public class LoliConfig {
         removeForgeSecurityManager = getBoolean("removeForgeSecurityManager", "forgefixes", "EXPERIMENTAL: Forcibly remove Forge's FMLSecurityManager that adds very very slight overheads in calls that requires permission checks", false);
         fasterEntitySpawnPreparation = getBoolean("fasterEntitySpawnPreparation", "forgefixes", "Fixes Forge's EntityEntry calling a slow Constructor::newInstance call every time an entity spawns, it is replaced with a fast Function::get generated from LambdaMetafactory#metafactory", true);
 
-        fixMC30845 = getBoolean("fixMC30845", "mcfixes", "Fixes MC30845: https://bugs.mojang.com/browse/MC-30845", true);
-        fixMC31681 = getBoolean("fixMC31681", "mcfixes", "Fixes MC31681: https://bugs.mojang.com/browse/MC-31681", true);
+        fixMC30845 = getBoolean("fixMC30845", "mcfixes", "Fixes MC-30845: https://bugs.mojang.com/browse/MC-30845", true);
+        fixMC31681 = getBoolean("fixMC31681", "mcfixes", "Fixes MC-31681: https://bugs.mojang.com/browse/MC-31681", true);
+        fixMC88176 = getBoolean("fixMC88176", "mcfixes", "Fixes MC-88176: https://bugs.mojang.com/browse/MC-88176", true);
         fixMC129057 = getBoolean("fixMC129057", "mcfixes", "Fixes MC-129057: https://bugs.mojang.com/browse/MC-129057", true);
         fixMC129556 = getBoolean("fixMC129556", "mcfixes", "Fixes MC-129556: https://bugs.mojang.com/browse/MC-129556", true);
-        fixMC88176 = getBoolean("fixMC88176", "mcfixes", "Fixes MC-88176 (disappearing entities): https://bugs.mojang.com/browse/MC-88176", true);
-        resolveMC2071 = getBoolean("resolveMC2071", "mcfixes", "Resolves MC2071: https://bugs.mojang.com/browse/MC-2071", true);
+        fixMC186052 = getBoolean("fixMC186052", "mcfixes", "Fixes MC-186052: https://bugs.mojang.com/browse/MC-186052", true);
+        resolveMC2071 = getBoolean("resolveMC2071", "mcfixes", "Resolves MC-2071: https://bugs.mojang.com/browse/MC-2071", true);
         limitSkinDownloadingThreads = getBoolean("limitSkinDownloadingThreads", "mcfixes", "Limits skin downloading threads to a maximum of half of available CPU cores", true);
 
         sparkProfileEntireGameLoad = getBoolean("sparkProfileEntireGameLoad", "spark", "When Spark is installed, profile the loading of the game in its entirety", false);
