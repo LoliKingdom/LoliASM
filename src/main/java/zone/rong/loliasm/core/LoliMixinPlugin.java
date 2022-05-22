@@ -34,6 +34,9 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
         if (!LoliConfig.instance.fasterEntitySpawnPreparation && mixinClassName.equals("zone.rong.loliasm.common.forgefixes.mixins.EntityEntryMixin")) {
             return false;
         }
+        if (!LoliConfig.instance.fixDimensionCrash && mixinClassName.equals("zone.rong.loliasm.common.forgefixes.mixins.DimensionTypeMixin")) {
+            return false;
+        }
         if (!LoliConfig.instance.copyScreenshotToClipboard && mixinClassName.equals("zone.rong.loliasm.client.screenshot.mixins.MinecraftMixin")) {
             return false;
         }
