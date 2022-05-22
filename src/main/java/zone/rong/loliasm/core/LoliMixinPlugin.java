@@ -3,7 +3,6 @@ package zone.rong.loliasm.core;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.core.classfactories.BakedQuadRedirectorFactory;
 
@@ -28,20 +27,17 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (!LoliConfig.instance.fixTileEntityOnLoadCME && mixinClassName.equals("zone.rong.loliasm.common.forgefixes.mixins.ChunkMixin")) {
-            return false;
-        }
-        if (!LoliConfig.instance.fasterEntitySpawnPreparation && mixinClassName.equals("zone.rong.loliasm.common.forgefixes.mixins.EntityEntryMixin")) {
-            return false;
-        }
-        if (!LoliConfig.instance.fixDimensionCrash && mixinClassName.equals("zone.rong.loliasm.common.forgefixes.mixins.DimensionTypeMixin")) {
-            return false;
-        }
-        if (!LoliConfig.instance.copyScreenshotToClipboard && mixinClassName.equals("zone.rong.loliasm.client.screenshot.mixins.MinecraftMixin")) {
-            return false;
-        }
-        if (!LoliConfig.instance.releaseScreenshotCache && mixinClassName.equals("zone.rong.loliasm.client.screenshot.mixins.ScreenShotHelperMixin")) {
-            return false;
+        switch (mixinClassName) {
+            case "zone.rong.loliasm.common.forgefixes.mixins.ChunkMixin":
+                return LoliConfig.instance.fixTileEntityOnLoadCME;
+            case "zone.rong.loliasm.common.forgefixes.mixins.EntityEntryMixin":
+                return LoliConfig.instance.fasterEntitySpawnPreparation;
+            case "zone.rong.loliasm.common.forgefixes.mixins.DimensionTypeMixin":
+                return LoliConfig.instance.fixDimensionTypesInliningCrash;
+            case "zone.rong.loliasm.client.screenshot.mixins.MinecraftMixin":
+                return LoliConfig.instance.copyScreenshotToClipboard;
+            case "zone.rong.loliasm.client.screenshot.mixins.ScreenShotHelperMixin":
+                return LoliConfig.instance.releaseScreenshotCache;
         }
         return true;
     }
