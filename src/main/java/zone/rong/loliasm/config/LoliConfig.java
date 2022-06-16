@@ -77,7 +77,7 @@ public class LoliConfig {
     public boolean sparkProfileEntireGameLoad, sparkProfileEntireWorldLoad, sparkProfileCoreModLoading, sparkProfileConstructionStage, sparkProfilePreInitializationStage, sparkProfileInitializationStage, sparkProfilePostInitializationStage, sparkProfileLoadCompleteStage, sparkProfileFinalizingStage, sparkProfileWorldAboutToStartStage, sparkProfileWorldStartingStage, sparkProfileWorldStartedStage, includeAllThreadsWhenProfiling, sparkSummarizeHeapSpaceAfterGameLoads, sparkSummarizeHeapSpaceAfterWorldLoads;
     public boolean furnaceExperienceFCFS, furnaceExperienceVanilla, furnaceExperienceMost;
     public boolean makeEventsSingletons;
-    public boolean crashReportImprovements, returnToMainMenuAfterCrash, rewriteLoggingWithDeobfuscatedNames;
+    public boolean crashReportImprovements, returnToMainMenuAfterCrash, rewriteLoggingWithDeobfuscatedNames, hideToastsAndContinuePlaying;
 
     private void initialize() {
         configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
@@ -194,6 +194,7 @@ public class LoliConfig {
         crashReportImprovements = getBoolean("crashReportImprovements", "logging", "Allow the game to keep running after crashes as well as adding more information and deobfuscating the crash reports, inspired by VanillaFix", true);
         returnToMainMenuAfterCrash = getBoolean("returnToMainMenuAfterCrash", "logging", "When crashReportImprovements is true, allow the player to return to the main menu when a crash occurs, inspired by VanillaFix", true);
         rewriteLoggingWithDeobfuscatedNames = getBoolean("rewriteLoggingWithDeobfuscatedNames", "logging", "Rewrite logging output with deobfuscated names when applicable, inspired by VanillaFix", true);
+        hideToastsAndContinuePlaying = getBoolean("hideToastsAndContinuePlaying", "logging", "When crashReportImprovements is true, disallow toasts from popping up and carry on playing while keeping crashes silent", true);
 
         configuration.save();
     }

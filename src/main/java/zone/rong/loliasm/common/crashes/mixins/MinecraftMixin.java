@@ -39,6 +39,7 @@ import zone.rong.loliasm.LoliASM;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.common.crashes.*;
 import zone.rong.loliasm.common.crashes.CrashUtils;
+import zone.rong.loliasm.config.LoliConfig;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -266,11 +267,13 @@ public abstract class MinecraftMixin implements IMinecraftExtender {
 
     @Override
     public void makeErrorNotification(CrashReport report) {
-        ProblemToast lastToast = getToastGui().getToast(ProblemToast.class, IToast.NO_TOKEN);
-        if (lastToast != null) {
-            lastToast.hide = true;
+        if (!LoliConfig.instance.hideToastsAndContinuePlaying) {
+            ProblemToast lastToast = getToastGui().getToast(ProblemToast.class, IToast.NO_TOKEN);
+            if (lastToast != null) {
+                lastToast.hide = true;
+            }
+            getToastGui().add(new ProblemToast(report));
         }
-        getToastGui().add(new ProblemToast(report));
     }
 
     /**
