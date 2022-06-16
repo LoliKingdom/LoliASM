@@ -26,11 +26,12 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 	@Shadow(remap = false) private NBTTagCompound capNBT;
 	@Shadow(remap = false) private IRegistryDelegate<Item> delegate;
 
-	@Unique private boolean initializedCapabilities = false;
-
+	@Shadow public abstract Item getItem();
 	@Shadow public abstract int getAnimationsToGo();
 
 	@Shadow(remap = false) @Nullable protected abstract Item getItemRaw();
+
+	@Unique private boolean initializedCapabilities = false;
 
 	@Override
     public boolean hasInitializedCapabilities() {
@@ -61,7 +62,7 @@ public abstract class ItemStackMixin implements IItemStackCapabilityDelayer {
 	 */
 	@Overwrite
 	public ItemStack copy() {
-		ItemStack stack = new ItemStack(getItemRaw(), this.stackSize, this.itemDamage, this.capabilities != null ? this.capabilities.serializeNBT() : this.capNBT);
+		ItemStack stack = new ItemStack(this.getItem(), this.stackSize, this.itemDamage, this.capabilities != null ? this.capabilities.serializeNBT() : this.capNBT);
 		stack.setAnimationsToGo(this.getAnimationsToGo());
 		if (this.stackTagCompound != null) {
 			((ItemStackMixin) (Object) stack).stackTagCompound = this.stackTagCompound.copy();
