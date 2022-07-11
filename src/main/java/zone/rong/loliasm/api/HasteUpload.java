@@ -14,11 +14,12 @@ import java.nio.charset.StandardCharsets;
 public final class HasteUpload {
 
     public static String uploadToHaste(String str) throws IOException {
+        str = "content=" + str;
         byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
-        URL uploadURL = new URL("https://api.pastes.dev/post");
+        URL uploadURL = new URL("https://api.mclo.gs/1/log");
         HttpURLConnection connection = (HttpURLConnection) uploadURL.openConnection();
         connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "text/plain; charset=UTF-8");
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         connection.setRequestProperty("User-Agent", "LoliASM");
         connection.setFixedLengthStreamingMode(bytes.length);
         connection.setDoInput(true);
@@ -30,7 +31,7 @@ public final class HasteUpload {
             }
             try (InputStream is = connection.getInputStream()) {
                 JsonObject json = new Gson().fromJson(new InputStreamReader(is), JsonObject.class);
-                return "https://pastes.dev/" + json.get("key").getAsString();
+                return json.get("url").getAsString();
             }
         } finally {
             connection.disconnect();
