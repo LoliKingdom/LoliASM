@@ -12,7 +12,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 
-version = "5.5"
+version = "5.6"
 group = "zone.rong.loliasm"
 archivesBaseName = "loliasm"
 
