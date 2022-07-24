@@ -15,7 +15,7 @@ public class BlockFluidRendererMixin {
     @ModifyVariable(method = "renderFluid", at = @At(value = "CONSTANT", args = "floatValue=0.001", ordinal = 1), ordinal = 0)
     private TextureAtlasSprite afterTextureDetermined(TextureAtlasSprite texture) {
         CompiledChunk chunk = IAnimatedSpritePrimer.CURRENT_COMPILED_CHUNK.get();
-        if (chunk != CompiledChunk.DUMMY) {
+        if (chunk != null) {
             ((ICompiledChunkExpander) chunk).resolve(texture);
         }
         return texture;

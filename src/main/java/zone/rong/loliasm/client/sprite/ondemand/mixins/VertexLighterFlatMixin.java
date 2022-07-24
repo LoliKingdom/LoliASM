@@ -25,7 +25,7 @@ public abstract class VertexLighterFlatMixin extends QuadGatheringTransformer im
     public void setTexture(TextureAtlasSprite texture) {
         if (this.primedForDispatch && texture.hasAnimationMetadata()) {
             CompiledChunk chunk = IAnimatedSpritePrimer.CURRENT_COMPILED_CHUNK.get();
-            if (chunk != CompiledChunk.DUMMY) {
+            if (chunk != null) {
                 ((ICompiledChunkExpander) chunk).resolve(texture);
             }
         }
