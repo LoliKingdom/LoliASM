@@ -11,13 +11,12 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
-//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "5.4"
-group = "zone.rong.loliasm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "5.5"
+group = "zone.rong.loliasm"
 archivesBaseName = "loliasm"
 
-sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
@@ -148,7 +147,7 @@ jar {
         attributes([
                 "FMLCorePluginContainsFMLMod": true,
                 "FMLCorePlugin": 'zone.rong.loliasm.core.LoliLoadingPlugin',
-                "ForceLoadAsMod": true,
+                "ForceLoadAsMod": project.gradle.startParameter.taskNames[0] == "build",
                 "TweakClass": 'org.spongepowered.asm.launch.MixinTweaker',
                 "FMLAT": "loliasm_at.cfg"
         ])
