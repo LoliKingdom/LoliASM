@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,10 +97,24 @@ public abstract class CrashReportMixin implements ICrashReportSuspectGetter {
 
     private static String stacktraceToString(Throwable cause) {
         StringWriter writer = new StringWriter();
-        cause.printStackTrace(new PrintWriter(writer));
+        PrintWriter printWriter = new PrintWriter(writer);
+        cause.printStackTrace(printWriter);
+
+        try {
+            Class c = Class.forName("zone.rong.mixinbooter.api.MixinStack");
+            Method mixinsInStackTrace = c.getMethod("findMixinsInStackTrace", Throwable.class);
+            Object ret = mixinsInStackTrace.invoke(CrashReportMixin.class, cause);
+
+            if (ret instanceof String) {
+                printWriter.print((String) ret);
+            }
+
+        } catch (ReflectiveOperationException e) {
+            printWriter.print("\nUpgrade MixinBooter to 7.1 to see mixins in the StackTrace\n");
+        }
+
         return writer.toString();
     }
-
 
     /**
      * @author VanillFix

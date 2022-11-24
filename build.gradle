@@ -88,7 +88,7 @@ dependencies {
     compile "codechicken:ChickenASM:1.12-1.0.2.9"
     provided "epicsquid.mysticallib:mysticallib:1.12.2-+"
     compile "mezz.jei:jei_1.12.2:4.15.0.293"
-    compile "zone.rong:mixinbooter:4.2"
+    compile "zone.rong:mixinbooter:7.1"
     // compile files("./etc/spark-forge-deobf.jar", "./etc/preview_OptiFine_1.12.2_HD_U_G6_pre1-deobf.jar")
     compile files("./etc/spark-forge-deobf.jar")
 
