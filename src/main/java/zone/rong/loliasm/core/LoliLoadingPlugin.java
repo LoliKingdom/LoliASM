@@ -158,6 +158,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 "mixins.crashes.json",
                 "mixins.fix_mc129057.json",
                 "mixins.bucket.json",
+                "mixins.priorities.json",
                 "mixins.rendering.json",
                 "mixins.datastructures_modelmanager.json",
                 "mixins.screenshot.json",
@@ -179,6 +180,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                         "mixins.capability.json",
                         "mixins.singletonevents.json",
                         "mixins.efficienthashing.json",
+                        "mixins.priorities.json",
                         "mixins.crashes.json",
                         "mixins.fix_mc129057.json");
     }

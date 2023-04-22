@@ -56,6 +56,8 @@ public class CommonProxy {
         if (LoliConfig.instance.cleanupLaunchClassLoaderEarly) {
             cleanupLaunchClassLoader();
         }
+        if (LoliConfig.instance.threadPriorityFix)
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 2);
     }
 
     public void preInit(FMLPreInitializationEvent event) { }
