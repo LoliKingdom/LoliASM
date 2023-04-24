@@ -73,14 +73,15 @@ public abstract class TileCrafterMixin extends TileEntity implements ITESRHook, 
         GlStateManager.disableCull();
         GlStateManager.pushAttrib();
         GlStateManager.pushMatrix();
-        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+        Minecraft mc = Minecraft.getMinecraft();
+        RenderItem renderItem = mc.getRenderItem();
         IBakedModel model = renderItem.getItemModelWithOverrides(stack, null, null);
         GlStateManager.translate(0.5F, model.isGui3d() ? 1.05F : 1.15F, 0.5F);
         GlStateManager.translate(x, y, z);
         GlStateManager.scale(0.9F, 0.9F, 0.9F);
         GlStateManager.rotate((MCTimer.renderTimer / 64) * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
-        renderItem.textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        renderItem.textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
         GlStateManager.pushMatrix();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
         GlStateManager.color(1, 1, 1, 0.4F);
@@ -105,8 +106,8 @@ public abstract class TileCrafterMixin extends TileEntity implements ITESRHook, 
         GlStateManager.popAttrib();
         GlStateManager.color(1, 1, 1, 1);
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        renderItem.textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        renderItem.textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+        mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
         RenderHelper.enableStandardItemLighting();
     }
 
