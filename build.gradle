@@ -1,3 +1,4 @@
+import com.gtnewhorizons.retrofuturagradle.mcp.ReobfuscatedJar
 import org.jetbrains.gradle.ext.Gradle
 
 plugins {
@@ -118,7 +119,7 @@ def mixinTmpDir = buildDir.path + File.separator + 'tmp' + File.separator + 'mix
 def refMap = "${mixinTmpDir}" + File.separator + mixinConfigRefMap
 def mixinSrg = "${mixinTmpDir}" + File.separator + 'mixins.srg'
 
-tasks.named('reobfJar', com.gtnewhorizons.retrofuturagradle.mcp.ReobfuscatedJar).configure {
+tasks.named('reobfJar', ReobfuscatedJar).configure {
     extraSrgFiles.from(mixinSrg)
 }
 
@@ -144,6 +145,9 @@ processResources {
 }
 
 jar {
+    from provider {
+        configurations.embed.collect {it.isDirectory() ? it : zipTree(it)}
+    }
     manifest {
         attributes([
                 'FMLCorePluginContainsFMLMod': true,
