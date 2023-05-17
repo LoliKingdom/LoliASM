@@ -203,8 +203,6 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                     return LoliConfig.instance.releaseScreenshotCache || LoliConfig.instance.asyncScreenshot;
                 case "mixins.ondemand_sprites.json":
                     return LoliConfig.instance.onDemandAnimatedTextures;
-                case "mixins.searchtree_vanilla.json":
-                    return LoliConfig.instance.replaceSearchTreeWithJEISearching;
                 case "mixins.resolve_mc2071.json":
                     return LoliConfig.instance.resolveMC2071;
                 case "mixins.fix_mc_skindownloading.json":
