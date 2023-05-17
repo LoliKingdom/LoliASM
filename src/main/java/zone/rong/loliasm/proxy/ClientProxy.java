@@ -18,7 +18,6 @@ import slimeknights.tconstruct.library.client.texture.AbstractColoredTexture;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.bakedquad.LoliVertexDataPool;
-import zone.rong.loliasm.client.mcfixes.SkinDataReleaser;
 import zone.rong.loliasm.client.models.bucket.LoliBakedDynBucket;
 import zone.rong.loliasm.client.screenshot.ScreenshotListener;
 import zone.rong.loliasm.client.sprite.FramesTextureData;
@@ -59,9 +58,6 @@ public class ClientProxy extends CommonProxy {
         }
         if (LoliConfig.instance.copyScreenshotToClipboard) {
             MinecraftForge.EVENT_BUS.register(ScreenshotListener.class);
-        }
-        if (LoliConfig.instance.fixMC186052) {
-            MinecraftForge.EVENT_BUS.register(SkinDataReleaser.class);
         }
     }
 

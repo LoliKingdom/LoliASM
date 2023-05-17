@@ -165,7 +165,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 "mixins.ondemand_sprites.json",
                 "mixins.searchtree_vanilla.json",
                 "mixins.resolve_mc2071.json",
-                "mixins.fix_mc_skindownloading.json") :
+                "mixins.fix_mc_skindownloading.json",
+                "mixins.fix_mc186052.json") :
                 Arrays.asList(
                         "mixins.devenv.json",
                         "mixins.vfix_bugfixes.json",
