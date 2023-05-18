@@ -33,9 +33,10 @@ public class ChunkRenderDispatcherMixin {
 
     @Redirect(method = "<init>(I)V", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/client/renderer/chunk/ChunkRenderDispatcher;countRenderBuilders:I"))
     private void setBuilders(ChunkRenderDispatcher dispatcher, int original) {
-        int nThreads = getRenderBuilderCount();
+        int memoryClampMagicValue = Math.max(1, (int)((double)Runtime.getRuntime().maxMemory() * 0.3D) / 10485760);
+        int nThreads = MathHelper.clamp(getRenderBuilderCount(), 1, memoryClampMagicValue / 5);
         /* we need more builder objects in the queue than number of threads, because threads don't free them immediately */
-        this.countRenderBuilders = nThreads * 10;
+        this.countRenderBuilders = MathHelper.clamp(nThreads * 10, 1, memoryClampMagicValue);
         LOGGER.info("Creating {} chunk builders", nThreads);
     }
 
