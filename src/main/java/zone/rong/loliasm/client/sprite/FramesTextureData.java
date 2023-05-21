@@ -13,10 +13,8 @@ import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.common.internal.mixins.TextureAtlasSpriteAccessor;
 import zone.rong.loliasm.common.internal.mixins.TextureMapAccessor;
-import zone.rong.loliasm.proxy.ClientProxy;
 
 import java.io.IOException;
 import java.util.*;
@@ -44,7 +42,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
                 canReload = false;
                 Set<Class<?>> skippedSpriteClasses = new HashSet<>();
                 try {
-                    for (TextureAtlasSprite sprite : ((Map<String, TextureAtlasSprite>) LoliReflector.resolveFieldGetter(TextureMap.class, "mapRegisteredSprites", "field_110574_e").invoke(Minecraft.getMinecraft().getTextureMapBlocks())).values()) {
+                    for (TextureAtlasSprite sprite : ((TextureMapAccessor)Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
                         if (sprite.getClass() == TextureAtlasSprite.class || sprite.getClass() == FOAMFIX_SPRITE) {
                             sprite.setFramesTextureData(new FramesTextureData(sprite));
                         } else
@@ -62,7 +60,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            for(TextureAtlasSprite sprite : ((TextureMapAccessor)Minecraft.getMinecraft().getTextureMapBlocks()).getMapUploadedSprites().values()) {
+            for(TextureAtlasSprite sprite : ((TextureMapAccessor)Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
                 if (sprite != null) {
                     List<int[][]> data = ((TextureAtlasSpriteAccessor)sprite).loli$getTextureData();
                     if(data instanceof FramesTextureData)
