@@ -51,7 +51,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-                LoliLogger.instance.info("Evicted most sprites' frame texture data, skipped classes: [{}]", skippedSpriteClasses.stream().map(Class::getName).collect(Collectors.joining(", ")));
+                LoliLogger.instance.debug("Evicted most sprites' frame texture data, skipped classes: [{}]", skippedSpriteClasses.stream().map(Class::getName).collect(Collectors.joining(", ")));
                 canReload = true;
             }
         });
