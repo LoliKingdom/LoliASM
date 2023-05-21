@@ -91,35 +91,43 @@ public class FramesTextureData extends ArrayList<int[][]> {
 
     @Override
     public int[][] get(int index) {
-        if (canReload && super.isEmpty()) {
-            load();
+        synchronized (this) {
+            if (canReload && super.isEmpty()) {
+                load();
+            }
+            this.ticksInactive = 0;
+            return super.get(index);
         }
-        this.ticksInactive = 0;
-        return super.get(index);
     }
 
     @Override
     public int size() {
-        if (canReload && super.isEmpty()) {
-            load();
+        synchronized (this) {
+            if (canReload && super.isEmpty()) {
+                load();
+            }
+            this.ticksInactive = 0;
+            return super.size();
         }
-        this.ticksInactive = 0;
-        return super.size();
     }
 
     @Override
     public boolean isEmpty() {
-        if (canReload && super.isEmpty()) {
-            load();
+        synchronized (this) {
+            if (canReload && super.isEmpty()) {
+                load();
+            }
+            this.ticksInactive = 0;
+            return super.isEmpty();
         }
-        this.ticksInactive = 0;
-        return super.isEmpty();
     }
 
     @Override
     public void clear() {
-        super.clear();
-        trimToSize();
+        synchronized (this) {
+            super.clear();
+            trimToSize();
+        }
     }
 
     private void load() {
