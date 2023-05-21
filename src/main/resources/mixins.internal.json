@@ -10,6 +10,8 @@
     "LoadControllerMixin"
   ],
   "client": [
+    "TextureAtlasSpriteAccessor",
+    "TextureMapAccessor",
     "TextureManagerAccessor",
     "TileEntityMixin"
   ]
