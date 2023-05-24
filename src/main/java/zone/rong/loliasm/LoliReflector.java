@@ -214,6 +214,13 @@ public class LoliReflector {
         return ((List<String>) Launch.blackboard.get("TweakClasses")).contains(tweakName);
     }
 
+    public static Class<?> getNullableClass(String className) {
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException ignored) { }
+        return null;
+    }
+
     public static Optional<Class<?>> getClass(String className) {
         try {
             return Optional.of(Class.forName(className));

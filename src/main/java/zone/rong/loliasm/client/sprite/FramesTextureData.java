@@ -1,5 +1,6 @@
 package zone.rong.loliasm.client.sprite;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -13,6 +14,7 @@ import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import zone.rong.loliasm.LoliLogger;
+import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.common.internal.mixins.TextureAtlasSpriteAccessor;
 import zone.rong.loliasm.common.internal.mixins.TextureMapAccessor;
 
@@ -21,35 +23,38 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class FramesTextureData extends ArrayList<int[][]> {
+
+    private static final Class<?> FOAMFIX_SPRITE = LoliReflector.getNullableClass("pl.asie.foamfix.client.FastTextureAtlasSprite");
+    private static final int INACTIVITY_THRESHOLD = 20;
+
     private static boolean canReload = true;
-
-    private static final Class<?> FOAMFIX_SPRITE;
-
-    static {
-        Class<?> ffSprite;
-        try {
-            ffSprite = Class.forName("pl.asie.foamfix.client.FastTextureAtlasSprite");
-        } catch(ClassNotFoundException e) {
-            ffSprite = null;
-        }
-        FOAMFIX_SPRITE = ffSprite;
-    }
 
     @SubscribeEvent
     public static void registerEvictionListener(ColorHandlerEvent.Block event) {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener((ISelectiveResourceReloadListener) (manager, predicate) -> {
             if (predicate.test(VanillaResourceType.MODELS)) {
                 canReload = false;
-                Set<Class<?>> skippedSpriteClasses = new HashSet<>();
+                Set<Class<?>> skippedSpriteClasses = new ObjectOpenHashSet<>();
                 try {
-                    for (TextureAtlasSprite sprite : ((TextureMapAccessor)Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
-                        if (sprite.getClass() == TextureAtlasSprite.class || sprite.getClass() == FOAMFIX_SPRITE) {
-                            sprite.setFramesTextureData(new FramesTextureData(sprite));
-                        } else
-                            skippedSpriteClasses.add(sprite.getClass());
+                    if (FOAMFIX_SPRITE == null) {
+                        for (TextureAtlasSprite sprite : ((TextureMapAccessor) Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
+                            if (sprite.getClass() == TextureAtlasSprite.class) {
+                                sprite.setFramesTextureData(new FramesTextureData(sprite));
+                            } else {
+                                skippedSpriteClasses.add(sprite.getClass());
+                            }
+                        }
+                    } else {
+                        for (TextureAtlasSprite sprite : ((TextureMapAccessor) Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
+                            if (sprite.getClass() == FOAMFIX_SPRITE || sprite.getClass() == TextureAtlasSprite.class) {
+                                sprite.setFramesTextureData(new FramesTextureData(sprite));
+                            } else {
+                                skippedSpriteClasses.add(sprite.getClass());
+                            }
+                        }
                     }
-                } catch (Throwable e) {
-                    e.printStackTrace();
+                } catch (Throwable t) {
+                    t.printStackTrace();
                 }
                 LoliLogger.instance.debug("Evicted most sprites' frame texture data, skipped classes: [{}]", skippedSpriteClasses.stream().map(Class::getName).collect(Collectors.joining(", ")));
                 canReload = true;
@@ -60,11 +65,12 @@ public class FramesTextureData extends ArrayList<int[][]> {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            for(TextureAtlasSprite sprite : ((TextureMapAccessor)Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
+            for (TextureAtlasSprite sprite : ((TextureMapAccessor)Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
                 if (sprite != null) {
-                    List<int[][]> data = ((TextureAtlasSpriteAccessor)sprite).loli$getTextureData();
-                    if(data instanceof FramesTextureData)
-                        ((FramesTextureData)data).tick();
+                    List<int[][]> data = ((TextureAtlasSpriteAccessor) sprite).loli$getTextureData();
+                    if (data instanceof FramesTextureData) {
+                        ((FramesTextureData) data).tick();
+                    }
                 }
             }
         }
@@ -74,8 +80,6 @@ public class FramesTextureData extends ArrayList<int[][]> {
 
     private int ticksInactive;
 
-    private static final int INACTIVITY_THRESHOLD = 20;
-
     public FramesTextureData(TextureAtlasSprite sprite) {
         super();
         this.sprite = sprite;
@@ -84,7 +88,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
 
     public void tick() {
         this.ticksInactive++;
-        if(this.ticksInactive == INACTIVITY_THRESHOLD) {
+        if (this.ticksInactive == INACTIVITY_THRESHOLD) {
             this.clear();
         }
     }
@@ -131,7 +135,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
     }
 
     private void load() {
-        // prevent recursive loads
+        // Prevent recursive loads
         boolean oldReload = canReload;
         canReload = false;
         try {

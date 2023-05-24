@@ -9,6 +9,8 @@ import java.util.Map;
 
 @Mixin(TextureMap.class)
 public interface TextureMapAccessor {
+
     @Accessor("mapRegisteredSprites")
     Map<String, TextureAtlasSprite> getMapRegisteredSprites();
+
 }
