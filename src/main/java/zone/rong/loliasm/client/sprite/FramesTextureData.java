@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
@@ -145,10 +146,18 @@ public class FramesTextureData extends ArrayList<int[][]> {
             if (sprite.hasCustomLoader(resourceManager, location)) {
                 sprite.load(resourceManager, location, rl -> textureMap.getAtlasSprite(rl.toString()));
             } else {
+                int mipLevels = Minecraft.getMinecraft().gameSettings.mipmapLevels;
                 try (IResource resource = resourceManager.getResource(location)) {
-                    sprite.loadSpriteFrames(resource, 1);
+                    sprite.loadSpriteFrames(resource, mipLevels + 1);
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+                /* generate mipmaps, as loadSpriteFrames doesn't actually fill them in */
+                for(int i = 0; i < this.size(); i++) {
+                    int[][] aint = this.get(i);
+                    if(aint != null) {
+                        this.set(i, TextureUtil.generateMipmapData(mipLevels, sprite.getIconWidth(), aint));
+                    }
                 }
             }
         } finally {
