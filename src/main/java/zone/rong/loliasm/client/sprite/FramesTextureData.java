@@ -153,9 +153,9 @@ public class FramesTextureData extends ArrayList<int[][]> {
                     e.printStackTrace();
                 }
                 /* generate mipmaps, as loadSpriteFrames doesn't actually fill them in */
-                for(int i = 0; i < this.size(); i++) {
+                for (int i = 0; i < this.size(); i++) {
                     int[][] aint = this.get(i);
-                    if(aint != null) {
+                    if (aint != null) {
                         this.set(i, TextureUtil.generateMipmapData(mipLevels, sprite.getIconWidth(), aint));
                     }
                 }
