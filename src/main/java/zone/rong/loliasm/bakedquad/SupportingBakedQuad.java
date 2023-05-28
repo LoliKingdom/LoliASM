@@ -33,7 +33,7 @@ public class SupportingBakedQuad extends BakedQuad {
 
     @Override
     public EnumFacing getFace() {
-        return face;
+        return face != null ? face : EnumFacing.DOWN;
     }
 
     @Override
