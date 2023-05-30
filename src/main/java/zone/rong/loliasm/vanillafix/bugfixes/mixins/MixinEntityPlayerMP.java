@@ -29,7 +29,7 @@ public abstract class MixinEntityPlayerMP extends EntityPlayer {
      */
     @Redirect(method = "isEntityInvulnerable", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isEntityInvulnerable(Lnet/minecraft/util/DamageSource;)Z"))
     private boolean isEntityInvulnerable(EntityPlayer entityPlayer, DamageSource source) {
-        return false;
+        return super.isEntityInvulnerable(source);
     }
 
     /**
