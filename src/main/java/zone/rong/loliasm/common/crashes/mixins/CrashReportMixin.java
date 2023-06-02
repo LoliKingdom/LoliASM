@@ -33,6 +33,8 @@ public abstract class CrashReportMixin implements ICrashReportSuspectGetter {
         throw new AssertionError();
     }
 
+    @Shadow public abstract String getCauseStackTraceOrString();
+
     @Unique private Set<ModContainer> suspectedMods;
 
     @Override
@@ -84,7 +86,7 @@ public abstract class CrashReportMixin implements ICrashReportSuspectGetter {
                 .append("Time: ").append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").format(new Date())).append("\n")
                 .append("Description: ").append(description)
                 .append("\n\n")
-                .append(stacktraceToString(cause).replace("\t", "    "))
+                .append(this.getCauseStackTraceOrString())
                 .append("\n\nA detailed walkthrough of the error, its code path and all known details is as follows:\n");
         for (int i = 0; i < 87; i++) {
             builder.append("-");
@@ -93,13 +95,6 @@ public abstract class CrashReportMixin implements ICrashReportSuspectGetter {
         getSectionsInStringBuilder(builder);
         return builder.toString().replace("\t", "    ");
     }
-
-    private static String stacktraceToString(Throwable cause) {
-        StringWriter writer = new StringWriter();
-        cause.printStackTrace(new PrintWriter(writer));
-        return writer.toString();
-    }
-
 
     /**
      * @author VanillFix
