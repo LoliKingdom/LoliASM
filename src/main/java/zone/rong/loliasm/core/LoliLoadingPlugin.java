@@ -5,6 +5,7 @@ import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import zone.rong.loliasm.UnsafeLolis;
 import zone.rong.loliasm.config.LoliConfig;
@@ -16,6 +17,7 @@ import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.util.Arrays;
@@ -29,7 +31,7 @@ import java.util.zip.ZipFile;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
-    public static final String VERSION = "5.11";
+    public static final String VERSION = "5.12";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
 
@@ -71,6 +73,17 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         }
         if (LoliConfig.instance.sparkProfileEntireGameLoad) {
             LoliSparker.start("game");
+        }
+        if (LoliConfig.instance.outdatedCaCertsFix) {
+            try (InputStream is = this.getClass().getResource("/cacerts").openStream()) {
+                File cacertsCopy = File.createTempFile("cacerts", "");
+                cacertsCopy.deleteOnExit();
+                FileUtils.copyInputStreamToFile(is, cacertsCopy);
+                System.setProperty("javax.net.ssl.trustStore", cacertsCopy.getAbsolutePath());
+                LoliLogger.instance.warn("Replacing CA Certs with an updated one...");
+            } catch (IOException e) {
+                LoliLogger.instance.warn("Unable to replace CA Certs", e);
+            }
         }
         if (LoliConfig.instance.removeForgeSecurityManager) {
             UnsafeLolis.removeFMLSecurityManager();
