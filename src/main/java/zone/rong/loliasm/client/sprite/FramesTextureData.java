@@ -1,6 +1,7 @@
 package zone.rong.loliasm.client.sprite;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -16,7 +17,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.common.internal.mixins.TextureAtlasSpriteAccessor;
 import zone.rong.loliasm.common.internal.mixins.TextureMapAccessor;
 
 import java.io.IOException;
@@ -30,6 +30,8 @@ public class FramesTextureData extends ArrayList<int[][]> {
 
     private static boolean canReload = true;
 
+    private static final Set<FramesTextureData> tickingSpritesSet = new ReferenceLinkedOpenHashSet<>();
+
     @SubscribeEvent
     public static void registerEvictionListener(ColorHandlerEvent.Block event) {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener((ISelectiveResourceReloadListener) (manager, predicate) -> {
@@ -37,21 +39,15 @@ public class FramesTextureData extends ArrayList<int[][]> {
                 canReload = false;
                 Set<Class<?>> skippedSpriteClasses = new ObjectOpenHashSet<>();
                 try {
-                    if (FOAMFIX_SPRITE == null) {
-                        for (TextureAtlasSprite sprite : ((TextureMapAccessor) Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
-                            if (sprite.getClass() == TextureAtlasSprite.class) {
-                                sprite.setFramesTextureData(new FramesTextureData(sprite));
-                            } else {
-                                skippedSpriteClasses.add(sprite.getClass());
-                            }
-                        }
-                    } else {
-                        for (TextureAtlasSprite sprite : ((TextureMapAccessor) Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
-                            if (sprite.getClass() == FOAMFIX_SPRITE || sprite.getClass() == TextureAtlasSprite.class) {
-                                sprite.setFramesTextureData(new FramesTextureData(sprite));
-                            } else {
-                                skippedSpriteClasses.add(sprite.getClass());
-                            }
+                    synchronized (tickingSpritesSet) {
+                        tickingSpritesSet.clear();
+                    }
+                    for (TextureAtlasSprite sprite : ((TextureMapAccessor) Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
+                        if (sprite.getClass() == FOAMFIX_SPRITE || sprite.getClass() == TextureAtlasSprite.class) {
+                            FramesTextureData ftd = new FramesTextureData(sprite);
+                            sprite.setFramesTextureData(ftd);
+                        } else {
+                            skippedSpriteClasses.add(sprite.getClass());
                         }
                     }
                 } catch (Throwable t) {
@@ -66,11 +62,14 @@ public class FramesTextureData extends ArrayList<int[][]> {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            for (TextureAtlasSprite sprite : ((TextureMapAccessor)Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
-                if (sprite != null) {
-                    List<int[][]> data = ((TextureAtlasSpriteAccessor) sprite).loli$getTextureData();
-                    if (data instanceof FramesTextureData) {
-                        ((FramesTextureData) data).tick();
+            List<FramesTextureData> toTick;
+            synchronized (tickingSpritesSet) {
+                toTick = new ArrayList<>(tickingSpritesSet);
+            }
+            for(FramesTextureData data : toTick) {
+                if(data.tick()) {
+                    synchronized (tickingSpritesSet) {
+                        tickingSpritesSet.remove(data);
                     }
                 }
             }
@@ -87,10 +86,21 @@ public class FramesTextureData extends ArrayList<int[][]> {
         this.ticksInactive = INACTIVITY_THRESHOLD + 1;
     }
 
-    public void tick() {
-        this.ticksInactive++;
-        if (this.ticksInactive == INACTIVITY_THRESHOLD) {
-            this.clear();
+    public boolean tick() {
+        synchronized (this) {
+            this.ticksInactive++;
+            if (this.ticksInactive == INACTIVITY_THRESHOLD) {
+                this.clear();
+                return true;
+            }
+            return false;
+        }
+    }
+
+    private void markActive() {
+        this.ticksInactive = 0;
+        synchronized (tickingSpritesSet) {
+            tickingSpritesSet.add(this);
         }
     }
 
@@ -100,7 +110,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
             if (canReload && super.isEmpty()) {
                 load();
             }
-            this.ticksInactive = 0;
+            markActive();
             return super.get(index);
         }
     }
@@ -111,7 +121,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
             if (canReload && super.isEmpty()) {
                 load();
             }
-            this.ticksInactive = 0;
+            markActive();
             return super.size();
         }
     }
@@ -122,7 +132,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
             if (canReload && super.isEmpty()) {
                 load();
             }
-            this.ticksInactive = 0;
+            markActive();
             return super.isEmpty();
         }
     }
