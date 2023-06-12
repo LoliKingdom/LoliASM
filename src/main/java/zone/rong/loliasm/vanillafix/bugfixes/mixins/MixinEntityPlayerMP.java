@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import zone.rong.mixinextras.injector.ModifyReturnValue;
 
 @Mixin(EntityPlayerMP.class)
 public abstract class MixinEntityPlayerMP extends EntityPlayer {
@@ -27,9 +27,9 @@ public abstract class MixinEntityPlayerMP extends EntityPlayer {
      * teleporting the player again (in the other nether portal before the client had the
      * time to confirm the teleport).
      */
-    @Redirect(method = "isEntityInvulnerable", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isEntityInvulnerable(Lnet/minecraft/util/DamageSource;)Z"))
-    private boolean isEntityInvulnerable(EntityPlayer entityPlayer, DamageSource source) {
-        return false;
+    @ModifyReturnValue(method = "isEntityInvulnerable", at = @At(value = "RETURN"))
+    private boolean isEntityInvulnerable(boolean original, DamageSource source) {
+        return super.isEntityInvulnerable(source);
     }
 
     /**
