@@ -1,6 +1,6 @@
 package zone.rong.loliasm.client.sprite.ondemand.mixins;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -18,10 +18,10 @@ import java.util.*;
 @Mixin(TextureMap.class)
 public abstract class TextureMapMixin extends AbstractTexture implements IAnimatedSpritePrimer {
 
-    @Shadow @Final public Map<String, TextureAtlasSprite> mapUploadedSprites;
+    @Shadow @Final private List<TextureAtlasSprite> listAnimatedSprites;
 
     @Unique private final FloorUVTree animatedSpritesUVRanges = new FloorUVTree();
-    @Unique private final Set<FloorUV> queuedUVCoords = new ObjectOpenHashSet<>(8);
+    @Unique private final Set<FloorUV> queuedUVCoords = new ObjectLinkedOpenHashSet<>(8);
 
     @Override
     public void registerUVRanges(float minU, float minV, TextureAtlasSprite sprite) {
@@ -49,7 +49,7 @@ public abstract class TextureMapMixin extends AbstractTexture implements IAnimat
     private boolean populateUVRanges(List list, Object object) {
         TextureAtlasSprite sprite = (TextureAtlasSprite) object;
         registerUVRanges(sprite.getMinU(), sprite.getMinV(), sprite);
-        return false;
+        return listAnimatedSprites.add(sprite);
     }
 
     /**
@@ -68,18 +68,17 @@ public abstract class TextureMapMixin extends AbstractTexture implements IAnimat
             }
 
             // Mark all captured sprites
-            Iterator<FloorUV> iter = this.queuedUVCoords.iterator();
-            while (iter.hasNext()) {
-                TextureAtlasSprite sprite = this.animatedSpritesUVRanges.getNearestFloorSprite(iter.next());
+            for (FloorUV queuedUVCoord : this.queuedUVCoords) {
+                TextureAtlasSprite sprite = this.animatedSpritesUVRanges.getNearestFloorSprite(queuedUVCoord);
                 if (sprite != null && sprite.hasAnimationMetadata()) { // Only activate animated sprites
                     ((IAnimatedSpriteActivator) sprite).setActive(true);
                 }
-                iter.remove(); // Pop off queue
             }
+            this.queuedUVCoords.clear();
 
             GlStateManager.bindTexture(this.getGlTextureId()); // Bind TextureMap texture
 
-            for (TextureAtlasSprite sprite : this.mapUploadedSprites.values()) {
+            for (TextureAtlasSprite sprite : this.listAnimatedSprites) {
                 if (((IAnimatedSpriteActivator) sprite).isActive()) {
                     sprite.updateAnimation(); // Update Animation
                     ((IAnimatedSpriteActivator) sprite).setActive(false); // Unactivated
