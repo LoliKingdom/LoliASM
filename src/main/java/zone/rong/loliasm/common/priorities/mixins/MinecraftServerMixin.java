@@ -7,7 +7,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
-    @Redirect(method = "startServerThread", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;start()V"))
+
+    @Redirect(method = "startServerThread", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;start()V"), require = 0)
     private void setPriorityAndStart(Thread serverThread) {
         serverThread.setPriority(Thread.MIN_PRIORITY + 2);
         serverThread.start();
