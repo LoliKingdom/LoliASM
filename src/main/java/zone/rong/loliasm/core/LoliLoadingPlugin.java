@@ -31,7 +31,7 @@ import java.util.zip.ZipFile;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
-    public static final String VERSION = "5.13";
+    public static final String VERSION = "5.14";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
 
