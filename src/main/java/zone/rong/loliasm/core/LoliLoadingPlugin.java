@@ -245,6 +245,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 return LoliConfig.instance.crashReportImprovements;
             case "mixins.fix_mc129057.json":
                 return LoliConfig.instance.fixMC129057;
+            case "mixins.priorities.json":
+                return LoliConfig.instance.threadPriorityFix;
         }
         return true;
     }
