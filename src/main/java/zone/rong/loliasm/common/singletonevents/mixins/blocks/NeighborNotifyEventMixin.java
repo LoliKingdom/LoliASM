@@ -25,11 +25,6 @@ public class NeighborNotifyEventMixin extends Event implements IRefreshEvent {
         this.forceRedstoneUpdate = forceRedstoneUpdate;
     }
 
-    @Override
-    public void afterNeighborNotify() {
-        this.notifiedSides = null;
-    }
-
     @Nullable
     @Override
     public EventPriority getPhase() {

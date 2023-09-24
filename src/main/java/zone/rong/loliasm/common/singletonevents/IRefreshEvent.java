@@ -35,23 +35,11 @@ public interface IRefreshEvent {
 
     }
 
-    default void afterAttachCapabilities() {
-
-    }
-
     default void beforeBlockEvent(World world, BlockPos pos, IBlockState state) {
 
     }
 
-    default void afterBlockEvent() {
-
-    }
-
     default void beforeNeighborNotify(EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
-
-    }
-
-    default void afterNeighborNotify() {
 
     }
 
@@ -64,6 +52,7 @@ public interface IRefreshEvent {
 
     }
 
+    // TODO: determine if this avoiding this will memory leak
     default void afterWorldTick() {
 
     }
@@ -72,6 +61,7 @@ public interface IRefreshEvent {
 
     }
 
+    // TODO: determine if this avoiding this will memory leak
     default void afterPlayerTick() {
 
     }
