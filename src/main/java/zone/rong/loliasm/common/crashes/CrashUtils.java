@@ -12,6 +12,8 @@ import java.util.Date;
 
 public final class CrashUtils {
 
+    public static final ThreadLocal<Boolean> WRITING_DETAIL = ThreadLocal.withInitial(() -> false);
+
     public static void crash(CrashReport report) {
         throw new ReportedException(report);
     }
