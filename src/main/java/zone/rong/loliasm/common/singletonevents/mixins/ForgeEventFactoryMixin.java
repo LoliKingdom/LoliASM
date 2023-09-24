@@ -44,7 +44,7 @@ public abstract class ForgeEventFactoryMixin {
     @Unique private static final IRefreshEvent CHUNK_ATTACH_CAPABILITIES_EVENT_CASTED = (IRefreshEvent) CHUNK_ATTACH_CAPABILITIES_EVENT;
 
     @Unique private static final NeighborNotifyEvent NEIGHBOR_NOTIFY_EVENT = new NeighborNotifyEvent(null, null, null, null, false);
-    @Unique private static final IRefreshEvent NEIGHBOR_NOTIFY_EVENT_CASTED = (IRefreshEvent) new NeighborNotifyEvent(null, null, null, null, false);
+    @Unique private static final IRefreshEvent NEIGHBOR_NOTIFY_EVENT_CASTED = (IRefreshEvent) NEIGHBOR_NOTIFY_EVENT;
 
     // Not frequent enough:
     /*
