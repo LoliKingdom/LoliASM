@@ -7,7 +7,6 @@
   "mixins": [
     "FMLCommonHandlerMixin",
     "ForgeEventFactoryMixin",
-    "blocks.BlockEventMixin",
     "blocks.NeighborNotifyEventMixin",
     "capabilities.AttachCapabilitiesEventMixin",
     "gameevent.PlayerTickEventMixin",
