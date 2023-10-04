@@ -111,7 +111,7 @@ public abstract class ForgeEventFactoryMixin {
     @Nullable
     @Overwrite
     public static NeighborNotifyEvent onNeighborNotify(World world, BlockPos pos, IBlockState state, EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
-        NEIGHBOR_NOTIFY_EVENT_CASTED.beforeNeighborNotify(world, notifiedSides, forceRedstoneUpdate);
+        NEIGHBOR_NOTIFY_EVENT_CASTED.beforeNeighborNotify(world, pos, state, notifiedSides, forceRedstoneUpdate);
         MinecraftForge.EVENT_BUS.post(NEIGHBOR_NOTIFY_EVENT);
         return NEIGHBOR_NOTIFY_EVENT;
     }

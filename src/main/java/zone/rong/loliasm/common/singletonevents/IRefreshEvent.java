@@ -35,7 +35,7 @@ public interface IRefreshEvent {
 
     }
 
-    default void beforeNeighborNotify(World world, EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
+    default void beforeNeighborNotify(World world, BlockPos pos, IBlockState state, EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
 
     }
 

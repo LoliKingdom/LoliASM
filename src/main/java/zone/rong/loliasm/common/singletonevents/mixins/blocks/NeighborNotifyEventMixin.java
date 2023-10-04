@@ -23,6 +23,8 @@ public class NeighborNotifyEventMixin extends BlockEvent implements IRefreshEven
 
     @Unique private EventPriority loliPriority;
     @Unique private WeakReference<World> loliWorldRef;
+    @Unique private BlockPos loliPos;
+    @Unique private IBlockState loliState;
 
     NeighborNotifyEventMixin(World world, BlockPos pos, IBlockState state) {
         super(world, pos, state);
@@ -35,8 +37,20 @@ public class NeighborNotifyEventMixin extends BlockEvent implements IRefreshEven
     }
 
     @Override
-    public void beforeNeighborNotify(World world, EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
+    public BlockPos getPos() {
+        return loliPos;
+    }
+
+    @Override
+    public IBlockState getState() {
+        return loliState;
+    }
+
+    @Override
+    public void beforeNeighborNotify(World world, BlockPos pos, IBlockState state, EnumSet<EnumFacing> notifiedSides, boolean forceRedstoneUpdate) {
         this.loliWorldRef = new WeakReference<>(world);
+        this.loliPos = pos;
+        this.loliState = state;
         this.notifiedSides = notifiedSides;
         this.forceRedstoneUpdate = forceRedstoneUpdate;
     }
