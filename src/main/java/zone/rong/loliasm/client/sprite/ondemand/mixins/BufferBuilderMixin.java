@@ -51,20 +51,7 @@ public abstract class BufferBuilderMixin implements IBufferPrimerConfigurator {
                 float fv = (float) v;
                 this.byteBuffer.putFloat(i, fu);
                 this.byteBuffer.putFloat(i + 4, fv);
-                if (primer != null && drawMode == GL11.GL_QUADS && IAnimatedSpritePrimer.PRIMED.get()) {
-                    if (++vertexCountOfQuad == 4) {
-                        vertexCountOfQuad = 0;
-                        primer.addAnimatedSprite(minUOfQuad, minVOfQuad);
-                        minUOfQuad = Float.MAX_VALUE;
-                        minVOfQuad = Float.MAX_VALUE;
-                    }
-                    if (minUOfQuad > fu) {
-                        minUOfQuad = fu;
-                    }
-                    if (minVOfQuad > fv) {
-                        minVOfQuad = fv;
-                    }
-                }
+                hookTexture(fu, fv);
                 break;
             case UINT:
             case INT:
@@ -103,4 +90,21 @@ public abstract class BufferBuilderMixin implements IBufferPrimerConfigurator {
         }
     }
 
+    @Override
+    public void hookTexture(float fu, float fv) {
+        if (primer != null && drawMode == GL11.GL_QUADS && IAnimatedSpritePrimer.PRIMED.get()) {
+            if (++vertexCountOfQuad == 4) {
+                vertexCountOfQuad = 0;
+                primer.addAnimatedSprite(minUOfQuad, minVOfQuad);
+                minUOfQuad = Float.MAX_VALUE;
+                minVOfQuad = Float.MAX_VALUE;
+            }
+            if (minUOfQuad > fu) {
+                minUOfQuad = fu;
+            }
+            if (minVOfQuad > fv) {
+                minVOfQuad = fv;
+            }
+        }
+    }
 }
