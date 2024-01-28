@@ -27,7 +27,7 @@ minecraft {
     mcVersion = '1.12.2'
     def args = [
             "-ea:${project.group}",
-            '-Dfml.coreMods.load=zone.rong.loliasm.core.LoliLoadingPlugin',
+            '-Dfml.coreMods.load=zone.rong.blahajasm.core.BlahajLoadingPlugin',
             '-Dmixin.hotSwap=true',
             '-Dmixin.checks.interfaces=true',
             '-Dmixin.debug.export=true'
@@ -164,10 +164,10 @@ jar {
     manifest {
         attributes([
                 'FMLCorePluginContainsFMLMod': true,
-                'FMLCorePlugin': 'zone.rong.loliasm.core.LoliLoadingPlugin',
+                'FMLCorePlugin': 'zone.rong.blahajasm.core.BlahajLoadingPlugin',
                 'ForceLoadAsMod': project.gradle.startParameter.taskNames[0] == 'build',
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-                'FMLAT': 'loliasm_at.cfg'
+                'FMLAT': 'blahajasm_at.cfg'
         ])
     }
 }

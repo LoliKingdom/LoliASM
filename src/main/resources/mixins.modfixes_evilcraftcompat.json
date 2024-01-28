@@ -1,6 +1,6 @@
 {
-  "package": "zone.rong.loliasm.common.modfixes.evilcraftcompat.mixins",
-  "refmap": "mixins.loliasm.refmap.json",
+  "package": "zone.rong.blahajasm.common.modfixes.evilcraftcompat.mixins",
+  "refmap": "mixins.blahajasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
