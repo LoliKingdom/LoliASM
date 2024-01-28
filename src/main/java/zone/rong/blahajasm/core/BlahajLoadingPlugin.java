@@ -31,7 +31,7 @@ import java.util.zip.ZipFile;
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class BlahajLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
-    public static final String VERSION = "5.18";
+    public static final String VERSION = "6.0";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
 
