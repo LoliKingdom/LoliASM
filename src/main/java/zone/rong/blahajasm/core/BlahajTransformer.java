@@ -28,7 +28,7 @@ public class BlahajTransformer implements IClassTransformer {
     Multimap<String, Function<byte[], byte[]>> transformations;
 
     public BlahajTransformer() {
-        BlahajLogger.instance.info("The blahaj are now preparing to bytecode manipulate your game.");
+        BlahajLogger.instance.info("The blahajs are now preparing to bytecode manipulate your game.");
         isOptifineInstalled = BlahajReflector.doesClassExist("optifine.OptiFineForgeTweaker");
         if (squashBakedQuads && isOptifineInstalled) {
             squashBakedQuads = false;

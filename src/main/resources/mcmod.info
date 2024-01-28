@@ -2,7 +2,7 @@
 {
   "modid": "blahajasm",
   "name": "BlahajASM",
-  "description": "The blahaj have bytecode manipulated your game.",
+  "description": "The blahajs have bytecode manipulated your game.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "https://github.com/LoliKingdom/LoliASM",

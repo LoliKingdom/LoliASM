@@ -114,7 +114,7 @@ public abstract class CrashReportMixin implements ICrashReportSuspectGetter {
             if (Math.random() < 0.01 && !suspectedMods.isEmpty()) {
                 ModContainer mod = suspectedMods.iterator().next();
                 String author = mod.getMetadata().authorList.get(0);
-                return "The blahaj blame " + author + "!";
+                return "The blahajs blame " + author + "!";
             }
         } catch (Throwable ignored) {}
         return "";
