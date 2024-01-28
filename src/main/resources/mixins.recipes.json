@@ -1,6 +1,6 @@
 {
-  "package": "zone.rong.loliasm.common.recipes.mixins",
-  "refmap": "mixins.loliasm.refmap.json",
+  "package": "zone.rong.blahajasm.common.recipes.mixins",
+  "refmap": "mixins.blahajasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",

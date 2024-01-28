@@ -1,4 +1,4 @@
-package zone.rong.loliasm.spark;
+package zone.rong.blahajasm.spark;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
@@ -18,35 +18,35 @@ import me.lucko.spark.common.sampler.node.MergeMode;
 import me.lucko.spark.common.util.MethodDisambiguator;
 import me.lucko.spark.lib.adventure.text.Component;
 import me.lucko.spark.lib.okhttp3.MediaType;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.core.LoliLoadingPlugin;
+import zone.rong.blahajasm.BlahajLogger;
+import zone.rong.blahajasm.config.BlahajConfig;
+import zone.rong.blahajasm.core.BlahajLoadingPlugin;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class LoliSparker {
+public class BlahajSparker {
 
-    private static PlatformInfo platformInfo = new LoliPlatformInfo();
-    private static CommandSender commandSender = new LoliCommandSender();
+    private static PlatformInfo platformInfo = new BlahajPlatformInfo();
+    private static CommandSender commandSender = new BlahajCommandSender();
     private static Map<String, Sampler> ongoingSamplers = new Object2ReferenceOpenHashMap<>();
     private static MediaType mediaType = MediaType.parse("application/x-spark-sampler");
     private static MediaType heapMediaType = MediaType.parse("application/x-spark-heap");
-    private static ExecutorService executor = Executors.newSingleThreadScheduledExecutor((new ThreadFactoryBuilder()).setNameFormat("spark-loli-async-worker").build());
+    private static ExecutorService executor = Executors.newSingleThreadScheduledExecutor((new ThreadFactoryBuilder()).setNameFormat("spark-blahaj-async-worker").build());
 
     public static void start(String key) {
         if (!ongoingSamplers.containsKey(key)) {
             Sampler sampler;
             try {
                 AsyncProfilerAccess.INSTANCE.getProfiler();
-                sampler = new AsyncSampler(4000, LoliConfig.instance.includeAllThreadsWhenProfiling ? ThreadDumper.ALL : new ThreadDumper.Specific(new long[] { Thread.currentThread().getId() } ), ThreadGrouper.BY_NAME);
+                sampler = new AsyncSampler(4000, BlahajConfig.instance.includeAllThreadsWhenProfiling ? ThreadDumper.ALL : new ThreadDumper.Specific(new long[] { Thread.currentThread().getId() } ), ThreadGrouper.BY_NAME);
             } catch (UnsupportedOperationException e) {
-                sampler = new JavaSampler(4000, LoliConfig.instance.includeAllThreadsWhenProfiling ? ThreadDumper.ALL : new ThreadDumper.Specific(new long[] { Thread.currentThread().getId() } ), ThreadGrouper.BY_NAME, -1, !LoliConfig.instance.includeAllThreadsWhenProfiling, !LoliConfig.instance.includeAllThreadsWhenProfiling);
+                sampler = new JavaSampler(4000, BlahajConfig.instance.includeAllThreadsWhenProfiling ? ThreadDumper.ALL : new ThreadDumper.Specific(new long[] { Thread.currentThread().getId() } ), ThreadGrouper.BY_NAME, -1, !BlahajConfig.instance.includeAllThreadsWhenProfiling, !BlahajConfig.instance.includeAllThreadsWhenProfiling);
             }
             ongoingSamplers.put(key, sampler);
-            LoliLogger.instance.warn("Profiler has started for stage [{}]...", key);
+            BlahajLogger.instance.warn("Profiler has started for stage [{}]...", key);
             sampler.start();
         }
     }
@@ -61,9 +61,9 @@ public class LoliSparker {
                 try {
                     String urlKey = SparkPlatform.BYTEBIN_CLIENT.postContent(output, heapMediaType, false).key();
                     String url = "https://spark.lucko.me/" + urlKey;
-                    LoliLogger.instance.warn("Heap Summary: {}", url);
+                    BlahajLogger.instance.warn("Heap Summary: {}", url);
                 } catch (Exception e) {
-                    LoliLogger.instance.fatal("An error occurred whilst uploading heap summary.", e);
+                    BlahajLogger.instance.fatal("An error occurred whilst uploading heap summary.", e);
                 }
             });
         }
@@ -79,33 +79,33 @@ public class LoliSparker {
 
     private static void output(String key, Sampler sampler) {
         executor.execute(() -> {
-            LoliLogger.instance.warn("Stage [{}] profiler has stopped! Uploading results...", key);
+            BlahajLogger.instance.warn("Stage [{}] profiler has stopped! Uploading results...", key);
             byte[] output = sampler.formCompressedDataPayload(platformInfo, commandSender, ThreadNodeOrder.BY_TIME, "Stage: " + key, MergeMode.separateParentCalls(new MethodDisambiguator()));
             try {
                 String urlKey = SparkPlatform.BYTEBIN_CLIENT.postContent(output, mediaType, false).key();
                 String url = "https://spark.lucko.me/" + urlKey;
-                LoliLogger.instance.warn("Profiler results for Stage [{}]: {}", key, url);
+                BlahajLogger.instance.warn("Profiler results for Stage [{}]: {}", key, url);
             } catch (Exception e) {
-                LoliLogger.instance.fatal("An error occurred whilst uploading the results.", e);
+                BlahajLogger.instance.fatal("An error occurred whilst uploading the results.", e);
             }
         });
     }
 
-    static class LoliPlatformInfo extends AbstractPlatformInfo {
+    static class BlahajPlatformInfo extends AbstractPlatformInfo {
 
         @Override
         public Type getType() {
-            return LoliLoadingPlugin.isClient ? Type.CLIENT : Type.SERVER;
+            return BlahajLoadingPlugin.isClient ? Type.CLIENT : Type.SERVER;
         }
 
         @Override
         public String getName() {
-            return "LoliASM";
+            return "BlahajASM";
         }
 
         @Override
         public String getVersion() {
-            return LoliLoadingPlugin.VERSION;
+            return BlahajLoadingPlugin.VERSION;
         }
 
         @Override
@@ -115,13 +115,13 @@ public class LoliSparker {
 
     }
 
-    public static class LoliCommandSender implements CommandSender {
+    public static class BlahajCommandSender implements CommandSender {
 
         private final UUID uuid = UUID.randomUUID();
         private final String name;
 
-        public LoliCommandSender() {
-            this.name = "LoliASM";
+        public BlahajCommandSender() {
+            this.name = "BlahajASM";
         }
 
         @Override

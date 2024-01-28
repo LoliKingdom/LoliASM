@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.b3m;
+package zone.rong.blahajasm.common.modfixes.b3m;
 
 import net.minecraft.util.ResourceLocation;
 

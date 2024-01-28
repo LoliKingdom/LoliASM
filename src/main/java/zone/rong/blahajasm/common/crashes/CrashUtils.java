@@ -1,10 +1,10 @@
-package zone.rong.loliasm.common.crashes;
+package zone.rong.blahajasm.common.crashes;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.ReportedException;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
-import zone.rong.loliasm.LoliLogger;
+import zone.rong.blahajasm.BlahajLogger;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -25,7 +25,7 @@ public final class CrashUtils {
             // class on servers, because of the lambda!
             ((IMinecraftExtender) Minecraft.getMinecraft()).showWarningScreen(report);
             } else {
-            LoliLogger.instance.fatal(report.getDescription(), report.getCrashCause());
+            BlahajLogger.instance.fatal(report.getDescription(), report.getCrashCause());
         }
     }
 
@@ -34,7 +34,7 @@ public final class CrashUtils {
             outputReport(report);
             ((IMinecraftExtender) Minecraft.getMinecraft()).makeErrorNotification(report);
         } else {
-            LoliLogger.instance.fatal(report.getDescription(), report.getCrashCause());
+            BlahajLogger.instance.fatal(report.getDescription(), report.getCrashCause());
         }
     }
 
@@ -52,9 +52,9 @@ public final class CrashUtils {
                 report.saveToFile(reportFile);
             }
         } catch (Throwable e) {
-            LoliLogger.instance.fatal("Failed saving report", e);
+            BlahajLogger.instance.fatal("Failed saving report", e);
         }
-        LoliLogger.instance.fatal("Minecraft ran into a problem! " + (report.getFile() != null ? "Report saved to: " + report.getFile() : "Crash report could not be saved.") + "\n" + report.getCompleteReport());
+        BlahajLogger.instance.fatal("Minecraft ran into a problem! " + (report.getFile() != null ? "Report saved to: " + report.getFile() : "Crash report could not be saved.") + "\n" + report.getCompleteReport());
     }
 
 }

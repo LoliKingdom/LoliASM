@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand;
+package zone.rong.blahajasm.client.sprite.ondemand;
 
 public interface IVertexLighterExpander<T> {
 

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.singletonevents.mixins;
+package zone.rong.blahajasm.common.singletonevents.mixins;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import zone.rong.loliasm.common.singletonevents.IRefreshEvent;
+import zone.rong.blahajasm.common.singletonevents.IRefreshEvent;
 
 @Mixin(value = FMLCommonHandler.class, remap = false)
 public abstract class FMLCommonHandlerMixin {

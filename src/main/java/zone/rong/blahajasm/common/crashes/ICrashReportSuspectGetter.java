@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.crashes;
+package zone.rong.blahajasm.common.crashes;
 
 import net.minecraftforge.fml.common.ModContainer;
 

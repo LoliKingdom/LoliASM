@@ -1,7 +1,7 @@
-package zone.rong.loliasm.common.crashes.mixins;
+package zone.rong.blahajasm.common.crashes.mixins;
 
 import net.minecraft.crash.CrashReportCategory;
-import zone.rong.loliasm.api.StacktraceDeobfuscator;
+import zone.rong.blahajasm.api.StacktraceDeobfuscator;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;

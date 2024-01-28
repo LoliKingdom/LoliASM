@@ -1,4 +1,4 @@
-package zone.rong.loliasm.api;
+package zone.rong.blahajasm.api;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -24,7 +24,7 @@ public class DeobfuscatingRewritePolicy implements RewritePolicy {
         }
         // Create the RewriteAppender, which wraps the appenders
         RewriteAppender rewriteAppender = RewriteAppender.createAppender(
-                "LoliDeobfuscatingAppender",
+                "BlahajDeobfuscatingAppender",
                 "true",
                 appenderRefs.toArray(new AppenderRef[0]),
                 rootLogger.getContext().getConfiguration(),

@@ -1,12 +1,12 @@
-package zone.rong.loliasm.common.java;
+package zone.rong.blahajasm.common.java;
 
 import com.google.common.base.Stopwatch;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.api.LoliStringPool;
+import zone.rong.blahajasm.BlahajLogger;
+import zone.rong.blahajasm.BlahajReflector;
+import zone.rong.blahajasm.api.LoliStringPool;
 
 import java.lang.invoke.MethodHandle;
 import java.security.*;
@@ -24,8 +24,8 @@ public class JavaFixes {
         MethodHandle secureClassLoader$pdcache$getter = null;
         MethodHandle permission$name$setter = null;
         try {
-            secureClassLoader$pdcache$getter = LoliReflector.resolveFieldGetter(SecureClassLoader.class, "pdcache");
-            permission$name$setter = LoliReflector.resolveFieldSetter(Permission.class, "name");
+            secureClassLoader$pdcache$getter = BlahajReflector.resolveFieldGetter(SecureClassLoader.class, "pdcache");
+            permission$name$setter = BlahajReflector.resolveFieldSetter(Permission.class, "name");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -61,7 +61,7 @@ public class JavaFixes {
         catch (Throwable t) {
             t.printStackTrace();
         }
-        LoliLogger.instance.info("Took {} to canonicalize Java's FilePermission caches.", stopwatch.stop());
+        BlahajLogger.instance.info("Took {} to canonicalize Java's FilePermission caches.", stopwatch.stop());
     }
 
     @SubscribeEvent

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.bakedquad;
+package zone.rong.blahajasm.bakedquad;
 
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
@@ -8,11 +8,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import zone.rong.loliasm.LoliLogger;
+import zone.rong.blahajasm.BlahajLogger;
 
 import java.util.ArrayList;
 
-public class LoliVertexDataPool {
+public class BlahajVertexDataPool {
 
     private static int deduplicatedCount = 0;
     private static int uniqueCount = 0;
@@ -62,7 +62,7 @@ public class LoliVertexDataPool {
         // POOL.clear();
         // POOL.trim();
         POOL = null;
-        LoliLogger.instance.warn("Clearing LoliVertexDataPool");
+        BlahajLogger.instance.warn("Clearing BlahajVertexDataPool");
     }
 
     @SubscribeEvent
@@ -70,7 +70,7 @@ public class LoliVertexDataPool {
         Minecraft minecraft = Minecraft.getMinecraft();
         if (minecraft.gameSettings.showDebugInfo) {
             ArrayList<String> list = event.getLeft();
-            list.add(String.format("%s%s%s: %s vertex data arrays processed. %s unique, %s deduplicated.", TextFormatting.AQUA, "<LoliASM>", TextFormatting.RESET, deduplicatedCount, uniqueCount, deduplicatedCount - uniqueCount));
+            list.add(String.format("%s%s%s: %s vertex data arrays processed. %s unique, %s deduplicated.", TextFormatting.AQUA, "<BlahajASM>", TextFormatting.RESET, deduplicatedCount, uniqueCount, deduplicatedCount - uniqueCount));
         }
     }
 

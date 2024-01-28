@@ -1,10 +1,10 @@
-package zone.rong.loliasm;
+package zone.rong.blahajasm;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LoliLogger {
+public class BlahajLogger {
 
-    public static final Logger instance = LogManager.getLogger("LoliASM");
+    public static final Logger instance = LogManager.getLogger("BlahajASM");
 
 }

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.api;
+package zone.rong.blahajasm.api;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;

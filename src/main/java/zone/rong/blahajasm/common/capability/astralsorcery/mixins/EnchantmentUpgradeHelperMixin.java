@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.capability.astralsorcery.mixins;
+package zone.rong.blahajasm.common.capability.astralsorcery.mixins;
 
 import hellfirepvp.astralsorcery.common.enchantment.amulet.AmuletHolderCapability;
 import hellfirepvp.astralsorcery.common.enchantment.amulet.EnchantmentUpgradeHelper;
@@ -6,8 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
-import zone.rong.loliasm.api.IItemStackCapabilityInjector;
-import zone.rong.loliasm.api.ICapabilityDispatcherManipulator;
+import zone.rong.blahajasm.api.IItemStackCapabilityInjector;
+import zone.rong.blahajasm.api.ICapabilityDispatcherManipulator;
 
 @Mixin(value = EnchantmentUpgradeHelper.class, remap = false)
 public class EnchantmentUpgradeHelperMixin {
@@ -22,7 +22,7 @@ public class EnchantmentUpgradeHelperMixin {
         if (cap == null) {
             AmuletHolderCapability.Provider provider = new AmuletHolderCapability.Provider();
             ((IItemStackCapabilityInjector) (Object) tool).initDispatcher(AmuletHolderCapability.CAP_AMULETHOLDER_NAME, provider);
-            ((AmuletHolderCapabilityProviderAccessor) provider).loliasm$defaultImplFastAccess().setHolderUUID(wearer.getUniqueID());
+            ((AmuletHolderCapabilityProviderAccessor) provider).blahajasm$defaultImplFastAccess().setHolderUUID(wearer.getUniqueID());
         } else {
             cap.setHolderUUID(wearer.getUniqueID());
         }

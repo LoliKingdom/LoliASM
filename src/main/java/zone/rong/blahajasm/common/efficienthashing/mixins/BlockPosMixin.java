@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.efficienthashing.mixins;
+package zone.rong.blahajasm.common.efficienthashing.mixins;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;

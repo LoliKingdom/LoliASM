@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.crashes.mixins;
+package zone.rong.blahajasm.common.crashes.mixins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zone.rong.loliasm.common.crashes.IMinecraftExtender;
+import zone.rong.blahajasm.common.crashes.IMinecraftExtender;
 
 @Mixin(IntegratedServer.class)
 public class IntegratedServerMixin {

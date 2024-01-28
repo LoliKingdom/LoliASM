@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.capability.mixins;
+package zone.rong.blahajasm.common.capability.mixins;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -9,7 +9,7 @@ import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.registries.IRegistryDelegate;
 import org.spongepowered.asm.mixin.*;
-import zone.rong.loliasm.api.IItemStackCapabilityDelayer;
+import zone.rong.blahajasm.api.IItemStackCapabilityDelayer;
 
 import javax.annotation.Nullable;
 

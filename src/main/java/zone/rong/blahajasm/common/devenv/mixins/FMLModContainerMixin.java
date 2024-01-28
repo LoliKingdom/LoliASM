@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.devenv.mixins;
+package zone.rong.blahajasm.common.devenv.mixins;
 
 import net.minecraftforge.fml.common.FMLModContainer;
 import net.minecraftforge.fml.common.MetadataCollection;

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.ebwizardry;
+package zone.rong.blahajasm.common.modfixes.ebwizardry;
 
 import electroblob.wizardry.spell.ArcaneLock;
 import net.minecraft.nbt.NBTTagCompound;

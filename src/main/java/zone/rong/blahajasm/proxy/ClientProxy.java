@@ -1,4 +1,4 @@
-package zone.rong.loliasm.proxy;
+package zone.rong.blahajasm.proxy;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -11,21 +11,21 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.bakedquad.LoliVertexDataPool;
-import zone.rong.loliasm.client.models.bucket.LoliBakedDynBucket;
-import zone.rong.loliasm.client.screenshot.ScreenshotListener;
-import zone.rong.loliasm.client.sprite.FramesTextureData;
-import zone.rong.loliasm.common.modfixes.qmd.QMDEventHandler;
-import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.core.LoliTransformer;
+import zone.rong.blahajasm.BlahajLogger;
+import zone.rong.blahajasm.BlahajReflector;
+import zone.rong.blahajasm.bakedquad.BlahajVertexDataPool;
+import zone.rong.blahajasm.client.models.bucket.BlahajBakedDynBucket;
+import zone.rong.blahajasm.client.screenshot.ScreenshotListener;
+import zone.rong.blahajasm.client.sprite.FramesTextureData;
+import zone.rong.blahajasm.common.modfixes.qmd.QMDEventHandler;
+import zone.rong.blahajasm.config.BlahajConfig;
+import zone.rong.blahajasm.core.BlahajTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid = "loliasm", value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = "blahajasm", value = Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
     public static final List<Runnable> refreshAfterModels = new ArrayList<>();
@@ -33,13 +33,13 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
-        if (LoliConfig.instance.releaseSpriteFramesCache) {
+        if (BlahajConfig.instance.releaseSpriteFramesCache) {
             MinecraftForge.EVENT_BUS.register(FramesTextureData.class);
         }
-        if (Loader.isModLoaded("qmd") && LoliConfig.instance.optimizeQMDBeamRenderer) {
+        if (Loader.isModLoaded("qmd") && BlahajConfig.instance.optimizeQMDBeamRenderer) {
             MinecraftForge.EVENT_BUS.register(QMDEventHandler.class);
         }
-        if (LoliConfig.instance.copyScreenshotToClipboard) {
+        if (BlahajConfig.instance.copyScreenshotToClipboard) {
             MinecraftForge.EVENT_BUS.register(ScreenshotListener.class);
         }
     }
@@ -58,9 +58,9 @@ public class ClientProxy extends CommonProxy {
         if (Loader.isModLoaded("jei")) {
             releaseSpriteFramesCache();
         }
-        if (!LoliTransformer.isOptifineInstalled && LoliConfig.instance.vertexDataCanonicalization) {
-            LoliLogger.instance.info("{} total quads processed. {} unique vertex data array in LoliVertexDataPool, {} vertex data arrays deduplicated altogether during game load.", LoliVertexDataPool.getDeduplicatedCount(), LoliVertexDataPool.getSize(), LoliVertexDataPool.getDeduplicatedCount() - LoliVertexDataPool.getSize());
-            MinecraftForge.EVENT_BUS.register(LoliVertexDataPool.class);
+        if (!BlahajTransformer.isOptifineInstalled && BlahajConfig.instance.vertexDataCanonicalization) {
+            BlahajLogger.instance.info("{} total quads processed. {} unique vertex data array in BlahajVertexDataPool, {} vertex data arrays deduplicated altogether during game load.", BlahajVertexDataPool.getDeduplicatedCount(), BlahajVertexDataPool.getSize(), BlahajVertexDataPool.getDeduplicatedCount() - BlahajVertexDataPool.getSize());
+            MinecraftForge.EVENT_BUS.register(BlahajVertexDataPool.class);
         }
     }
 
@@ -68,14 +68,14 @@ public class ClientProxy extends CommonProxy {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener((ISelectiveResourceReloadListener) (manager, predicate) -> {
             if (predicate.test(VanillaResourceType.MODELS)) {
                 refreshAfterModels.forEach(Runnable::run);
-                if (LoliConfig.instance.reuseBucketQuads) {
-                    LoliBakedDynBucket.baseQuads.clear();
-                    LoliBakedDynBucket.flippedBaseQuads.clear();
-                    LoliBakedDynBucket.coverQuads.clear();
-                    LoliBakedDynBucket.flippedCoverQuads.clear();
+                if (BlahajConfig.instance.reuseBucketQuads) {
+                    BlahajBakedDynBucket.baseQuads.clear();
+                    BlahajBakedDynBucket.flippedBaseQuads.clear();
+                    BlahajBakedDynBucket.coverQuads.clear();
+                    BlahajBakedDynBucket.flippedCoverQuads.clear();
                 }
-                if (!LoliTransformer.isOptifineInstalled && LoliConfig.instance.vertexDataCanonicalization) {
-                    LoliVertexDataPool.invalidate();
+                if (!BlahajTransformer.isOptifineInstalled && BlahajConfig.instance.vertexDataCanonicalization) {
+                    BlahajVertexDataPool.invalidate();
                 }
             }
         });

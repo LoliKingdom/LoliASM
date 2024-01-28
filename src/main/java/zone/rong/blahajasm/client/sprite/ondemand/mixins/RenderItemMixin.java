@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand.mixins;
+package zone.rong.blahajasm.client.sprite.ondemand.mixins;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderItem;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import zone.rong.loliasm.client.sprite.ondemand.IAnimatedSpriteActivator;
+import zone.rong.blahajasm.client.sprite.ondemand.IAnimatedSpriteActivator;
 
 import java.util.List;
 

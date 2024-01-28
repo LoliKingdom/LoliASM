@@ -1,7 +1,7 @@
-package zone.rong.loliasm.api.datastructures.canonical;
+package zone.rong.blahajasm.api.datastructures.canonical;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import zone.rong.loliasm.api.LoliStringPool;
+import zone.rong.blahajasm.api.LoliStringPool;
 
 import java.util.Set;
 

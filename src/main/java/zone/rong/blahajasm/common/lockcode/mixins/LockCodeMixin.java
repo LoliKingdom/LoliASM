@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.lockcode.mixins;
+package zone.rong.blahajasm.common.lockcode.mixins;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.LockCode;

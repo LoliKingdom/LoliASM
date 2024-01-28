@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.searchtree.mixins.mod;
+package zone.rong.blahajasm.client.searchtree.mixins.mod;
 
 import mezz.jei.gui.ingredients.IIngredientListElement;
 import mezz.jei.ingredients.IngredientFilter;

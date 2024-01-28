@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.models.bucket.mixins;
+package zone.rong.blahajasm.client.models.bucket.mixins;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -17,7 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import zone.rong.loliasm.client.models.bucket.LoliBakedDynBucket;
+import zone.rong.blahajasm.client.models.bucket.BlahajBakedDynBucket;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Quat4f;
@@ -29,8 +29,8 @@ import java.util.stream.Stream;
 
 import static net.minecraftforge.client.model.ItemTextureQuadConverter.convertTexture;
 import static net.minecraftforge.client.model.ItemTextureQuadConverter.genQuad;
-import static zone.rong.loliasm.bakedquad.BakedQuadFactory.*;
-import static zone.rong.loliasm.client.models.bucket.LoliBakedDynBucket.*;
+import static zone.rong.blahajasm.bakedquad.BakedQuadFactory.*;
+import static zone.rong.blahajasm.client.models.bucket.BlahajBakedDynBucket.*;
 
 @Mixin(value = ModelDynBucket.class, remap = false)
 public abstract class ModelDynBucketMixin implements IModel {
@@ -97,6 +97,6 @@ public abstract class ModelDynBucketMixin implements IModel {
                 particleSprite = cover;
             }
         }
-        return new LoliBakedDynBucket((ModelDynBucket) (Object) this, builder.build(), particleSprite, format, transformMap, transform.isIdentity());
+        return new BlahajBakedDynBucket((ModelDynBucket) (Object) this, builder.build(), particleSprite, format, transformMap, transform.isIdentity());
     }
 }

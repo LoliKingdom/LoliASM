@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.crashes.mixins;
+package zone.rong.blahajasm.common.crashes.mixins;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListenableFutureTask;
@@ -35,11 +35,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zone.rong.loliasm.LoliASM;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.common.crashes.*;
-import zone.rong.loliasm.common.crashes.CrashUtils;
-import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.blahajasm.BlahajASM;
+import zone.rong.blahajasm.BlahajLogger;
+import zone.rong.blahajasm.common.crashes.*;
+import zone.rong.blahajasm.common.crashes.CrashUtils;
+import zone.rong.blahajasm.config.BlahajConfig;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -267,7 +267,7 @@ public abstract class MinecraftMixin implements IMinecraftExtender {
 
     @Override
     public void makeErrorNotification(CrashReport report) {
-        if (!LoliConfig.instance.hideToastsAndContinuePlaying) {
+        if (!BlahajConfig.instance.hideToastsAndContinuePlaying) {
             ProblemToast lastToast = getToastGui().getToast(ProblemToast.class, IToast.NO_TOKEN);
             if (lastToast != null) {
                 lastToast.hide = true;
@@ -503,14 +503,14 @@ public abstract class MinecraftMixin implements IMinecraftExtender {
         CrashUtils.outputReport(report);
         try {
             try {
-                URL url = LoliASM.class.getProtectionDomain().getCodeSource().getLocation();
+                URL url = BlahajASM.class.getProtectionDomain().getCodeSource().getLocation();
                 if (url.getProtocol().equals("jar")) {
                     url = new URL(url.getFile().substring(0, url.getFile().indexOf('!')));
                 }
                 File modFile = new File(url.toURI());
                 defaultResourcePacks.add(modFile.isDirectory() ? new FolderResourcePack(modFile) : new FileResourcePack(modFile));
             } catch (Throwable t) {
-                LoliLogger.instance.error("Failed to load LoliASM resource pack", t);
+                BlahajLogger.instance.error("Failed to load BlahajASM resource pack", t);
             }
             resourceManager = new SimpleReloadableResourceManager(metadataSerializer);
             renderEngine = new TextureManager(resourceManager);
@@ -604,7 +604,7 @@ public abstract class MinecraftMixin implements IMinecraftExtender {
             updateDisplay();
             Thread.yield();
             Display.sync(60);
-            checkGLError("LoliASM GUI Loop");
+            checkGLError("BlahajASM GUI Loop");
         }
     }
 

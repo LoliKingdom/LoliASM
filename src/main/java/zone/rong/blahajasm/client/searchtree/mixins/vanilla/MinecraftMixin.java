@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.searchtree.mixins.vanilla;
+package zone.rong.blahajasm.client.searchtree.mixins.vanilla;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.recipebook.RecipeList;
@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zone.rong.loliasm.client.searchtree.JEIRedirectSearchTree;
-import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.blahajasm.client.searchtree.JEIRedirectSearchTree;
+import zone.rong.blahajasm.config.BlahajConfig;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -27,7 +27,7 @@ public class MinecraftMixin {
 
     @Inject(method = "populateSearchTreeManager", at = @At("HEAD"), cancellable = true)
     private void redirectToJeiSearchTree(CallbackInfo ci) {
-        if (LoliConfig.instance.replaceSearchTreeWithJEISearching && Loader.isModLoaded("jei")) {
+        if (BlahajConfig.instance.replaceSearchTreeWithJEISearching && Loader.isModLoaded("jei")) {
             final SearchTree<RecipeList> recipeSearchTree = new SearchTree<>(
                     rl -> () -> rl.getRecipes().stream()
                             .flatMap((r) -> r.getRecipeOutput().getTooltip(null, TooltipFlags.NORMAL).stream())

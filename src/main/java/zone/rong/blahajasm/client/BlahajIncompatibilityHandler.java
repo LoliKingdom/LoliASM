@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client;
+package zone.rong.blahajasm.client;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiErrorScreen;
@@ -9,9 +9,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class LoliIncompatibilityHandler {
+public class BlahajIncompatibilityHandler {
 
-    public static void loliHaetPizza(List<String> messages) {
+    public static void blahajHaetPizza(List<String> messages) {
         throw FMLLaunchHandler.side() == Side.SERVER ? new RuntimeException(String.join(",", messages)) : new Exception(messages);
     }
 

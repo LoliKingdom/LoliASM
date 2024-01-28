@@ -1,9 +1,9 @@
-package zone.rong.loliasm.client.screenshot;
+package zone.rong.blahajasm.client.screenshot;
 
 import net.minecraftforge.client.event.ScreenshotEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import zone.rong.loliasm.LoliLogger;
+import zone.rong.blahajasm.BlahajLogger;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -13,7 +13,7 @@ public class ScreenshotListener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onScreenshot(ScreenshotEvent event) {
         if (!event.isCanceled() && event.getScreenshotFile() != null) {
-            LoliLogger.instance.info("Copied screenshot {} to clipboard!", event.getScreenshotFile().getName());
+            BlahajLogger.instance.info("Copied screenshot {} to clipboard!", event.getScreenshotFile().getName());
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new TransferableImage(event.getImage()), null);
         }
     }

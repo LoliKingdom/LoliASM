@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.bugfixes.mixins.client;
+package zone.rong.blahajasm.vanillafix.bugfixes.mixins.client;
 
 import net.minecraft.server.integrated.IntegratedServer;
 import org.spongepowered.asm.mixin.Mixin;

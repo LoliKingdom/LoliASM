@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.betterwithmods;
+package zone.rong.blahajasm.common.modfixes.betterwithmods;
 
 import betterwithmods.common.BWMItems;
 import betterwithmods.common.items.ItemMaterial;

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.mcfixes.mixins.mc2071;
+package zone.rong.blahajasm.common.mcfixes.mixins.mc2071;
 
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;

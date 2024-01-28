@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.models.datastructures.modelmanager.mixins;
+package zone.rong.blahajasm.client.models.datastructures.modelmanager.mixins;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
+import zone.rong.blahajasm.BlahajLogger;
+import zone.rong.blahajasm.BlahajReflector;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class ModelManagerMixin {
     @SuppressWarnings("rawtypes")
     @Inject(method = "onResourceManagerReload", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void cleanupModelLoader(IResourceManager resourceManager, CallbackInfo ci, ModelLoader modelLoader) throws IllegalAccessException {
-        Field multipartModelsField = LoliReflector.getField(ModelLoader.class, "multipartModels");
+        Field multipartModelsField = BlahajReflector.getField(ModelLoader.class, "multipartModels");
         Map multipartModels = (Map) multipartModelsField.get(modelLoader);
         int size = multipartModels.size();
         multipartModels.clear();
@@ -30,9 +30,9 @@ public class ModelManagerMixin {
             ((Object2ObjectOpenHashMap) multipartModels).trim();
         }
 
-        LoliLogger.instance.info("Clearing and Trimming {}, original size: {} entries", "multipartModels", size);
+        BlahajLogger.instance.info("Clearing and Trimming {}, original size: {} entries", "multipartModels", size);
 
-        Field multipartDefinitionsField = LoliReflector.getField(ModelLoader.class, "multipartDefinitions");
+        Field multipartDefinitionsField = BlahajReflector.getField(ModelLoader.class, "multipartDefinitions");
         Map multipartDefinitions = (Map) multipartDefinitionsField.get(modelLoader);
         size = multipartDefinitions.size();
         multipartDefinitions.clear();
@@ -40,9 +40,9 @@ public class ModelManagerMixin {
             ((Object2ObjectOpenHashMap) multipartDefinitions).trim();
         }
 
-        LoliLogger.instance.info("Clearing and Trimming {}, original size: {} entries", "multipartDefinitions", size);
+        BlahajLogger.instance.info("Clearing and Trimming {}, original size: {} entries", "multipartDefinitions", size);
 
-        Field multipartVariantMapField = LoliReflector.getField(ModelBakery.class, "multipartVariantMap", "field_188642_k");
+        Field multipartVariantMapField = BlahajReflector.getField(ModelBakery.class, "multipartVariantMap", "field_188642_k");
         Map multipartVariantMap = (Map) multipartVariantMapField.get(modelLoader);
         size = multipartVariantMap.size();
         multipartVariantMap.clear();
@@ -50,9 +50,9 @@ public class ModelManagerMixin {
             ((Object2ObjectOpenHashMap) multipartVariantMap).trim();
         }
 
-        LoliLogger.instance.info("Clearing and Trimming {}, original size: {} entries", "multipartVariantMap", size);
+        BlahajLogger.instance.info("Clearing and Trimming {}, original size: {} entries", "multipartVariantMap", size);
 
-        Field blockDefinitionsField = LoliReflector.getField(ModelBakery.class, "blockDefinitions", "field_177614_t");
+        Field blockDefinitionsField = BlahajReflector.getField(ModelBakery.class, "blockDefinitions", "field_177614_t");
         Map blockDefinitions = (Map) blockDefinitionsField.get(modelLoader);
         size = blockDefinitions.size();
         blockDefinitions.clear();
@@ -60,7 +60,7 @@ public class ModelManagerMixin {
             ((Object2ObjectOpenHashMap) blockDefinitions).trim();
         }
 
-        LoliLogger.instance.info("Clearing and Trimming {}, original size: {} entries", "blockDefinitions", size);
+        BlahajLogger.instance.info("Clearing and Trimming {}, original size: {} entries", "blockDefinitions", size);
     }
 
 }

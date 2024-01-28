@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.crashes.mixins;
+package zone.rong.blahajasm.common.crashes.mixins;
 
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -6,9 +6,9 @@ import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.spongepowered.asm.mixin.*;
-import zone.rong.loliasm.common.crashes.ModIdentifier;
-import zone.rong.loliasm.common.crashes.ICrashReportSuspectGetter;
-import zone.rong.loliasm.api.StacktraceDeobfuscator;
+import zone.rong.blahajasm.common.crashes.ModIdentifier;
+import zone.rong.blahajasm.common.crashes.ICrashReportSuspectGetter;
+import zone.rong.blahajasm.api.StacktraceDeobfuscator;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -76,7 +76,7 @@ public abstract class CrashReportMixin implements ICrashReportSuspectGetter {
     public String getCompleteReport() {
         StringBuilder builder = new StringBuilder();
         builder.append("---- Minecraft Crash Report ----\n")
-                .append("// Lolis deobfuscated this stacktrace using MCP's stable-39 mappings.\n")
+                .append("// Blahajs deobfuscated this stacktrace using MCP's stable-39 mappings.\n")
                 .append("// ").append(getWittyComment());
         String blame = getFunnyBlame();
         if (!blame.isEmpty()) {
@@ -114,7 +114,7 @@ public abstract class CrashReportMixin implements ICrashReportSuspectGetter {
             if (Math.random() < 0.01 && !suspectedMods.isEmpty()) {
                 ModContainer mod = suspectedMods.iterator().next();
                 String author = mod.getMetadata().authorList.get(0);
-                return "The lolis blame " + author + "!";
+                return "The blahaj blame " + author + "!";
             }
         } catch (Throwable ignored) {}
         return "";

@@ -1,11 +1,11 @@
-package zone.rong.loliasm.common.recipes.mixins;
+package zone.rong.blahajasm.common.recipes.mixins;
 
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.fml.common.FMLLog;
 import org.spongepowered.asm.mixin.*;
-import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.blahajasm.config.BlahajConfig;
 
 import java.util.Map;
 
@@ -33,12 +33,12 @@ public abstract class FurnaceRecipesMixin {
             FMLLog.log.info("Ignored smelting recipe with conflicting input: {} = {}", input, stack); return;
         }
         this.smeltingList.put(input, stack);
-        if (LoliConfig.instance.furnaceExperienceMost) {
+        if (BlahajConfig.instance.furnaceExperienceMost) {
             float prevExperience = ((Object2FloatMap<ItemStack>) experienceList).getFloat(stack);
             if (experience > prevExperience) {
                 ((Object2FloatMap<ItemStack>) experienceList).put(stack, experience);
             }
-        } else if (LoliConfig.instance.furnaceExperienceVanilla) {
+        } else if (BlahajConfig.instance.furnaceExperienceVanilla) {
             this.experienceList.put(stack, experience);
         } else {
             this.experienceList.putIfAbsent(stack, experience);
@@ -63,7 +63,7 @@ public abstract class FurnaceRecipesMixin {
     public float getSmeltingExperience(ItemStack stack) {
         float exp = stack.getItem().getSmeltingExperience(stack);
         if (exp == -1) {
-            if (LoliConfig.instance.furnaceExperienceVanilla) {
+            if (BlahajConfig.instance.furnaceExperienceVanilla) {
                 for (Map.Entry<ItemStack, Float> entry : this.experienceList.entrySet()) {
                     if (this.compareItemStacks(stack, entry.getKey())) {
                         return entry.getValue();

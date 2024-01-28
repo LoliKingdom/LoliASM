@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.stripitemstack.mixins;
+package zone.rong.blahajasm.common.stripitemstack.mixins;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

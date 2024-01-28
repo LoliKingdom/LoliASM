@@ -1,4 +1,4 @@
-package zone.rong.loliasm.api.mixins;
+package zone.rong.blahajasm.api.mixins;
 
 public interface RegistrySimpleExtender {
 

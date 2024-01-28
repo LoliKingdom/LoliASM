@@ -1,18 +1,18 @@
-package zone.rong.loliasm.core;
+package zone.rong.blahajasm.core;
 
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.core.classfactories.BakedQuadRedirectorFactory;
+import zone.rong.blahajasm.config.BlahajConfig;
+import zone.rong.blahajasm.core.classfactories.BakedQuadRedirectorFactory;
 
 import java.util.List;
 import java.util.Set;
 
-public class LoliMixinPlugin implements IMixinConfigPlugin {
+public class BlahajMixinPlugin implements IMixinConfigPlugin {
 
     static {
-        if (LoliLoadingPlugin.isClient && LoliTransformer.squashBakedQuads) {
+        if (BlahajLoadingPlugin.isClient && BlahajTransformer.squashBakedQuads) {
             BakedQuadRedirectorFactory.generateRedirectorClass();
         }
     }
@@ -28,16 +28,16 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         switch (mixinClassName) {
-            case "zone.rong.loliasm.common.forgefixes.mixins.ChunkMixin":
-                return LoliConfig.instance.fixTileEntityOnLoadCME;
-            case "zone.rong.loliasm.common.forgefixes.mixins.EntityEntryMixin":
-                return LoliConfig.instance.fasterEntitySpawnPreparation;
-            case "zone.rong.loliasm.common.forgefixes.mixins.DimensionTypeMixin":
-                return LoliConfig.instance.fixDimensionTypesInliningCrash;
-            case "zone.rong.loliasm.client.screenshot.mixins.MinecraftMixin":
-                return LoliConfig.instance.copyScreenshotToClipboard;
-            case "zone.rong.loliasm.client.screenshot.mixins.ScreenShotHelperMixin":
-                return LoliConfig.instance.releaseScreenshotCache;
+            case "zone.rong.blahajasm.common.forgefixes.mixins.ChunkMixin":
+                return BlahajConfig.instance.fixTileEntityOnLoadCME;
+            case "zone.rong.blahajasm.common.forgefixes.mixins.EntityEntryMixin":
+                return BlahajConfig.instance.fasterEntitySpawnPreparation;
+            case "zone.rong.blahajasm.common.forgefixes.mixins.DimensionTypeMixin":
+                return BlahajConfig.instance.fixDimensionTypesInliningCrash;
+            case "zone.rong.blahajasm.client.screenshot.mixins.MinecraftMixin":
+                return BlahajConfig.instance.copyScreenshotToClipboard;
+            case "zone.rong.blahajasm.client.screenshot.mixins.ScreenShotHelperMixin":
+                return BlahajConfig.instance.releaseScreenshotCache;
         }
         return true;
     }

@@ -1,9 +1,9 @@
-package zone.rong.loliasm;
+package zone.rong.blahajasm;
 
 import javax.annotation.Nullable;
 import java.io.*;
 
-public class LoliPrinter {
+public class BlahajPrinter {
 
     public static void prettyPrintClass(byte[] bytes, @Nullable File fileLocation) {
         FileOutputStream stream = null;

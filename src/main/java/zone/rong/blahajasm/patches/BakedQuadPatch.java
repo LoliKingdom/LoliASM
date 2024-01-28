@@ -1,8 +1,8 @@
-package zone.rong.loliasm.patches;
+package zone.rong.blahajasm.patches;
 
 import org.objectweb.asm.*;
-import zone.rong.loliasm.core.LoliLoadingPlugin;
-import zone.rong.loliasm.core.LoliTransformer;
+import zone.rong.blahajasm.core.BlahajLoadingPlugin;
+import zone.rong.blahajasm.core.BlahajTransformer;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -10,7 +10,7 @@ import static org.objectweb.asm.Opcodes.*;
  * TODO Commenting
  *
  * This class contains class writers for patched BakedQuad
- * defineClass not called here, pass raw byte[] back to {@link LoliTransformer#transform(String, String, byte[])}
+ * defineClass not called here, pass raw byte[] back to {@link BlahajTransformer#transform(String, String, byte[])}
  *
  * Optimizations:
  *
@@ -50,11 +50,11 @@ public final class BakedQuadPatch {
             annotationVisitor.visitEnd();
         }
         {
-            fieldVisitor = writer.visitField(ACC_PROTECTED | ACC_FINAL, LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I", null, null);
+            fieldVisitor = writer.visitField(ACC_PROTECTED | ACC_FINAL, BlahajLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I", null, null);
             fieldVisitor.visitEnd();
         }
         {
-            fieldVisitor = writer.visitField(ACC_PROTECTED | ACC_FINAL, LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, null);
+            fieldVisitor = writer.visitField(ACC_PROTECTED | ACC_FINAL, BlahajLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, null);
             fieldVisitor.visitEnd();
         }
         {
@@ -77,7 +77,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitVarInsn(ALOAD, 3);
             methodVisitor.visitVarInsn(ALOAD, 4);
             methodVisitor.visitInsn(ICONST_1);
-            methodVisitor.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/vertex/DefaultVertexFormats", LoliLoadingPlugin.isDeobf ? "ITEM" : "field_176599_b", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
+            methodVisitor.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/vertex/DefaultVertexFormats", BlahajLoadingPlugin.isDeobf ? "ITEM" : "field_176599_b", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
             methodVisitor.visitMethodInsn(INVOKESPECIAL, "net/minecraft/client/renderer/block/model/BakedQuad", "<init>", "([IILnet/minecraft/util/EnumFacing;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;ZLnet/minecraft/client/renderer/vertex/VertexFormat;)V", false);
             Label l1 = new Label();
             methodVisitor.visitLabel(l1);
@@ -116,19 +116,19 @@ public final class BakedQuadPatch {
             methodVisitor.visitLineNumber(42, l2);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitVarInsn(ALOAD, 1);
-            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
+            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", BlahajLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
             Label l3 = new Label();
             methodVisitor.visitLabel(l3);
             methodVisitor.visitLineNumber(43, l3);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitVarInsn(ALOAD, 4);
-            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
+            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", BlahajLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
             Label l4 = new Label();
             methodVisitor.visitLabel(l4);
             methodVisitor.visitLineNumber(44, l4);
             /*
             Label startingLabel = null;
-            if (LoliConfig.instance.logClassesThatCallBakedQuadCtor) {
+            if (BlahajConfig.instance.logClassesThatCallBakedQuadCtor) {
                 methodVisitor.visitFieldInsn(GETSTATIC, "me/nallar/whocalled/WhoCalled", "$", "Lme/nallar/whocalled/WhoCalled;");
                 methodVisitor.visitInsn(ICONST_1);
                 methodVisitor.visitMethodInsn(INVOKEINTERFACE, "me/nallar/whocalled/WhoCalled", "getCallingClass", "(I)Ljava/lang/Class;", true);
@@ -151,8 +151,8 @@ public final class BakedQuadPatch {
                 methodVisitor.visitLabel(l6);
                 methodVisitor.visitLineNumber(48, l6);
                 methodVisitor.visitFrame(Opcodes.F_FULL, 8, new Object[]{"net/minecraft/client/renderer/block/model/BakedQuad", "[I", Opcodes.INTEGER, "net/minecraft/util/EnumFacing", "net/minecraft/client/renderer/texture/TextureAtlasSprite", Opcodes.INTEGER, "net/minecraft/client/renderer/vertex/VertexFormat", "java/lang/Class"}, 0, new Object[]{});
-                methodVisitor.visitFieldInsn(GETSTATIC, "zone/rong/loliasm/LoliLogger", "instance", "Lorg/apache/logging/log4j/Logger;");
-                methodVisitor.visitLdcInsn("{} needs their BakedQuad calls redirecting! Insert the string into config/loliasm.cfg and report it to Rongmario so it could be added to the GitHub Wiki.");
+                methodVisitor.visitFieldInsn(GETSTATIC, "zone/rong/blahajasm/BlahajLogger", "instance", "Lorg/apache/logging/log4j/Logger;");
+                methodVisitor.visitLdcInsn("{} needs their BakedQuad calls redirecting! Insert the string into config/blahajasm.cfg and report it to Rongmario so it could be added to the GitHub Wiki.");
                 methodVisitor.visitVarInsn(ALOAD, 7);
                 methodVisitor.visitMethodInsn(INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "warn", "(Ljava/lang/String;Ljava/lang/Object;)V", true);
                 Label l8 = new Label();
@@ -183,7 +183,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitLineNumber(48, l6);
             methodVisitor.visitFrame(Opcodes.F_FULL, 8, new Object[]{"net/minecraft/client/renderer/block/model/BakedQuad", "[I", Opcodes.INTEGER, "net/minecraft/util/EnumFacing", "net/minecraft/client/renderer/texture/TextureAtlasSprite", Opcodes.INTEGER, "net/minecraft/client/renderer/vertex/VertexFormat", "java/lang/Class"}, 0, new Object[]{});
             methodVisitor.visitVarInsn(ALOAD, 7);
-            methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "inform", "(Ljava/lang/Class;)V", false);
+            methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/blahajasm/core/BlahajHooks", "inform", "(Ljava/lang/Class;)V", false);
             Label l8 = new Label();
             methodVisitor.visitLabel(l8);
             methodVisitor.visitLineNumber(49, l8);
@@ -200,7 +200,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitLocalVariable("callee", "Ljava/lang/Class;", null, l5, finalLabel, 7);
             methodVisitor.visitMaxs(3, 8);
             /*
-            if (LoliConfig.instance.logClassesThatCallBakedQuadCtor) {
+            if (BlahajConfig.instance.logClassesThatCallBakedQuadCtor) {
                 methodVisitor.visitLocalVariable("callee", "Ljava/lang/Class;", null, startingLabel, finalLabel, 7);
                 methodVisitor.visitMaxs(3, 8);
             } else {
@@ -226,13 +226,13 @@ public final class BakedQuadPatch {
             methodVisitor.visitLineNumber(48, l1);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitVarInsn(ALOAD, 1);
-            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
+            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", BlahajLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
             Label l2 = new Label();
             methodVisitor.visitLabel(l2);
             methodVisitor.visitLineNumber(49, l2);
             methodVisitor.visitVarInsn(ALOAD, 0);
             methodVisitor.visitVarInsn(ALOAD, 2);
-            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
+            methodVisitor.visitFieldInsn(PUTFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", BlahajLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
             Label l3 = new Label();
             methodVisitor.visitLabel(l3);
             methodVisitor.visitLineNumber(50, l3);
@@ -246,8 +246,8 @@ public final class BakedQuadPatch {
             Label l5 = new Label();
             methodVisitor.visitLabel(l5);
             methodVisitor.visitLocalVariable("this", "Lnet/minecraft/client/renderer/block/model/BakedQuad;", null, l0, l5, 0);
-            methodVisitor.visitLocalVariable(LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I", null, l0, l5, 1);
-            methodVisitor.visitLocalVariable(LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, l0, l5, 2);
+            methodVisitor.visitLocalVariable(BlahajLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I", null, l0, l5, 1);
+            methodVisitor.visitLocalVariable(BlahajLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, l0, l5, 2);
             methodVisitor.visitLocalVariable("format", "Lnet/minecraft/client/renderer/vertex/VertexFormat;", null, l0, l5, 3);
             methodVisitor.visitMaxs(2, 4);
             methodVisitor.visitEnd();
@@ -272,13 +272,13 @@ public final class BakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getSprite" : "func_187508_a", "()Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, BlahajLoadingPlugin.isDeobf ? "getSprite" : "func_187508_a", "()Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
             methodVisitor.visitLineNumber(58, l0);
             methodVisitor.visitVarInsn(ALOAD, 0);
-            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
+            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", BlahajLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
             methodVisitor.visitInsn(ARETURN);
             Label l1 = new Label();
             methodVisitor.visitLabel(l1);
@@ -287,13 +287,13 @@ public final class BakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getVertexData" : "func_178209_a", "()[I", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, BlahajLoadingPlugin.isDeobf ? "getVertexData" : "func_178209_a", "()[I", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
             methodVisitor.visitLineNumber(62, l0);
             methodVisitor.visitVarInsn(ALOAD, 0);
-            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
+            methodVisitor.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/block/model/BakedQuad", BlahajLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
             methodVisitor.visitInsn(ARETURN);
             Label l1 = new Label();
             methodVisitor.visitLabel(l1);
@@ -302,7 +302,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "hasTintIndex" : "func_178212_b", "()Z", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, BlahajLoadingPlugin.isDeobf ? "hasTintIndex" : "func_178212_b", "()Z", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
@@ -315,7 +315,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getTintIndex" : "func_178211_c", "()I", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, BlahajLoadingPlugin.isDeobf ? "getTintIndex" : "func_178211_c", "()I", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);
@@ -328,7 +328,7 @@ public final class BakedQuadPatch {
             methodVisitor.visitEnd();
         }
         {
-            methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getFace" : "func_178210_d", "()Lnet/minecraft/util/EnumFacing;", null, null);
+            methodVisitor = writer.visitMethod(ACC_PUBLIC, BlahajLoadingPlugin.isDeobf ? "getFace" : "func_178210_d", "()Lnet/minecraft/util/EnumFacing;", null, null);
             methodVisitor.visitCode();
             Label l0 = new Label();
             methodVisitor.visitLabel(l0);

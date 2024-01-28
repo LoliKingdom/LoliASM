@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.bugfixes.mixins;
+package zone.rong.blahajasm.vanillafix.bugfixes.mixins;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;

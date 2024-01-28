@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.models.bucket;
+package zone.rong.blahajasm.client.models.bucket;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class LoliBakedDynBucket extends BakedItemModel {
+public class BlahajBakedDynBucket extends BakedItemModel {
 
     public static final Map<ResourceLocation, Pair<ResourceLocation, BakedQuad[]>> baseQuads = new Object2ObjectOpenHashMap<>();
     public static final Map<ResourceLocation, Pair<ResourceLocation, BakedQuad[]>> flippedBaseQuads = new Object2ObjectOpenHashMap<>();
@@ -36,18 +36,18 @@ public class LoliBakedDynBucket extends BakedItemModel {
     private final VertexFormat format;
     private final Cache<String, IBakedModel> bucketVariants;
 
-    public LoliBakedDynBucket(ModelDynBucket parent, ImmutableList<BakedQuad> quads, TextureAtlasSprite particle, VertexFormat format, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms, boolean untransformed) {
-        super(quads, particle, transforms, LoliBakedDynBucketOverrdeList.INSTANCE, untransformed);
+    public BlahajBakedDynBucket(ModelDynBucket parent, ImmutableList<BakedQuad> quads, TextureAtlasSprite particle, VertexFormat format, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms, boolean untransformed) {
+        super(quads, particle, transforms, BlahajBakedDynBucketOverrdeList.INSTANCE, untransformed);
         this.parent = parent;
         this.format = format;
         this.bucketVariants = CacheBuilder.newBuilder().weakValues().build();
     }
 
-    private static final class LoliBakedDynBucketOverrdeList extends ItemOverrideList {
+    private static final class BlahajBakedDynBucketOverrdeList extends ItemOverrideList {
 
-        private static final LoliBakedDynBucketOverrdeList INSTANCE = new LoliBakedDynBucketOverrdeList();
+        private static final BlahajBakedDynBucketOverrdeList INSTANCE = new BlahajBakedDynBucketOverrdeList();
 
-        private LoliBakedDynBucketOverrdeList() {
+        private BlahajBakedDynBucketOverrdeList() {
             super(ImmutableList.of());
         }
 
@@ -57,7 +57,7 @@ public class LoliBakedDynBucket extends BakedItemModel {
             if (fluidStack == null) {
                 return originalModel;
             }
-            LoliBakedDynBucket bakedModel = (LoliBakedDynBucket) originalModel;
+            BlahajBakedDynBucket bakedModel = (BlahajBakedDynBucket) originalModel;
             try {
                 return bakedModel.bucketVariants.get(fluidStack.getFluid().getName(), () -> bake(bakedModel, fluidStack.getFluid().getName()));
             } catch (ExecutionException e) {
@@ -66,7 +66,7 @@ public class LoliBakedDynBucket extends BakedItemModel {
             return bake(bakedModel, fluidStack.getFluid().getName());
         }
 
-        private IBakedModel bake(LoliBakedDynBucket bakedModel, String fluidName) {
+        private IBakedModel bake(BlahajBakedDynBucket bakedModel, String fluidName) {
             IModel parent = bakedModel.parent.process(ImmutableMap.of("fluid", fluidName));
             return parent.bake(new SimpleModelState(bakedModel.transforms), bakedModel.format, ModelLoader.defaultTextureGetter());
         }

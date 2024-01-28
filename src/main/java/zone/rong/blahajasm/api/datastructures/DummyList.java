@@ -1,4 +1,4 @@
-package zone.rong.loliasm.api.datastructures;
+package zone.rong.blahajasm.api.datastructures;
 
 import it.unimi.dsi.fastutil.objects.ObjectIterators;
 

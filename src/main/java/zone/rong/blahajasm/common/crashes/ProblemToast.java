@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.crashes;
+package zone.rong.blahajasm.common.crashes;
 
 import net.minecraft.client.gui.toasts.GuiToast;
 import net.minecraft.client.gui.toasts.IToast;
@@ -33,9 +33,9 @@ public class ProblemToast implements IToast {
         toastGui.drawTexturedModalRect(0, 0, 0, 96, 160, 32);
         Object cause = getModCause();
         toastGui.getMinecraft().fontRenderer.drawString(cause.equals("") ?
-                I18n.format("loliasm.notification.title.unknown") :
-                I18n.format("loliasm.notification.title.mod", cause), 5, 7, 0xFF000000);
-        toastGui.getMinecraft().fontRenderer.drawString(I18n.format("loliasm.notification.description"), 5, 18, 0xFF500050);
+                I18n.format("blahajasm.notification.title.unknown") :
+                I18n.format("blahajasm.notification.title.mod", cause), 5, 7, 0xFF000000);
+        toastGui.getMinecraft().fontRenderer.drawString(I18n.format("blahajasm.notification.description"), 5, 18, 0xFF500050);
         return delta >= ERROR_REPORT_DURATION ? IToast.Visibility.HIDE : IToast.Visibility.SHOW;
     }
 

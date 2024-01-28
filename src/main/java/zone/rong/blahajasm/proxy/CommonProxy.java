@@ -1,4 +1,4 @@
-package zone.rong.loliasm.proxy;
+package zone.rong.blahajasm.proxy;
 
 import betterwithmods.module.gameplay.Gameplay;
 import com.google.common.cache.Cache;
@@ -10,18 +10,18 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.*;
-import zone.rong.loliasm.LoliASM;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.api.LoliStringPool;
-import zone.rong.loliasm.api.datastructures.DummyMap;
-import zone.rong.loliasm.api.datastructures.ResourceCache;
-import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
-import zone.rong.loliasm.client.LoliIncompatibilityHandler;
-import zone.rong.loliasm.common.java.JavaFixes;
-import zone.rong.loliasm.common.modfixes.betterwithmods.BWMBlastingOilOptimization;
-import zone.rong.loliasm.common.modfixes.ebwizardry.ArcaneLocks;
-import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.blahajasm.BlahajASM;
+import zone.rong.blahajasm.BlahajLogger;
+import zone.rong.blahajasm.BlahajReflector;
+import zone.rong.blahajasm.api.LoliStringPool;
+import zone.rong.blahajasm.api.datastructures.DummyMap;
+import zone.rong.blahajasm.api.datastructures.ResourceCache;
+import zone.rong.blahajasm.api.mixins.RegistrySimpleExtender;
+import zone.rong.blahajasm.client.BlahajIncompatibilityHandler;
+import zone.rong.blahajasm.common.java.JavaFixes;
+import zone.rong.blahajasm.common.modfixes.betterwithmods.BWMBlastingOilOptimization;
+import zone.rong.blahajasm.common.modfixes.ebwizardry.ArcaneLocks;
+import zone.rong.blahajasm.config.BlahajConfig;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -39,8 +39,8 @@ public class CommonProxy {
         boolean vanillaFix = Loader.isModLoaded("vanillafix");
         if (texFix || vanillaFix) {
             List<String> messages = new ArrayList<>();
-            messages.add("LoliASM has replaced and improved upon functionalities from the following mods.");
-            messages.add("Therefore, these mods are now incompatible with LoliASM:");
+            messages.add("BlahajASM has replaced and improved upon functionalities from the following mods.");
+            messages.add("Therefore, these mods are now incompatible with BlahajASM:");
             messages.add("");
             if (texFix) {
                 messages.add(TextFormatting.BOLD + "TexFix");
@@ -48,15 +48,15 @@ public class CommonProxy {
             if (vanillaFix) {
                 messages.add(TextFormatting.BOLD + "VanillaFix");
             }
-            LoliIncompatibilityHandler.loliHaetPizza(messages);
+            BlahajIncompatibilityHandler.blahajHaetPizza(messages);
         }
     }
 
     public void construct(FMLConstructionEvent event) {
-        if (LoliConfig.instance.cleanupLaunchClassLoaderEarly) {
+        if (BlahajConfig.instance.cleanupLaunchClassLoaderEarly) {
             cleanupLaunchClassLoader();
         }
-        if (LoliConfig.instance.threadPriorityFix)
+        if (BlahajConfig.instance.threadPriorityFix)
             Thread.currentThread().setPriority(Thread.NORM_PRIORITY + 2);
     }
 
@@ -65,8 +65,8 @@ public class CommonProxy {
     public void init(FMLInitializationEvent event) { }
 
     public void postInit(FMLPostInitializationEvent event) {
-        if (LoliConfig.instance.skipCraftTweakerRecalculatingSearchTrees) {
-            LoliReflector.getClass("crafttweaker.mc1120.CraftTweaker").ifPresent(c -> {
+        if (BlahajConfig.instance.skipCraftTweakerRecalculatingSearchTrees) {
+            BlahajReflector.getClass("crafttweaker.mc1120.CraftTweaker").ifPresent(c -> {
                 try {
                     Field alreadyChangedThePlayer = c.getDeclaredField("alreadyChangedThePlayer");
                     alreadyChangedThePlayer.setAccessible(true);
@@ -76,47 +76,47 @@ public class CommonProxy {
                 }
             });
         }
-        if (Loader.isModLoaded("betterwithmods") && LoliConfig.instance.bwmBlastingOilOptimization) {
+        if (Loader.isModLoaded("betterwithmods") && BlahajConfig.instance.bwmBlastingOilOptimization) {
             if (!Gameplay.disableBlastingOilEvents) {
                 MinecraftForge.EVENT_BUS.register(BWMBlastingOilOptimization.class);
             }
         }
-        if (Loader.isModLoaded("ebwizardry") && LoliConfig.instance.optimizeArcaneLockRendering) {
-            LoliASM.customTileDataConsumer = ArcaneLocks.TRACK_ARCANE_TILES;
+        if (Loader.isModLoaded("ebwizardry") && BlahajConfig.instance.optimizeArcaneLockRendering) {
+            BlahajASM.customTileDataConsumer = ArcaneLocks.TRACK_ARCANE_TILES;
         }
     }
 
     public void loadComplete(FMLLoadCompleteEvent event) {
-        LoliLogger.instance.info("Trimming simple registries");
+        BlahajLogger.instance.info("Trimming simple registries");
         HttpUtil.DOWNLOADER_EXECUTOR.execute(() -> {
-            LoliASM.simpleRegistryInstances.forEach(RegistrySimpleExtender::trim);
-            LoliASM.simpleRegistryInstances = null;
+            BlahajASM.simpleRegistryInstances.forEach(RegistrySimpleExtender::trim);
+            BlahajASM.simpleRegistryInstances = null;
         });
-        if (LoliConfig.instance.cleanupLaunchClassLoaderEarly || LoliConfig.instance.cleanCachesOnGameLoad) {
+        if (BlahajConfig.instance.cleanupLaunchClassLoaderEarly || BlahajConfig.instance.cleanCachesOnGameLoad) {
             invalidateLaunchClassLoaderCaches();
-        } else if (LoliConfig.instance.cleanupLaunchClassLoaderLate) {
+        } else if (BlahajConfig.instance.cleanupLaunchClassLoaderLate) {
             cleanupLaunchClassLoader();
         }
         if (LoliStringPool.getSize() > 0) {
             MinecraftForge.EVENT_BUS.register(LoliStringPool.class);
-            LoliLogger.instance.info("{} total strings processed. {} unique strings in LoliStringPool, {} strings deduplicated altogether during game load.", LoliStringPool.getDeduplicatedCount(), LoliStringPool.getSize(), LoliStringPool.getDeduplicatedCount() - LoliStringPool.getSize());
+            BlahajLogger.instance.info("{} total strings processed. {} unique strings in LoliStringPool, {} strings deduplicated altogether during game load.", LoliStringPool.getDeduplicatedCount(), LoliStringPool.getSize(), LoliStringPool.getDeduplicatedCount() - LoliStringPool.getSize());
         }
-        if (LoliConfig.instance.filePermissionsCacheCanonicalization) {
+        if (BlahajConfig.instance.filePermissionsCacheCanonicalization) {
             MinecraftForge.EVENT_BUS.register(JavaFixes.INSTANCE);
         }
     }
 
     private void invalidateLaunchClassLoaderCaches() {
         try {
-            LoliLogger.instance.info("Invalidating and Cleaning LaunchClassLoader caches");
-            if (!LoliConfig.instance.noClassCache) {
-                ((Map<String, Class<?>>) LoliReflector.resolveFieldGetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader)).clear();
+            BlahajLogger.instance.info("Invalidating and Cleaning LaunchClassLoader caches");
+            if (!BlahajConfig.instance.noClassCache) {
+                ((Map<String, Class<?>>) BlahajReflector.resolveFieldGetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader)).clear();
             }
-            if (!LoliConfig.instance.noResourceCache) {
-                ((Map<String, byte[]>) LoliReflector.resolveFieldGetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader)).clear();
-                ((Set<String>) LoliReflector.resolveFieldGetter(LaunchClassLoader.class, "negativeResourceCache").invoke(Launch.classLoader)).clear();
+            if (!BlahajConfig.instance.noResourceCache) {
+                ((Map<String, byte[]>) BlahajReflector.resolveFieldGetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader)).clear();
+                ((Set<String>) BlahajReflector.resolveFieldGetter(LaunchClassLoader.class, "negativeResourceCache").invoke(Launch.classLoader)).clear();
             }
-            ((Set<String>) LoliReflector.resolveFieldGetter(LaunchClassLoader.class, "invalidClasses").invoke(Launch.classLoader)).clear();
+            ((Set<String>) BlahajReflector.resolveFieldGetter(LaunchClassLoader.class, "invalidClasses").invoke(Launch.classLoader)).clear();
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
@@ -124,23 +124,23 @@ public class CommonProxy {
 
     private static void cleanupLaunchClassLoader() {
         try {
-            LoliLogger.instance.info("Cleaning up LaunchClassLoader");
-            if (LoliConfig.instance.noClassCache) {
-                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader, DummyMap.of());
-            } else if (LoliConfig.instance.weakClassCache) {
-                Map<String, Class<?>> oldClassCache = (Map<String, Class<?>>) LoliReflector.resolveFieldGetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader);
+            BlahajLogger.instance.info("Cleaning up LaunchClassLoader");
+            if (BlahajConfig.instance.noClassCache) {
+                BlahajReflector.resolveFieldSetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader, DummyMap.of());
+            } else if (BlahajConfig.instance.weakClassCache) {
+                Map<String, Class<?>> oldClassCache = (Map<String, Class<?>>) BlahajReflector.resolveFieldGetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader);
                 Cache<String, Class<?>> newClassCache = CacheBuilder.newBuilder().concurrencyLevel(2).weakValues().build();
                 newClassCache.putAll(oldClassCache);
-                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader, newClassCache.asMap());
+                BlahajReflector.resolveFieldSetter(LaunchClassLoader.class, "cachedClasses").invoke(Launch.classLoader, newClassCache.asMap());
             }
-            if (LoliConfig.instance.noResourceCache) {
-                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader, new ResourceCache());
-                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "negativeResourceCache").invokeExact(Launch.classLoader, DummyMap.asSet());
-            } else if (LoliConfig.instance.weakResourceCache) {
-                Map<String, byte[]> oldResourceCache = (Map<String, byte[]>) LoliReflector.resolveFieldGetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader);
+            if (BlahajConfig.instance.noResourceCache) {
+                BlahajReflector.resolveFieldSetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader, new ResourceCache());
+                BlahajReflector.resolveFieldSetter(LaunchClassLoader.class, "negativeResourceCache").invokeExact(Launch.classLoader, DummyMap.asSet());
+            } else if (BlahajConfig.instance.weakResourceCache) {
+                Map<String, byte[]> oldResourceCache = (Map<String, byte[]>) BlahajReflector.resolveFieldGetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader);
                 Cache<String, byte[]> newResourceCache = CacheBuilder.newBuilder().concurrencyLevel(2).weakValues().build();
                 newResourceCache.putAll(oldResourceCache);
-                LoliReflector.resolveFieldSetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader, newResourceCache.asMap());
+                BlahajReflector.resolveFieldSetter(LaunchClassLoader.class, "resourceCache").invoke(Launch.classLoader, newResourceCache.asMap());
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();

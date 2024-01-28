@@ -1,6 +1,6 @@
 {
-  "package": "zone.rong.loliasm.client.mcfixes.mixins.mc186052",
-  "refmap": "mixins.loliasm.refmap.json",
+  "package": "zone.rong.blahajasm.client.mcfixes.mixins.mc186052",
+  "refmap": "mixins.blahajasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",

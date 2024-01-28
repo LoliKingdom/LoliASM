@@ -1,10 +1,10 @@
-package zone.rong.loliasm.api.datastructures.deobf;
+package zone.rong.blahajasm.api.datastructures.deobf;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import zone.rong.loliasm.api.datastructures.canonical.AutoCanonizingArrayMap;
-import zone.rong.loliasm.api.LoliStringPool;
+import zone.rong.blahajasm.api.datastructures.canonical.AutoCanonizingArrayMap;
+import zone.rong.blahajasm.api.LoliStringPool;
 
 import java.util.Map;
 

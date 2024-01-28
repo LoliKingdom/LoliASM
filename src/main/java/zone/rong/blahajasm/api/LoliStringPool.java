@@ -1,4 +1,4 @@
-package zone.rong.loliasm.api;
+package zone.rong.blahajasm.api;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import zone.rong.loliasm.LoliLogger;
+import zone.rong.blahajasm.BlahajLogger;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -106,7 +106,7 @@ public class LoliStringPool {
             }
             int size = getSize();
             long deduplicatedCount = getDeduplicatedCount();
-            list.add(String.format("%s%s%s: %s strings processed. %s unique, %s deduplicated.", TextFormatting.AQUA, "<LoliASM>", TextFormatting.RESET, deduplicatedCount, size, deduplicatedCount - size));
+            list.add(String.format("%s%s%s: %s strings processed. %s unique, %s deduplicated.", TextFormatting.AQUA, "<BlahajASM>", TextFormatting.RESET, deduplicatedCount, size, deduplicatedCount - size));
         }
     }
 
@@ -133,7 +133,7 @@ public class LoliStringPool {
 
         @Override
         protected void finalize() {
-            LoliLogger.instance.warn("Clearing LoliStringPool {}", id);
+            BlahajLogger.instance.warn("Clearing BlahajStringPool {}", id);
         }
     }
 

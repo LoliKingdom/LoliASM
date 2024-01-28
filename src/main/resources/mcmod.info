@@ -1,14 +1,14 @@
 [
 {
-  "modid": "loliasm",
-  "name": "LoliASM",
-  "description": "The lolis have bytecode manipulated your game.",
+  "modid": "blahajasm",
+  "name": "BlahajASM",
+  "description": "The blahaj have bytecode manipulated your game.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "https://github.com/LoliKingdom/LoliASM",
   "updateUrl": "",
   "authorList": ["Rongmario"],
-  "logoFile": "assets/loliasm/loliasm.png",
+  "logoFile": "assets/blahajasm/blahajasm.png",
   "screenshots": [],
   "dependencies": []
 }

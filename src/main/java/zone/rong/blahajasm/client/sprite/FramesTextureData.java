@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite;
+package zone.rong.blahajasm.client.sprite;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
@@ -15,9 +15,9 @@ import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.common.internal.mixins.TextureMapAccessor;
+import zone.rong.blahajasm.BlahajLogger;
+import zone.rong.blahajasm.BlahajReflector;
+import zone.rong.blahajasm.common.internal.mixins.TextureMapAccessor;
 
 import java.io.IOException;
 import java.util.*;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class FramesTextureData extends ArrayList<int[][]> {
 
-    private static final Class<?> FOAMFIX_SPRITE = LoliReflector.getNullableClass("pl.asie.foamfix.client.FastTextureAtlasSprite");
+    private static final Class<?> FOAMFIX_SPRITE = BlahajReflector.getNullableClass("pl.asie.foamfix.client.FastTextureAtlasSprite");
     private static final int INACTIVITY_THRESHOLD = 20;
 
     private static boolean canReload = true;
@@ -53,7 +53,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
-                LoliLogger.instance.debug("Evicted most sprites' frame texture data, skipped classes: [{}]", skippedSpriteClasses.stream().map(Class::getName).collect(Collectors.joining(", ")));
+                BlahajLogger.instance.debug("Evicted most sprites' frame texture data, skipped classes: [{}]", skippedSpriteClasses.stream().map(Class::getName).collect(Collectors.joining(", ")));
                 canReload = true;
             }
         });

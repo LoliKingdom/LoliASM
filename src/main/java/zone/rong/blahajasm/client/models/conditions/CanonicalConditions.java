@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.models.conditions;
+package zone.rong.blahajasm.client.models.conditions;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -12,7 +12,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.multipart.ICondition;
 import org.apache.commons.lang3.tuple.Pair;
-import zone.rong.loliasm.proxy.ClientProxy;
+import zone.rong.blahajasm.proxy.ClientProxy;
 
 import java.util.*;
 

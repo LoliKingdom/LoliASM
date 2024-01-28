@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.mcfixes.mixins.mc129057;
+package zone.rong.blahajasm.common.mcfixes.mixins.mc129057;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand.mixins;
+package zone.rong.blahajasm.client.sprite.ondemand.mixins;
 
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -6,9 +6,9 @@ import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
 import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import zone.rong.loliasm.client.sprite.ondemand.IAnimatedSpritePrimer;
-import zone.rong.loliasm.client.sprite.ondemand.ICompiledChunkExpander;
-import zone.rong.loliasm.client.sprite.ondemand.IVertexLighterExpander;
+import zone.rong.blahajasm.client.sprite.ondemand.IAnimatedSpritePrimer;
+import zone.rong.blahajasm.client.sprite.ondemand.ICompiledChunkExpander;
+import zone.rong.blahajasm.client.sprite.ondemand.IVertexLighterExpander;
 
 import java.util.Objects;
 

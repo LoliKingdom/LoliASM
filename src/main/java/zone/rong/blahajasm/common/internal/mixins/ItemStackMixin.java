@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.internal.mixins;
+package zone.rong.blahajasm.common.internal.mixins;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.item.ItemStack;
@@ -7,8 +7,8 @@ import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import zone.rong.loliasm.api.IItemStackCapabilityInjector;
-import zone.rong.loliasm.api.ICapabilityDispatcherManipulator;
+import zone.rong.blahajasm.api.IItemStackCapabilityInjector;
+import zone.rong.blahajasm.api.ICapabilityDispatcherManipulator;
 
 import java.util.Collections;
 

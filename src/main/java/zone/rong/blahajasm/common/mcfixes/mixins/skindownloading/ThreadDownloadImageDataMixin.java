@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.mcfixes.mixins.skindownloading;
+package zone.rong.blahajasm.common.mcfixes.mixins.skindownloading;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.minecraft.client.renderer.ThreadDownloadImageData;

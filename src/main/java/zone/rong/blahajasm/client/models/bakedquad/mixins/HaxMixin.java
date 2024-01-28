@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.models.bakedquad.mixins;
+package zone.rong.blahajasm.client.models.bakedquad.mixins;
 
 import com.google.gson.GsonBuilder;
 import epicsquid.mysticallib.hax.*;

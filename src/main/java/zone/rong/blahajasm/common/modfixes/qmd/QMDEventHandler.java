@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.qmd;
+package zone.rong.blahajasm.common.modfixes.qmd;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import zone.rong.loliasm.LoliReflector;
+import zone.rong.blahajasm.BlahajReflector;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 public class QMDEventHandler {
 
     private static final List<WeakReference<Entity>> beamsInWorld = new ArrayList<>(1);
-    private static final Class<?> projectileClass = LoliReflector.getClass("lach_01298.qmd.entity.EntityBeamProjectile").get();
+    private static final Class<?> projectileClass = BlahajReflector.getClass("lach_01298.qmd.entity.EntityBeamProjectile").get();
 
     @SubscribeEvent
     public static void onBeamSpawn(EntityJoinWorldEvent event) {

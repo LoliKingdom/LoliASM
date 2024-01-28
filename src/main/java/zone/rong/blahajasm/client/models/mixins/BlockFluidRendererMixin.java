@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.models.mixins;
+package zone.rong.blahajasm.client.models.mixins;
 
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;

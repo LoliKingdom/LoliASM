@@ -1,18 +1,18 @@
-package zone.rong.loliasm.core;
+package zone.rong.blahajasm.core;
 
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ModCandidate;
-import zone.rong.loliasm.api.LoliStringPool;
-import zone.rong.loliasm.bakedquad.BakedQuadFactory;
-import zone.rong.loliasm.bakedquad.SupportingBakedQuad;
-import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.blahajasm.api.LoliStringPool;
+import zone.rong.blahajasm.bakedquad.BakedQuadFactory;
+import zone.rong.blahajasm.bakedquad.SupportingBakedQuad;
+import zone.rong.blahajasm.config.BlahajConfig;
 
 import java.util.Set;
 
 @SuppressWarnings("unused")
-public class LoliHooks {
+public class BlahajHooks {
 
     public static <K> ObjectArraySet<K> createArraySet() {
         return new ObjectArraySet<>();
@@ -53,14 +53,14 @@ public class LoliHooks {
             classesThatCallBakedQuadCtor = new ReferenceOpenHashSet<>();
         }
         if (classesThatCallBakedQuadCtor.add(clazz)) {
-            LoliConfig.instance.editClassesThatCallBakedQuadCtor(clazz);
+            BlahajConfig.instance.editClassesThatCallBakedQuadCtor(clazz);
         }
         if (BakedQuad.class.isAssignableFrom(clazz)) {
             if (classesThatExtendBakedQuad == null) {
                 classesThatExtendBakedQuad = new ReferenceOpenHashSet<>();
             }
             if (classesThatExtendBakedQuad.add(clazz)) {
-                LoliConfig.instance.editClassesThatExtendBakedQuad(clazz);
+                BlahajConfig.instance.editClassesThatExtendBakedQuad(clazz);
             }
         }
     }

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.api;
+package zone.rong.blahajasm.api;
 
 import it.unimi.dsi.fastutil.Hash;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;

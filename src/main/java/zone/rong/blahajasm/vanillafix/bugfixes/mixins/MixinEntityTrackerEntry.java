@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.bugfixes.mixins;
+package zone.rong.blahajasm.vanillafix.bugfixes.mixins;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
