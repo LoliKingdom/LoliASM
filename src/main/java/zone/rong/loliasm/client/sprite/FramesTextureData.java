@@ -37,23 +37,27 @@ public class FramesTextureData extends ArrayList<int[][]> {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener((ISelectiveResourceReloadListener) (manager, predicate) -> {
             if (predicate.test(VanillaResourceType.MODELS)) {
                 canReload = false;
+                int count = 0;
                 Set<Class<?>> skippedSpriteClasses = new ObjectOpenHashSet<>();
                 try {
                     synchronized (tickingSpritesSet) {
                         tickingSpritesSet.clear();
                     }
                     for (TextureAtlasSprite sprite : ((TextureMapAccessor) Minecraft.getMinecraft().getTextureMapBlocks()).getMapRegisteredSprites().values()) {
-                        if (sprite.getClass() == FOAMFIX_SPRITE || sprite.getClass() == TextureAtlasSprite.class) {
-                            FramesTextureData ftd = new FramesTextureData(sprite);
-                            sprite.setFramesTextureData(ftd);
-                        } else {
-                            skippedSpriteClasses.add(sprite.getClass());
+                        if (!sprite.hasAnimationMetadata()) {
+                            if (sprite.getClass() == FOAMFIX_SPRITE || sprite.getClass() == TextureAtlasSprite.class) {
+                                count++;
+                                sprite.setFramesTextureData(new FramesTextureData(sprite));
+                            } else {
+                                skippedSpriteClasses.add(sprite.getClass());
+                            }
                         }
                     }
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
-                LoliLogger.instance.debug("Evicted most sprites' frame texture data, skipped classes: [{}]", skippedSpriteClasses.stream().map(Class::getName).collect(Collectors.joining(", ")));
+                LoliLogger.instance.info("Evicted {} sprites' frame texture data", count);
+                LoliLogger.instance.debug("While evicting sprites' frame texture data, the following classes were skipped: [{}]", skippedSpriteClasses.stream().map(Class::getName).collect(Collectors.joining(", ")));
                 canReload = true;
             }
         });

@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
 import zone.rong.loliasm.bakedquad.LoliVertexDataPool;
 import zone.rong.loliasm.client.models.bucket.LoliBakedDynBucket;
 import zone.rong.loliasm.client.screenshot.ScreenshotListener;
@@ -23,7 +22,7 @@ import zone.rong.loliasm.core.LoliTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 @Mod.EventBusSubscriber(modid = "loliasm", value = Side.CLIENT)
 public class ClientProxy extends CommonProxy {
