@@ -22,7 +22,7 @@ import static org.objectweb.asm.Opcodes.*;
 
 public class LoliTransformer implements IClassTransformer {
 
-    public static boolean isOptifineInstalled;
+    public static boolean isOptifineInstalled, isSodiumPortInstalled;
     public static boolean squashBakedQuads = LoliConfig.instance.squashBakedQuads;
 
     Multimap<String, Function<byte[], byte[]>> transformations;
@@ -30,9 +30,15 @@ public class LoliTransformer implements IClassTransformer {
     public LoliTransformer() {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
         isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
-        if (squashBakedQuads && isOptifineInstalled) {
-            squashBakedQuads = false;
-            LoliLogger.instance.info("Optifine is installed. BakedQuads won't be squashed as it is incompatible with OptiFine.");
+        isSodiumPortInstalled = LoliReflector.doesClassExist("me.jellysquid.mods.sodium.client.SodiumMixinTweaker");
+        if (squashBakedQuads) {
+            if (isOptifineInstalled) {
+                squashBakedQuads = false;
+                LoliLogger.instance.info("Optifine is installed. BakedQuads won't be squashed as it is incompatible with OptiFine.");
+            } else if (isSodiumPortInstalled) {
+                squashBakedQuads = false;
+                LoliLogger.instance.info("A sodium port is installed. BakedQuads won't be squashed as it is incompatible with Sodium.");
+            }
         }
         transformations = MultimapBuilder.hashKeys(30).arrayListValues(1).build();
         if (LoliLoadingPlugin.isClient) {
