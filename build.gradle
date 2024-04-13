@@ -166,7 +166,6 @@ jar {
                 'FMLCorePluginContainsFMLMod': true,
                 'FMLCorePlugin': 'zone.rong.loliasm.core.LoliLoadingPlugin',
                 'ForceLoadAsMod': project.gradle.startParameter.taskNames[0] == 'build',
-                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
                 'FMLAT': 'loliasm_at.cfg'
         ])
     }
