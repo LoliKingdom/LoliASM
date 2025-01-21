@@ -118,7 +118,7 @@ public class LoliConfig {
         // optimizeDataStructures = getBoolean("optimizeDataStructures", "datastructures", "Optimizes various data structures around Minecraft", true);
         optimizeRegistries = getBoolean("optimizeRegistries", "datastructures", "Optimizes registries", true);
         optimizeNBTTagCompoundBackingMap = getBoolean("optimizeNBTTagCompoundBackingMap", "datastructures", "Optimize NBTTagCompound's backing map structure", true);
-        optimizeNBTTagCompoundMapThreshold = getInteger("optimizeNBTTagCompoundMapThreshold", "datastructures", "Max size NBTTagCompounds backing map can get before it gets changed to HashMap from ArrayMap", 8);
+        optimizeNBTTagCompoundMapThreshold = getInteger("optimizeNBTTagCompoundMapThreshold", "datastructures", "Max size NBTTagCompounds backing map can get before it gets changed to HashMap from ArrayMap", 5);
         optimizeFurnaceRecipeStore = getBoolean("optimizeFurnaceRecipeStore", "datastructures", "Optimizing FurnaceRecipes. FastFurnace will see very little benefit when this option is turned on", true);
         stripNearUselessItemStackFields = getBoolean("stripNearUselessItemStackFields", "datastructures", "EXPERIMENTAL: Strips ItemStack of some of its fields as it stores some near-useless references", true);
         moreModelManagerCleanup = getBoolean("moreModelManagerCleanup", "datastructures", "Clears and trims ModelManager data structures after models are loaded and baked", true);
