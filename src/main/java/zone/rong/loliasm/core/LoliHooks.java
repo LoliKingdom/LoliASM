@@ -2,16 +2,13 @@ package zone.rong.loliasm.core;
 
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.nbt.NBTBase;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ModCandidate;
 import zone.rong.loliasm.api.LoliStringPool;
-import zone.rong.loliasm.api.datastructures.canonical.AutoCanonizingHashMap;
 import zone.rong.loliasm.bakedquad.BakedQuadFactory;
 import zone.rong.loliasm.bakedquad.SupportingBakedQuad;
 import zone.rong.loliasm.config.LoliConfig;
 
-import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("unused")
@@ -86,12 +83,5 @@ public class LoliHooks {
 
     public static String nbtTagString$override$ctor(String data) {
         return LoliStringPool.canonicalize(data);
-    }
-
-    public static Map<String, NBTBase> nbtTagCompound$getMap(Map<String, NBTBase> map, int mapThreshold) {
-        if (map.size() == mapThreshold) {
-            return new AutoCanonizingHashMap<>(map);
-        }
-        return map;
     }
 }
