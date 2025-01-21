@@ -143,7 +143,7 @@ public class LoliTransformer implements IClassTransformer {
         if (LoliConfig.instance.fixMC31681) {
             addTransformation("net.minecraft.client.renderer.EntityRenderer", this::fixMC31681);
         }
-        addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.nbtBackingMapStringCanonicalization));
+        addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.optimizeNBTTagCompoundMapThreshold, LoliConfig.instance.nbtBackingMapStringCanonicalization));
     }
 
     public void addTransformation(String key, Function<byte[], byte[]> value) {
@@ -468,29 +468,102 @@ public class LoliTransformer implements IClassTransformer {
         return writer.toByteArray();
     }
 
-    private byte[] nbtTagCompound$replaceDefaultHashMap(byte[] bytes, boolean optimizeMap, boolean canonicalizeString) {
-        if (!optimizeMap && !canonicalizeString) {
+    private byte[] nbtTagCompound$replaceDefaultHashMap(byte[] bytes, boolean optimizeMap, int mapThreshold, boolean canonicalizeString) {
+        if ((!optimizeMap || mapThreshold == 0) && !canonicalizeString) {
             return bytes;
         }
         ClassReader reader = new ClassReader(bytes);
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
-
+        if (optimizeMap && mapThreshold > 0) {
+            for (FieldNode field : node.fields) {
+                if (field.desc.endsWith("/Map;")) {
+                    field.access ^= ACC_FINAL;
+                    break;
+                }
+            }
+        }
+        String map = optimizeMap && mapThreshold > 0 ? (canonicalizeString ? "zone/rong/loliasm/api/datastructures/canonical/AutoCanonizingArrayMap" : "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap") : "zone/rong/loliasm/api/datastructures/canonical/AutoCanonizingHashMap";
         for (MethodNode method : node.methods) {
             if (method.name.equals("<init>")) {
                 ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction.getOpcode() == INVOKESTATIC) {
-                        iter.set(new TypeInsnNode(NEW, canonicalizeString ? "zone/rong/loliasm/api/datastructures/canonical/AutoCanonizingArrayMap" : "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap"));
+                        iter.set(new TypeInsnNode(NEW, map));
                         iter.add(new InsnNode(DUP));
-                        iter.add(new MethodInsnNode(INVOKESPECIAL, canonicalizeString ? "zone/rong/loliasm/api/datastructures/canonical/AutoCanonizingArrayMap" : "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap", "<init>", "()V", false));
+                        iter.add(new MethodInsnNode(INVOKESPECIAL, map, "<init>", "()V", false));
                         break;
                     }
                 }
             }
+            else {
+                if (LoliLoadingPlugin.isDeobf) {
+                    switch (method.name) {
+                        case "setTag":
+                        case "setByte":
+                        case "setShort":
+                        case "setInteger":
+                        case "setLong":
+                        case "setFloat":
+                        case "setDouble":
+                        case "setString":
+                        case "setByteArray":
+                        case "setIntArray": {
+                            Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                            while (iterator.hasNext()) {
+                                AbstractInsnNode n = iterator.next();
+                                if (n.getOpcode() == ALOAD && ((VarInsnNode) n).var == 0) {
+                                    InsnList list = new InsnList();
+                                    list.add(new VarInsnNode(ALOAD, 0));
+                                    list.add(new VarInsnNode(ALOAD, 0));
+                                    list.add(new FieldInsnNode(GETFIELD, node.name, "tagMap", "Ljava/util/Map;"));
+                                    list.add(new FieldInsnNode(GETSTATIC, "zone/rong/loliasm/config/LoliConfig", "instance", "Lzone/rong/loliasm/config/LoliConfig;"));
+                                    list.add(new FieldInsnNode(GETFIELD, "zone/rong/loliasm/config/LoliConfig", "optimizeNBTTagCompoundMapThreshold", "I"));
+                                    list.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "nbtTagCompound$getMap", "(Ljava/util/Map;I)Ljava/util/Map;", false));
+                                    list.add(new FieldInsnNode(PUTFIELD, node.name, "tagMap", "Ljava/util/Map;"));
+                                    method.instructions.insertBefore(n, list);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                else {
+                    switch (method.name) {
+                        case "func_74782_a":
+                        case "func_74774_a":
+                        case "func_74777_a":
+                        case "func_74768_a":
+                        case "func_74772_a":
+                        case "func_74776_a":
+                        case "func_74780_a":
+                        case "func_74778_a":
+                        case "func_74773_a":
+                        case "func_74783_a": {
+                            Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                            while (iterator.hasNext()) {
+                                AbstractInsnNode n = iterator.next();
+                                if (n.getOpcode() == ALOAD && ((VarInsnNode) n).var == 0) {
+                                    InsnList list = new InsnList();
+                                    list.add(new VarInsnNode(ALOAD, 0));
+                                    list.add(new VarInsnNode(ALOAD, 0));
+                                    list.add(new FieldInsnNode(GETFIELD, node.name, "field_74784_a", "Ljava/util/Map;"));
+                                    list.add(new FieldInsnNode(GETSTATIC, "zone/rong/loliasm/config/LoliConfig", "instance", "Lzone/rong/loliasm/config/LoliConfig;"));
+                                    list.add(new FieldInsnNode(GETFIELD, "zone/rong/loliasm/config/LoliConfig", "optimizeNBTTagCompoundMapThreshold", "I"));
+                                    list.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "nbtTagCompound$getMap", "(Ljava/util/Map;I)Ljava/util/Map;", false));
+                                    list.add(new FieldInsnNode(PUTFIELD, node.name, "field_74784_a", "Ljava/util/Map;"));
+                                    method.instructions.insertBefore(n, list);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
         }
-
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         node.accept(writer);
         return writer.toByteArray();
