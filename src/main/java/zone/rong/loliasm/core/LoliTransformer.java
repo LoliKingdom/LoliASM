@@ -497,7 +497,7 @@ public class LoliTransformer implements IClassTransformer {
                     }
                 }
             }
-            else {
+            else if (optimizeMap && mapThreshold > 0) {
                 if (LoliLoadingPlugin.isDeobf) {
                     switch (method.name) {
                         case "setTag":
