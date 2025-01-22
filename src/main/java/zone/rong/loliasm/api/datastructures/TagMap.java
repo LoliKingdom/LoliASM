@@ -66,12 +66,17 @@ public class TagMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        this.map.putAll(m);
+        m.forEach(this::put);
     }
 
     @Override
     public void clear() {
-        this.map.clear();
+        if (this.threshold != -1) {
+            if (this.map instanceof AutoCanonizingHashMap) this.map = new AutoCanonizingArrayMap<>();
+            else if (this.map instanceof Object2ObjectOpenHashMap) this.map = new Object2ObjectArrayMap<>();
+            else this.map.clear();
+        }
+        else this.map.clear();
     }
 
     @Nonnull
