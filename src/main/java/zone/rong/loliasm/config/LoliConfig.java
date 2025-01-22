@@ -67,6 +67,7 @@ public class LoliConfig {
     public boolean resourceLocationCanonicalization, modelConditionCanonicalization, nbtTagStringBackingStringCanonicalization, nbtBackingMapStringCanonicalization, packageStringCanonicalization, lockCodeCanonicalization, spriteNameCanonicalization, asmDataStringCanonicalization, vertexDataCanonicalization, filePermissionsCacheCanonicalization;
     public boolean optimizeFMLRemapper;
     public boolean optimizeRegistries, optimizeNBTTagCompoundBackingMap, optimizeFurnaceRecipeStore, stripNearUselessItemStackFields, moreModelManagerCleanup, efficientHashing, replaceSearchTreeWithJEISearching;
+    public int optimizeNBTTagCompoundMapThreshold;
     public boolean releaseSpriteFramesCache, onDemandAnimatedTextures;
     public boolean optimizeSomeRendering, stripUnnecessaryLocalsInRenderHelper;
     public boolean quickerEnableUniversalBucketCheck, stripInstancedRandomFromSoundEventAccessor, classCaching, copyScreenshotToClipboard, releaseScreenshotCache, asyncScreenshot, removeExcessiveGCCalls, smoothDimensionChange, threadPriorityFix, outdatedCaCertsFix;
@@ -117,6 +118,7 @@ public class LoliConfig {
         // optimizeDataStructures = getBoolean("optimizeDataStructures", "datastructures", "Optimizes various data structures around Minecraft", true);
         optimizeRegistries = getBoolean("optimizeRegistries", "datastructures", "Optimizes registries", true);
         optimizeNBTTagCompoundBackingMap = getBoolean("optimizeNBTTagCompoundBackingMap", "datastructures", "Optimize NBTTagCompound's backing map structure", true);
+        optimizeNBTTagCompoundMapThreshold = getInteger("optimizeNBTTagCompoundMapThreshold", "datastructures", "Max size NBTTagCompounds backing map can get before it gets changed to HashMap from ArrayMap", 5);
         optimizeFurnaceRecipeStore = getBoolean("optimizeFurnaceRecipeStore", "datastructures", "Optimizing FurnaceRecipes. FastFurnace will see very little benefit when this option is turned on", true);
         stripNearUselessItemStackFields = getBoolean("stripNearUselessItemStackFields", "datastructures", "EXPERIMENTAL: Strips ItemStack of some of its fields as it stores some near-useless references", true);
         moreModelManagerCleanup = getBoolean("moreModelManagerCleanup", "datastructures", "Clears and trims ModelManager data structures after models are loaded and baked", true);
@@ -241,6 +243,16 @@ public class LoliConfig {
         prop.setShowInGui(true);
         prop.setLanguageKey("loliasm.config." + name);
         return prop.getBoolean(defaultValue);
+    }
+
+    private int getInteger(String name, String category, String description, int defaultValue) {
+        Property prop = configuration.get(category, name, defaultValue);
+        prop.setDefaultValue(defaultValue);
+        prop.setComment(description + " - <default: " + defaultValue + ">");
+        prop.setRequiresMcRestart(true);
+        prop.setShowInGui(true);
+        prop.setLanguageKey("loliasm.config." + name);
+        return prop.getInt(defaultValue);
     }
 
     private String[] getStringArray(String name, String category, String description, String... defaultValue) {

@@ -84,5 +84,4 @@ public class LoliHooks {
     public static String nbtTagString$override$ctor(String data) {
         return LoliStringPool.canonicalize(data);
     }
-
 }

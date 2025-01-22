@@ -143,7 +143,7 @@ public class LoliTransformer implements IClassTransformer {
         if (LoliConfig.instance.fixMC31681) {
             addTransformation("net.minecraft.client.renderer.EntityRenderer", this::fixMC31681);
         }
-        addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.nbtBackingMapStringCanonicalization));
+        addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.optimizeNBTTagCompoundMapThreshold, LoliConfig.instance.nbtBackingMapStringCanonicalization));
     }
 
     public void addTransformation(String key, Function<byte[], byte[]> value) {
@@ -468,29 +468,28 @@ public class LoliTransformer implements IClassTransformer {
         return writer.toByteArray();
     }
 
-    private byte[] nbtTagCompound$replaceDefaultHashMap(byte[] bytes, boolean optimizeMap, boolean canonicalizeString) {
-        if (!optimizeMap && !canonicalizeString) {
+    private byte[] nbtTagCompound$replaceDefaultHashMap(byte[] bytes, boolean optimizeMap, int mapThreshold, boolean canonicalizeString) {
+        if ((!optimizeMap || mapThreshold == 0) && !canonicalizeString) {
             return bytes;
         }
         ClassReader reader = new ClassReader(bytes);
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
-
         for (MethodNode method : node.methods) {
             if (method.name.equals("<init>")) {
                 ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction.getOpcode() == INVOKESTATIC) {
-                        iter.set(new TypeInsnNode(NEW, canonicalizeString ? "zone/rong/loliasm/api/datastructures/canonical/AutoCanonizingArrayMap" : "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap"));
+                        iter.set(new TypeInsnNode(NEW, "zone/rong/loliasm/api/datastructures/TagMap"));
                         iter.add(new InsnNode(DUP));
-                        iter.add(new MethodInsnNode(INVOKESPECIAL, canonicalizeString ? "zone/rong/loliasm/api/datastructures/canonical/AutoCanonizingArrayMap" : "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap", "<init>", "()V", false));
+                        iter.add(new MethodInsnNode(INVOKESPECIAL, "zone/rong/loliasm/api/datastructures/TagMap", "<init>", "()V", false));
                         break;
                     }
                 }
+                break;
             }
         }
-
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         node.accept(writer);
         return writer.toByteArray();
