@@ -481,9 +481,9 @@ public class LoliTransformer implements IClassTransformer {
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction.getOpcode() == INVOKESTATIC) {
-                        iter.set(new TypeInsnNode(NEW, "zone/rong/loliasm/api/datastructures/TagMap"));
+                        iter.set(new TypeInsnNode(NEW, "zone/rong/loliasm/api/datastructures/LoliTagMap"));
                         iter.add(new InsnNode(DUP));
-                        iter.add(new MethodInsnNode(INVOKESPECIAL, "zone/rong/loliasm/api/datastructures/TagMap", "<init>", "()V", false));
+                        iter.add(new MethodInsnNode(INVOKESPECIAL, "zone/rong/loliasm/api/datastructures/LoliTagMap", "<init>", "()V", false));
                         break;
                     }
                 }

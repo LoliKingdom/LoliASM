@@ -11,19 +11,22 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class TagMap<K, V> implements Map<K, V> {
+public class LoliTagMap<K, V> implements Map<K, V> {
 
     private Map<K, V> map;
     private final int threshold;
 
-    public TagMap() {
+    public LoliTagMap() {
         this(LoliConfig.instance.optimizeNBTTagCompoundMapThreshold, LoliConfig.instance.nbtBackingMapStringCanonicalization, LoliConfig.instance.optimizeNBTTagCompoundBackingMap);
     }
 
-    public TagMap(int threshold, boolean canonicalizeString, boolean optimizeMap) {
+    public LoliTagMap(int threshold, boolean canonicalizeString, boolean optimizeMap) {
         this.threshold = optimizeMap ? threshold : -1;
-        if (canonicalizeString) this.map = optimizeMap ? new AutoCanonizingArrayMap<>() : new AutoCanonizingHashMap<>();
-        else this.map = optimizeMap ? new Object2ObjectArrayMap<>() : new Object2ObjectOpenHashMap<>();
+        if (canonicalizeString) {
+            this.map = optimizeMap ? new AutoCanonizingArrayMap<>() : new AutoCanonizingHashMap<>();
+        } else {
+            this.map = optimizeMap ? new Object2ObjectArrayMap<>() : new Object2ObjectOpenHashMap<>();
+        }
     }
 
     @Override
@@ -72,11 +75,16 @@ public class TagMap<K, V> implements Map<K, V> {
     @Override
     public void clear() {
         if (this.threshold != -1) {
-            if (this.map instanceof AutoCanonizingHashMap) this.map = new AutoCanonizingArrayMap<>();
-            else if (this.map instanceof Object2ObjectOpenHashMap) this.map = new Object2ObjectArrayMap<>();
-            else this.map.clear();
+            if (this.map instanceof AutoCanonizingHashMap) {
+                this.map = new AutoCanonizingArrayMap<>();
+            } else if (this.map instanceof Object2ObjectOpenHashMap) {
+                this.map = new Object2ObjectArrayMap<>();
+            } else {
+                this.map.clear();
+            }
+        } else {
+            this.map.clear();
         }
-        else this.map.clear();
     }
 
     @Nonnull
@@ -95,4 +103,30 @@ public class TagMap<K, V> implements Map<K, V> {
     public Set<Entry<K, V>> entrySet() {
         return this.map.entrySet();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Map)) {
+            return false;
+        }
+        Map o = (Map) obj;
+        if (o.size() != this.size()) {
+            return false;
+        }
+        return this.entrySet().containsAll(o.entrySet());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.map.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return this.map.toString();
+    }
+
 }
