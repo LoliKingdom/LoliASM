@@ -1,6 +1,6 @@
 {
   "package": "zone.rong.loliasm.client.sprite.ondemand.mixins",
-  "plugin": "zone.rong.loliasm.core.LoliMixinPlugin",
+  "plugin": "zone.rong.loliasm.core.LoliSpriteMixinPlugin",
   "refmap": "mixins.loliasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
