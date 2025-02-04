@@ -1,13 +1,13 @@
-package zone.rong.loliasm.bakedquad;
+package zone.rong.garyasm.bakedquad;
 
 import net.minecraft.launchwrapper.Launch;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.core.LoliLoadingPlugin;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.GaryReflector;
+import zone.rong.garyasm.core.GaryLoadingPlugin;
 
 import java.util.Locale;
 
@@ -23,7 +23,7 @@ public final class BakedQuadClassFactory {
 
     // Called prior to transforming BakedQuadFactory
     public static void predefineBakedQuadClasses() {
-        LoliLogger.instance.info("Predefining BakedQuad variants.");
+        GaryLogger.instance.info("Predefining BakedQuad variants.");
         for (String face : new String[] { "Down", "Up", "North", "South", "West", "East" }) {
             for (String lighting : new String[] { "NoDiffuseLighting", "DiffuseLighting" }) {
                 for (String tint : new String[] { "NoTint", "Tint" }) {
@@ -105,7 +105,7 @@ public final class BakedQuadClassFactory {
                     //     return EnumFacing.DOWN;
                     // }
                     {
-                        methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getFace" : "func_178210_d", "()Lnet/minecraft/util/EnumFacing;", null, null);
+                        methodVisitor = writer.visitMethod(ACC_PUBLIC, GaryLoadingPlugin.isDeobf ? "getFace" : "func_178210_d", "()Lnet/minecraft/util/EnumFacing;", null, null);
                         methodVisitor.visitCode();
                         Label l0 = new Label();
                         methodVisitor.visitLabel(l0);
@@ -142,14 +142,14 @@ public final class BakedQuadClassFactory {
                     //     return sprite;
                     // }
                     {
-                        methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getSprite" : "func_187508_a", "()Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, null);
+                        methodVisitor = writer.visitMethod(ACC_PUBLIC, GaryLoadingPlugin.isDeobf ? "getSprite" : "func_187508_a", "()Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", null, null);
                         methodVisitor.visitCode();
                         Label l0 = new Label();
                         methodVisitor.visitLabel(l0);
                         methodVisitor.visitLineNumber(hasTint ? 33 : 30, l0);
                         methodVisitor.visitVarInsn(ALOAD, 0); // Load this, so GETFIELD has the context to grab the variable
                         // Still the GETFIELD instruction specifies the current class even though the variable resides in the superclass
-                        methodVisitor.visitFieldInsn(GETFIELD, className, LoliLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
+                        methodVisitor.visitFieldInsn(GETFIELD, className, GaryLoadingPlugin.isDeobf ? "sprite" : "field_187509_d", "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;");
                         methodVisitor.visitInsn(ARETURN); // Return a reference
                         Label l1 = new Label();
                         methodVisitor.visitLabel(l1);
@@ -162,14 +162,14 @@ public final class BakedQuadClassFactory {
                     //     return vertexData;
                     // }
                     {
-                        methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getVertexData" : "func_178209_a", "()[I", null, null);
+                        methodVisitor = writer.visitMethod(ACC_PUBLIC, GaryLoadingPlugin.isDeobf ? "getVertexData" : "func_178209_a", "()[I", null, null);
                         methodVisitor.visitCode();
                         Label l0 = new Label();
                         methodVisitor.visitLabel(l0);
                         methodVisitor.visitLineNumber(hasTint ? 38 : 35, l0);
                         methodVisitor.visitVarInsn(ALOAD, 0); // Load this, so GETFIELD has the context to grab the variable
                         // Still the GETFIELD instruction specifies the current class even though the variable resides in the superclass
-                        methodVisitor.visitFieldInsn(GETFIELD, className, LoliLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
+                        methodVisitor.visitFieldInsn(GETFIELD, className, GaryLoadingPlugin.isDeobf ? "vertexData" : "field_178215_a", "[I");
                         methodVisitor.visitInsn(ARETURN); // Return a reference
                         Label l1 = new Label();
                         methodVisitor.visitLabel(l1);
@@ -186,7 +186,7 @@ public final class BakedQuadClassFactory {
                     //     return this.tintIndex != -1;
                     // }
                     {
-                        methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "hasTintIndex" : "func_178212_b", "()Z", null, null);
+                        methodVisitor = writer.visitMethod(ACC_PUBLIC, GaryLoadingPlugin.isDeobf ? "hasTintIndex" : "func_178212_b", "()Z", null, null);
                         methodVisitor.visitCode();
                         Label l0 = new Label();
                         methodVisitor.visitLabel(l0);
@@ -204,7 +204,7 @@ public final class BakedQuadClassFactory {
                     //     return this.tintIndex;
                     // }
                     {
-                        methodVisitor = writer.visitMethod(ACC_PUBLIC, LoliLoadingPlugin.isDeobf ? "getTintIndex" : "func_178211_c", "()I", null, null);
+                        methodVisitor = writer.visitMethod(ACC_PUBLIC, GaryLoadingPlugin.isDeobf ? "getTintIndex" : "func_178211_c", "()I", null, null);
                         methodVisitor.visitCode();
                         Label l0 = new Label();
                         methodVisitor.visitLabel(l0);
@@ -266,7 +266,7 @@ public final class BakedQuadClassFactory {
                         // Solution found:
                         // No need to COMPUTE_FRAMES!
 
-                        Class clazz = LoliReflector.defineClass(Launch.classLoader, className.replace('/', '.'), classBytes);
+                        Class clazz = GaryReflector.defineClass(Launch.classLoader, className.replace('/', '.'), classBytes);
                     } catch (Throwable t) {
                         t.printStackTrace();
                     }

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.api;
+package zone.rong.garyasm.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -20,7 +20,7 @@ public final class HasteUpload {
         HttpURLConnection connection = (HttpURLConnection) uploadURL.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        connection.setRequestProperty("User-Agent", "LoliASM");
+        connection.setRequestProperty("User-Agent", "GaryASM");
         connection.setFixedLengthStreamingMode(bytes.length);
         connection.setDoInput(true);
         connection.setDoOutput(true);

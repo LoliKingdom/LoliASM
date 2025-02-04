@@ -1,13 +1,13 @@
-package zone.rong.loliasm.bakedquad;
+package zone.rong.garyasm.bakedquad;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
-import zone.rong.loliasm.core.LoliTransformer;
+import zone.rong.garyasm.core.GaryTransformer;
 
 /**
- * This class aids the dispatches of BakedQuad instances. The create method is removed/patched in {@link LoliTransformer}
+ * This class aids the dispatches of BakedQuad instances. The create method is removed/patched in {@link GaryTransformer}
  */
 @SuppressWarnings("unused")
 public final class BakedQuadFactory {
@@ -17,7 +17,7 @@ public final class BakedQuadFactory {
     private static final int[] pseudoSwitchMap = new int[] { 0, 1, 2, 3, 4, 5 };
 
     public static BakedQuad canonicalize(int[] vertexData, int tintIndex, EnumFacing face, TextureAtlasSprite sprite, boolean applyDiffuseLighting, VertexFormat format) {
-        return prepare(LoliVertexDataPool.canonicalize(vertexData), tintIndex, face, sprite, applyDiffuseLighting, format);
+        return prepare(GaryVertexDataPool.canonicalize(vertexData), tintIndex, face, sprite, applyDiffuseLighting, format);
     }
 
     public static BakedQuad prepare(int[] vertexData, int tintIndex, EnumFacing face, TextureAtlasSprite sprite, boolean applyDiffuseLighting, VertexFormat format) {

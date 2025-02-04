@@ -1,9 +1,9 @@
-package zone.rong.loliasm.api;
+package zone.rong.garyasm.api;
 
 /**
  * {@link net.minecraft.item.ItemStack} implements this at runtime.
  *
- * This interface aids the delaying of capabilities initialization if {@link zone.rong.loliasm.config.LoliConfig#delayItemStackCapabilityInit} == true
+ * This interface aids the delaying of capabilities initialization if {@link zone.rong.garyasm.config.GaryConfig#delayItemStackCapabilityInit} == true
  */
 public interface IItemStackCapabilityDelayer {
 

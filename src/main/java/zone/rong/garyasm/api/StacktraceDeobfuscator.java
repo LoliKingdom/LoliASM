@@ -1,4 +1,4 @@
-package zone.rong.loliasm.api;
+package zone.rong.garyasm.api;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 

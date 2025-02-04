@@ -1,7 +1,7 @@
-package zone.rong.loliasm.api.datastructures.canonical;
+package zone.rong.garyasm.api.datastructures.canonical;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import zone.rong.loliasm.api.LoliStringPool;
+import zone.rong.garyasm.api.GaryStringPool;
 
 import java.util.Set;
 
@@ -15,7 +15,7 @@ public class AutoCanonizingSet<K> extends ObjectOpenHashSet<K> {
     @Override
     public boolean add(K k) {
         if (k instanceof String) {
-            k = (K) LoliStringPool.canonicalize((String) k);
+            k = (K) GaryStringPool.canonicalize((String) k);
         }
         return super.add(k);
     }

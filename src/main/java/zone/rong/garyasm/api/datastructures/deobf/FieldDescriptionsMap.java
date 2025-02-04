@@ -1,10 +1,10 @@
-package zone.rong.loliasm.api.datastructures.deobf;
+package zone.rong.garyasm.api.datastructures.deobf;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import zone.rong.loliasm.api.datastructures.canonical.AutoCanonizingArrayMap;
-import zone.rong.loliasm.api.LoliStringPool;
+import zone.rong.garyasm.api.datastructures.canonical.AutoCanonizingArrayMap;
+import zone.rong.garyasm.api.GaryStringPool;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class FieldDescriptionsMap extends Object2ObjectOpenHashMap<String, Map<S
 
     @Override
     public Map<String, String> put(String s, Map<String, String> innerMap) {
-        s = LoliStringPool.canonicalize(s);
+        s = GaryStringPool.canonicalize(s);
         if (!(innerMap instanceof Object2ObjectArrayMap)) {
             innerMap = innerMapCanonicalCache.addOrGet(new AutoCanonizingArrayMap<>(innerMap));
         }

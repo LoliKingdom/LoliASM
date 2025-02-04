@@ -27,7 +27,7 @@ minecraft {
     mcVersion = '1.12.2'
     def args = [
             "-ea:${project.group}",
-            '-Dfml.coreMods.load=zone.rong.loliasm.core.LoliLoadingPlugin',
+            '-Dfml.coreMods.load=zone.rong.garyasm.core.GaryLoadingPlugin',
             '-Dmixin.hotSwap=true',
             '-Dmixin.checks.interfaces=true',
             '-Dmixin.debug.export=true'
@@ -164,9 +164,9 @@ jar {
     manifest {
         attributes([
                 'FMLCorePluginContainsFMLMod': true,
-                'FMLCorePlugin': 'zone.rong.loliasm.core.LoliLoadingPlugin',
+                'FMLCorePlugin': 'zone.rong.garyasm.core.GaryLoadingPlugin',
                 'ForceLoadAsMod': project.gradle.startParameter.taskNames[0] == 'build',
-                'FMLAT': 'loliasm_at.cfg'
+                'FMLAT': 'garyasm_at.cfg'
         ])
     }
 }

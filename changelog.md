@@ -1,4 +1,4 @@
-# LoliASM Changelog
+# GaryASM Changelog
 
 ## 2.6
 - Separate out `mixins.modfixes.json` to separate jsons to accompany config values.
@@ -12,7 +12,7 @@
 - Canonicalize strings by using Java's String#intern. This utilizes Java's own implementation and as of Java 7 through 8, it has gotten better. Where using it is probably better than a custom structure.
 - Now uses Forge's own config, but because of earlier-loading, it is manually baked.
 - Deprecated old json config system.
-- More config options! Check your new configs: `loliasm.cfg`
+- More config options! Check your new configs: `garyasm.cfg`
     - Launchwrapper optimizations into more specific configuration settings.
     - Modfixes are now more specific too.
 - NBTTagString objects now have their strings canonicalized.
@@ -28,7 +28,7 @@
 - Fixes incompatibility with *Wings* because Wings' coremod loads some Forge classes too early for us to mixin into.
 
 ## 2.3.1
-- Fixes `bakedQuadPatchClasses` not being properly targeted by mixins. This means, LoliASM now requires MixinBooter. It was going to some time down the line anyways.
+- Fixes `bakedQuadPatchClasses` not being properly targeted by mixins. This means, GaryASM now requires MixinBooter. It was going to some time down the line anyways.
 - Added `miscOptimizations` => aims to optimize smaller areas of the game, nothing game-breaking will be introduced under this.
 - `FluidRegistryMixin` => first of `miscOptimizations`, quicker check @ `FluidRegistry::enableUniversalBucket`
 - Some more logging
@@ -39,7 +39,7 @@
 - New config option: optimizeBitsOfRendering.
 - `VisGraphMixin`: removes unboxing business from `floodFill`, and made it use `EnumFacing::values` => `EnumFacing::VALUES`.
 - ASM change to `RenderGlobal` => fixes `setupTerrain` using `EnumFacing::values` as opposed to `EnumFacing::VALUES`.
-- When ChickenASM is loaded, LoliASM fixes ChickenASM caching a shit ton of superclasses and whatnot in `ClassHierarchyManager`. This isn't used in any ASMing from what I can observe. This change is EXPERIMENTAL!
+- When ChickenASM is loaded, GaryASM fixes ChickenASM caching a shit ton of superclasses and whatnot in `ClassHierarchyManager`. This isn't used in any ASMing from what I can observe. This change is EXPERIMENTAL!
 
 ## 2.2.1
 - Fixed crashing when RegistrySimples are created in-world.
@@ -52,7 +52,7 @@
 ## 2.1
 - WIP: Dynamic Model Baking.
 - WIP: Speedy Fluid Rendering.
-- Optifine now does not crash with LoliASM. Same effect as if you disabled `bakedQuadsSquasher` in configs. The real fix will be addressed soon:tm:.
+- Optifine now does not crash with GaryASM. Same effect as if you disabled `bakedQuadsSquasher` in configs. The real fix will be addressed soon:tm:.
 - I wrote a mixin with ASM, counter-intuitive?
 - Added branding, don't be pissed off :^).
 - Cleanups.
@@ -67,7 +67,7 @@
 - Starting to implement object canonization, or deduplication as Foamfix calls it, hopefully it will match Foamfix and beat it out. We'll see.
 - Starting to implement BlockStateContainer, StateImplementation memory squashers.
 - Added mixins to do some of the leg work for me as I'm too lazy to write ASM all the time.
-- Cleaned up `LoliReflector`, potentially an API candidate.
+- Cleaned up `GaryReflector`, potentially an API candidate.
 - Relocated some coremod classes.
 
 ## 1.1
