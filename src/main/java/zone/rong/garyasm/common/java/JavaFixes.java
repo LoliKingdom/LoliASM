@@ -1,12 +1,12 @@
-package zone.rong.loliasm.common.java;
+package zone.rong.garyasm.common.java;
 
 import com.google.common.base.Stopwatch;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.api.LoliStringPool;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.GaryReflector;
+import zone.rong.garyasm.api.GaryStringPool;
 
 import java.lang.invoke.MethodHandle;
 import java.security.*;
@@ -24,8 +24,8 @@ public class JavaFixes {
         MethodHandle secureClassLoader$pdcache$getter = null;
         MethodHandle permission$name$setter = null;
         try {
-            secureClassLoader$pdcache$getter = LoliReflector.resolveFieldGetter(SecureClassLoader.class, "pdcache");
-            permission$name$setter = LoliReflector.resolveFieldSetter(Permission.class, "name");
+            secureClassLoader$pdcache$getter = GaryReflector.resolveFieldGetter(SecureClassLoader.class, "pdcache");
+            permission$name$setter = GaryReflector.resolveFieldSetter(Permission.class, "name");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,7 +43,7 @@ public class JavaFixes {
     private void run() {
         Stopwatch stopwatch = Stopwatch.createStarted();
         try {
-            LoliStringPool.establishPool(LoliStringPool.FILE_PERMISSIONS_ID, 512);
+            GaryStringPool.establishPool(GaryStringPool.FILE_PERMISSIONS_ID, 512);
             HashMap<CodeSource, ProtectionDomain> pdcache = (HashMap<CodeSource, ProtectionDomain>) SECURECLASSLOADER$PDCACHE$GETTER.invoke(Launch.classLoader);
             for (ProtectionDomain pd : pdcache.values()) {
                 PermissionCollection pc = pd.getPermissions();
@@ -51,17 +51,17 @@ public class JavaFixes {
                     Enumeration<Permission> perms = pc.elements();
                     while (perms.hasMoreElements()) {
                         Permission perm = perms.nextElement();
-                        PERMISSION$NAME$SETTER.invokeExact(perm, LoliStringPool.canonicalize(perm.getName()));
+                        PERMISSION$NAME$SETTER.invokeExact(perm, GaryStringPool.canonicalize(perm.getName()));
                     }
                 }
             }
-            LoliStringPool.purgePool(LoliStringPool.FILE_PERMISSIONS_ID);
+            GaryStringPool.purgePool(GaryStringPool.FILE_PERMISSIONS_ID);
         }
         catch (ConcurrentModificationException ignored) { } // Swallow it, we don't care enough about the CME here
         catch (Throwable t) {
             t.printStackTrace();
         }
-        LoliLogger.instance.info("Took {} to canonicalize Java's FilePermission caches.", stopwatch.stop());
+        GaryLogger.instance.info("Took {} to canonicalize Java's FilePermission caches.", stopwatch.stop());
     }
 
     @SubscribeEvent

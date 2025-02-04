@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand;
+package zone.rong.garyasm.client.sprite.ondemand;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.apache.commons.lang3.tuple.Pair;

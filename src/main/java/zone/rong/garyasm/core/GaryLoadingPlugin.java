@@ -1,4 +1,4 @@
-package zone.rong.loliasm.core;
+package zone.rong.garyasm.core;
 
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
@@ -7,12 +7,12 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
-import zone.rong.loliasm.UnsafeLolis;
-import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.spark.LoliSparker;
-import zone.rong.loliasm.api.DeobfuscatingRewritePolicy;
-import zone.rong.loliasm.api.StacktraceDeobfuscator;
+import zone.rong.garyasm.UnsafeGarys;
+import zone.rong.garyasm.config.GaryConfig;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.spark.GarySparker;
+import zone.rong.garyasm.api.DeobfuscatingRewritePolicy;
+import zone.rong.garyasm.api.StacktraceDeobfuscator;
 import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 import java.io.File;
@@ -27,16 +27,16 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-@IFMLLoadingPlugin.Name("LoliASM")
+@IFMLLoadingPlugin.Name("GaryASM")
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
-public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
+public class GaryLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     public static final String VERSION = "5.23";
 
     public static final boolean isDeobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
 
     static {
-        if (!isDeobf && (LoliConfig.instance.sparkProfileCoreModLoading || LoliConfig.instance.sparkProfileEntireGameLoad)) {
+        if (!isDeobf && (GaryConfig.instance.sparkProfileCoreModLoading || GaryConfig.instance.sparkProfileEntireGameLoad)) {
             File modsFolder = new File(Launch.minecraftHome, "mods");
             for (File file : modsFolder.listFiles()) {
                 if (file.isDirectory()) {
@@ -61,54 +61,54 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         }
     }
 
-    // public static final boolean isModDirectorInstalled = LoliReflector.doesTweakExist("net.jan.moddirector.launchwrapper.ModDirectorTweaker");
+    // public static final boolean isModDirectorInstalled = GaryReflector.doesTweakExist("net.jan.moddirector.launchwrapper.ModDirectorTweaker");
     public static final boolean isVMOpenJ9 = SystemUtils.JAVA_VM_NAME.toLowerCase(Locale.ROOT).contains("openj9");
     public static final boolean isClient = FMLLaunchHandler.side() == Side.CLIENT;
 
-    public LoliLoadingPlugin() {
-        LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
-        LoliLogger.instance.info("Lolis are preparing and loading in mixins since Rongmario's too lazy to write pure ASM at times despite the mod being called 'LoliASM'");
-        if (LoliConfig.instance.sparkProfileCoreModLoading) {
-            LoliSparker.start("coremod");
+    public GaryLoadingPlugin() {
+        GaryLogger.instance.info("Garys are on the {}-side.", isClient ? "client" : "server");
+        GaryLogger.instance.info("Garys are preparing and loading in mixins since Rongmario's too lazy to write pure ASM at times despite the mod being called 'GaryASM'");
+        if (GaryConfig.instance.sparkProfileCoreModLoading) {
+            GarySparker.start("coremod");
         }
-        if (LoliConfig.instance.sparkProfileEntireGameLoad) {
-            LoliSparker.start("game");
+        if (GaryConfig.instance.sparkProfileEntireGameLoad) {
+            GarySparker.start("game");
         }
-        if (LoliConfig.instance.outdatedCaCertsFix) {
+        if (GaryConfig.instance.outdatedCaCertsFix) {
             try (InputStream is = this.getClass().getResource("/cacerts").openStream()) {
                 File cacertsCopy = File.createTempFile("cacerts", "");
                 cacertsCopy.deleteOnExit();
                 FileUtils.copyInputStreamToFile(is, cacertsCopy);
                 System.setProperty("javax.net.ssl.trustStore", cacertsCopy.getAbsolutePath());
-                LoliLogger.instance.warn("Replacing CA Certs with an updated one...");
+                GaryLogger.instance.warn("Replacing CA Certs with an updated one...");
             } catch (Exception e) {
-                LoliLogger.instance.warn("Unable to replace CA Certs.", e);
+                GaryLogger.instance.warn("Unable to replace CA Certs.", e);
             }
         }
-        if (LoliConfig.instance.removeForgeSecurityManager) {
-            UnsafeLolis.removeFMLSecurityManager();
+        if (GaryConfig.instance.removeForgeSecurityManager) {
+            UnsafeGarys.removeFMLSecurityManager();
         }
-        if (LoliConfig.instance.crashReportImprovements || LoliConfig.instance.rewriteLoggingWithDeobfuscatedNames) {
-            File modDir = new File(Launch.minecraftHome, "config/loliasm");
+        if (GaryConfig.instance.crashReportImprovements || GaryConfig.instance.rewriteLoggingWithDeobfuscatedNames) {
+            File modDir = new File(Launch.minecraftHome, "config/garyasm");
             modDir.mkdirs();
             // Initialize StacktraceDeobfuscator
-            LoliLogger.instance.info("Initializing StacktraceDeobfuscator...");
+            GaryLogger.instance.info("Initializing StacktraceDeobfuscator...");
             try {
                 File mappings = new File(modDir, "methods-stable_39.csv");
                 if (mappings.exists()) {
-                    LoliLogger.instance.info("Found MCP stable-39 method mappings: {}", mappings.getName());
+                    GaryLogger.instance.info("Found MCP stable-39 method mappings: {}", mappings.getName());
                 } else {
-                    LoliLogger.instance.info("Downloading MCP stable-39 method mappings to: {}", mappings.getName());
+                    GaryLogger.instance.info("Downloading MCP stable-39 method mappings to: {}", mappings.getName());
                 }
                 StacktraceDeobfuscator.init(mappings);
             } catch (Exception e) {
-                LoliLogger.instance.error("Failed to get MCP stable-39 data!", e);
+                GaryLogger.instance.error("Failed to get MCP stable-39 data!", e);
             }
-            LoliLogger.instance.info("Initialized StacktraceDeobfuscator.");
-            if (LoliConfig.instance.rewriteLoggingWithDeobfuscatedNames) {
-                LoliLogger.instance.info("Installing DeobfuscatingRewritePolicy...");
+            GaryLogger.instance.info("Initialized StacktraceDeobfuscator.");
+            if (GaryConfig.instance.rewriteLoggingWithDeobfuscatedNames) {
+                GaryLogger.instance.info("Installing DeobfuscatingRewritePolicy...");
                 DeobfuscatingRewritePolicy.install();
-                LoliLogger.instance.info("Installed DeobfuscatingRewritePolicy.");
+                GaryLogger.instance.info("Installed DeobfuscatingRewritePolicy.");
             }
         }
         boolean needToDGSFFFF = isVMOpenJ9 && SystemUtils.IS_JAVA_1_8;
@@ -122,9 +122,9 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                     }
                 }
                 if (needToDGSFFFF) {
-                    LoliLogger.instance.fatal("LoliASM notices that you're using Eclipse OpenJ9 {}!", SystemUtils.JAVA_VERSION);
-                    LoliLogger.instance.fatal("This OpenJ9 version is outdated and contains a critical bug: https://github.com/eclipse-openj9/openj9/issues/8353");
-                    LoliLogger.instance.fatal("Either use '-Xjit:disableGuardedStaticFinalFieldFolding' as part of your java arguments, or update OpenJ9!");
+                    GaryLogger.instance.fatal("GaryASM notices that you're using Eclipse OpenJ9 {}!", SystemUtils.JAVA_VERSION);
+                    GaryLogger.instance.fatal("This OpenJ9 version is outdated and contains a critical bug: https://github.com/eclipse-openj9/openj9/issues/8353");
+                    GaryLogger.instance.fatal("Either use '-Xjit:disableGuardedStaticFinalFieldFolding' as part of your java arguments, or update OpenJ9!");
                 }
             }
         }
@@ -142,7 +142,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public String getSetupClass() {
-        return "zone.rong.loliasm.core.LoliFMLCallHook";
+        return "zone.rong.garyasm.core.GaryFMLCallHook";
     }
 
     @Override
@@ -150,7 +150,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public String getAccessTransformerClass() {
-        return "zone.rong.loliasm.core.LoliTransformer";
+        return "zone.rong.garyasm.core.GaryTransformer";
     }
 
     @Override
@@ -207,44 +207,44 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         if (isClient) {
             switch (mixinConfig) {
                 case "mixins.bucket.json":
-                    return LoliConfig.instance.reuseBucketQuads;
+                    return GaryConfig.instance.reuseBucketQuads;
                 case "mixins.rendering.json":
-                    return LoliConfig.instance.optimizeSomeRendering;
+                    return GaryConfig.instance.optimizeSomeRendering;
                 case "mixins.datastructures_modelmanager.json":
-                    return LoliConfig.instance.moreModelManagerCleanup;
+                    return GaryConfig.instance.moreModelManagerCleanup;
                 case "mixins.screenshot.json":
-                    return LoliConfig.instance.releaseScreenshotCache || LoliConfig.instance.asyncScreenshot;
+                    return GaryConfig.instance.releaseScreenshotCache || GaryConfig.instance.asyncScreenshot;
                 case "mixins.resolve_mc2071.json":
-                    return LoliConfig.instance.resolveMC2071;
+                    return GaryConfig.instance.resolveMC2071;
                 case "mixins.fix_mc_skindownloading.json":
-                    return LoliConfig.instance.limitSkinDownloadingThreads;
+                    return GaryConfig.instance.limitSkinDownloadingThreads;
             }
         }
         switch (mixinConfig) {
             case "mixins.registries.json":
-                return LoliConfig.instance.optimizeRegistries;
+                return GaryConfig.instance.optimizeRegistries;
             case "mixins.stripitemstack.json":
-                return LoliConfig.instance.stripNearUselessItemStackFields;
+                return GaryConfig.instance.stripNearUselessItemStackFields;
             case "mixins.lockcode.json":
-                return LoliConfig.instance.lockCodeCanonicalization;
+                return GaryConfig.instance.lockCodeCanonicalization;
             case "mixins.recipes.json":
-                return LoliConfig.instance.optimizeFurnaceRecipeStore;
+                return GaryConfig.instance.optimizeFurnaceRecipeStore;
             case "mixins.misc_fluidregistry.json":
-                return LoliConfig.instance.quickerEnableUniversalBucketCheck;
+                return GaryConfig.instance.quickerEnableUniversalBucketCheck;
             case "mixins.forgefixes.json":
-                return LoliConfig.instance.fixFillBucketEventNullPointerException || LoliConfig.instance.fixTileEntityOnLoadCME;
+                return GaryConfig.instance.fixFillBucketEventNullPointerException || GaryConfig.instance.fixTileEntityOnLoadCME;
             case "mixins.capability.json":
-                return LoliConfig.instance.delayItemStackCapabilityInit;
+                return GaryConfig.instance.delayItemStackCapabilityInit;
             case "mixins.singletonevents.json":
-                return LoliConfig.instance.makeEventsSingletons;
+                return GaryConfig.instance.makeEventsSingletons;
             case "mixins.efficienthashing.json":
-                return LoliConfig.instance.efficientHashing;
+                return GaryConfig.instance.efficientHashing;
             case "mixins.crashes.json":
-                return LoliConfig.instance.crashReportImprovements;
+                return GaryConfig.instance.crashReportImprovements;
             case "mixins.fix_mc129057.json":
-                return LoliConfig.instance.fixMC129057;
+                return GaryConfig.instance.fixMC129057;
             case "mixins.priorities.json":
-                return LoliConfig.instance.threadPriorityFix;
+                return GaryConfig.instance.threadPriorityFix;
         }
         return true;
     }

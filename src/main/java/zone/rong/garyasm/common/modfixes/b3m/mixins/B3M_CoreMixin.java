@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.b3m.mixins;
+package zone.rong.garyasm.common.modfixes.b3m.mixins;
 
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Final;
@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import sedridor.B3M.B3M_Core;
-import zone.rong.loliasm.common.modfixes.b3m.CapitalizedNamespaceResourceLocation;
+import zone.rong.garyasm.common.modfixes.b3m.CapitalizedNamespaceResourceLocation;
 
 @Mixin(value = B3M_Core.class, remap = false)
 public class B3M_CoreMixin {

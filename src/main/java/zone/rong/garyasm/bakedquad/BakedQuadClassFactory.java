@@ -28,7 +28,7 @@ public final class BakedQuadClassFactory {
             for (String lighting : new String[] { "NoDiffuseLighting", "DiffuseLighting" }) {
                 for (String tint : new String[] { "NoTint", "Tint" }) {
 
-                    final String className = "ifuckinglovelolis/bakedquads/" + face + lighting + tint;
+                    final String className = "ifuckinglovegarys/bakedquads/" + face + lighting + tint;
                     final String classDescriptor = "L" + className + ";";
                     final boolean hasTint = tint.equals("Tint");
 

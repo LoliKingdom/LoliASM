@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.rendering.mixins;
+package zone.rong.garyasm.client.rendering.mixins;
 
 import it.unimi.dsi.fastutil.ints.IntArrayFIFOQueue;
 import net.minecraft.client.renderer.chunk.VisGraph;

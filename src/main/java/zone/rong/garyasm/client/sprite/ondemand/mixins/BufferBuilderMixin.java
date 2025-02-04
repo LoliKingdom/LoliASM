@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand.mixins;
+package zone.rong.garyasm.client.sprite.ondemand.mixins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import zone.rong.loliasm.client.sprite.ondemand.IAnimatedSpritePrimer;
-import zone.rong.loliasm.client.sprite.ondemand.IBufferPrimerConfigurator;
+import zone.rong.garyasm.client.sprite.ondemand.IAnimatedSpritePrimer;
+import zone.rong.garyasm.client.sprite.ondemand.IBufferPrimerConfigurator;
 
 import java.nio.ByteBuffer;
 

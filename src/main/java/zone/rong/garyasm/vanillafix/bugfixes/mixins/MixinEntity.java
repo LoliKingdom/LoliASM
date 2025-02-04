@@ -1,4 +1,4 @@
-package zone.rong.loliasm.vanillafix.bugfixes.mixins;
+package zone.rong.garyasm.vanillafix.bugfixes.mixins;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;

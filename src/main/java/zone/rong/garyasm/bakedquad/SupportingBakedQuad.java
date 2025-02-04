@@ -1,4 +1,4 @@
-package zone.rong.loliasm.bakedquad;
+package zone.rong.garyasm.bakedquad;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Made for classes that extends vanilla BakedQuad, since LoliASM patches a lot of it,
+ * Made for classes that extends vanilla BakedQuad, since GaryASM patches a lot of it,
  * Some extending classes may use the protected variables that were removed.
  * This class is to be the bridging class that they extend on.
  */

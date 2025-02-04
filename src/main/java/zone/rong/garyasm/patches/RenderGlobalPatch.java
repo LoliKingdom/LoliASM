@@ -1,4 +1,4 @@
-package zone.rong.loliasm.patches;
+package zone.rong.garyasm.patches;
 
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.entity.Entity;

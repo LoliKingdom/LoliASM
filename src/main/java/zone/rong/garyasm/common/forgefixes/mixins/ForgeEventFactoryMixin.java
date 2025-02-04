@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.forgefixes.mixins;
+package zone.rong.garyasm.common.forgefixes.mixins;
 
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.FillBucketEvent;

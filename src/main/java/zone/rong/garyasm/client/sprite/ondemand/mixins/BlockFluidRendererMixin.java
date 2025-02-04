@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand.mixins;
+package zone.rong.garyasm.client.sprite.ondemand.mixins;
 
 import net.minecraft.client.renderer.BlockFluidRenderer;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
@@ -6,8 +6,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import zone.rong.loliasm.client.sprite.ondemand.IAnimatedSpritePrimer;
-import zone.rong.loliasm.client.sprite.ondemand.ICompiledChunkExpander;
+import zone.rong.garyasm.client.sprite.ondemand.IAnimatedSpritePrimer;
+import zone.rong.garyasm.client.sprite.ondemand.ICompiledChunkExpander;
 
 @Mixin(BlockFluidRenderer.class)
 public class BlockFluidRendererMixin {

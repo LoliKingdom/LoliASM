@@ -1,4 +1,4 @@
-package zone.rong.loliasm.proxy;
+package zone.rong.garyasm.proxy;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -11,20 +11,20 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.bakedquad.LoliVertexDataPool;
-import zone.rong.loliasm.client.models.bucket.LoliBakedDynBucket;
-import zone.rong.loliasm.client.screenshot.ScreenshotListener;
-import zone.rong.loliasm.client.sprite.FramesTextureData;
-import zone.rong.loliasm.common.modfixes.qmd.QMDEventHandler;
-import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.core.LoliTransformer;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.bakedquad.GaryVertexDataPool;
+import zone.rong.garyasm.client.models.bucket.GaryBakedDynBucket;
+import zone.rong.garyasm.client.screenshot.ScreenshotListener;
+import zone.rong.garyasm.client.sprite.FramesTextureData;
+import zone.rong.garyasm.common.modfixes.qmd.QMDEventHandler;
+import zone.rong.garyasm.config.GaryConfig;
+import zone.rong.garyasm.core.GaryTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Mod.EventBusSubscriber(modid = "loliasm", value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = "garyasm", value = Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
     public static final List<Runnable> refreshAfterModels = new ArrayList<>();
@@ -32,13 +32,13 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
-        if (LoliConfig.instance.releaseSpriteFramesCache) {
+        if (GaryConfig.instance.releaseSpriteFramesCache) {
             MinecraftForge.EVENT_BUS.register(FramesTextureData.class);
         }
-        if (Loader.isModLoaded("qmd") && LoliConfig.instance.optimizeQMDBeamRenderer) {
+        if (Loader.isModLoaded("qmd") && GaryConfig.instance.optimizeQMDBeamRenderer) {
             MinecraftForge.EVENT_BUS.register(QMDEventHandler.class);
         }
-        if (LoliConfig.instance.copyScreenshotToClipboard) {
+        if (GaryConfig.instance.copyScreenshotToClipboard) {
             MinecraftForge.EVENT_BUS.register(ScreenshotListener.class);
         }
     }
@@ -57,9 +57,9 @@ public class ClientProxy extends CommonProxy {
         if (Loader.isModLoaded("jei")) {
             releaseSpriteFramesCache();
         }
-        if (!LoliTransformer.isOptifineInstalled && LoliConfig.instance.vertexDataCanonicalization) {
-            LoliLogger.instance.info("{} total quads processed. {} unique vertex data array in LoliVertexDataPool, {} vertex data arrays deduplicated altogether during game load.", LoliVertexDataPool.getDeduplicatedCount(), LoliVertexDataPool.getSize(), LoliVertexDataPool.getDeduplicatedCount() - LoliVertexDataPool.getSize());
-            MinecraftForge.EVENT_BUS.register(LoliVertexDataPool.class);
+        if (!GaryTransformer.isOptifineInstalled && GaryConfig.instance.vertexDataCanonicalization) {
+            GaryLogger.instance.info("{} total quads processed. {} unique vertex data array in GaryVertexDataPool, {} vertex data arrays deduplicated altogether during game load.", GaryVertexDataPool.getDeduplicatedCount(), GaryVertexDataPool.getSize(), GaryVertexDataPool.getDeduplicatedCount() - GaryVertexDataPool.getSize());
+            MinecraftForge.EVENT_BUS.register(GaryVertexDataPool.class);
         }
     }
 
@@ -67,14 +67,14 @@ public class ClientProxy extends CommonProxy {
         ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener((ISelectiveResourceReloadListener) (manager, predicate) -> {
             if (predicate.test(VanillaResourceType.MODELS)) {
                 refreshAfterModels.forEach(Runnable::run);
-                if (LoliConfig.instance.reuseBucketQuads) {
-                    LoliBakedDynBucket.baseQuads.clear();
-                    LoliBakedDynBucket.flippedBaseQuads.clear();
-                    LoliBakedDynBucket.coverQuads.clear();
-                    LoliBakedDynBucket.flippedCoverQuads.clear();
+                if (GaryConfig.instance.reuseBucketQuads) {
+                    GaryBakedDynBucket.baseQuads.clear();
+                    GaryBakedDynBucket.flippedBaseQuads.clear();
+                    GaryBakedDynBucket.coverQuads.clear();
+                    GaryBakedDynBucket.flippedCoverQuads.clear();
                 }
-                if (!LoliTransformer.isOptifineInstalled && LoliConfig.instance.vertexDataCanonicalization) {
-                    LoliVertexDataPool.invalidate();
+                if (!GaryTransformer.isOptifineInstalled && GaryConfig.instance.vertexDataCanonicalization) {
+                    GaryVertexDataPool.invalidate();
                 }
             }
         });

@@ -1,13 +1,13 @@
-package zone.rong.loliasm.core;
+package zone.rong.garyasm.core;
 
 import com.google.common.collect.Lists;
 import net.minecraftforge.fml.common.Loader;
-import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.garyasm.config.GaryConfig;
 import zone.rong.mixinbooter.ILateMixinLoader;
 
 import java.util.List;
 
-public class LoliLateMixinLoader implements ILateMixinLoader {
+public class GaryLateMixinLoader implements ILateMixinLoader {
 
     @Override
     public List<String> getMixinConfigs() {
@@ -27,24 +27,24 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
     public boolean shouldMixinConfigQueue(String mixinConfig) {
         switch (mixinConfig) {
             case "mixins.bakedquadsquasher.json":
-                return LoliTransformer.squashBakedQuads;
+                return GaryTransformer.squashBakedQuads;
             case "mixins.modfixes_immersiveengineering.json":
-                return LoliConfig.instance.fixBlockIEBaseArrayIndexOutOfBoundsException && Loader.isModLoaded("immersiveengineering");
+                return GaryConfig.instance.fixBlockIEBaseArrayIndexOutOfBoundsException && Loader.isModLoaded("immersiveengineering");
             case "mixins.modfixes_evilcraftcompat.json":
-                return LoliConfig.instance.repairEvilCraftEIOCompat && Loader.isModLoaded("evilcraftcompat") && Loader.isModLoaded("enderio") &&
+                return GaryConfig.instance.repairEvilCraftEIOCompat && Loader.isModLoaded("evilcraftcompat") && Loader.isModLoaded("enderio") &&
                         Loader.instance().getIndexedModList().get("enderio").getVersion().equals("5.3.70"); // Only apply on newer EIO versions where compat was broken
             case "mixins.modfixes_ebwizardry.json":
-                return LoliConfig.instance.optimizeArcaneLockRendering && Loader.isModLoaded("ebwizardry");
+                return GaryConfig.instance.optimizeArcaneLockRendering && Loader.isModLoaded("ebwizardry");
             case "mixins.modfixes_xu2.json":
-                return (LoliConfig.instance.fixXU2CrafterCrash || LoliConfig.instance.disableXU2CrafterRendering) && Loader.isModLoaded("extrautils2");
+                return (GaryConfig.instance.fixXU2CrafterCrash || GaryConfig.instance.disableXU2CrafterRendering) && Loader.isModLoaded("extrautils2");
             case "mixins.searchtree_mod.json":
-                return LoliConfig.instance.replaceSearchTreeWithJEISearching && Loader.isModLoaded("jei");
+                return GaryConfig.instance.replaceSearchTreeWithJEISearching && Loader.isModLoaded("jei");
             case "mixins.modfixes_astralsorcery.json":
-                return LoliConfig.instance.optimizeAmuletRelatedFunctions && Loader.isModLoaded("astralsorcery");
+                return GaryConfig.instance.optimizeAmuletRelatedFunctions && Loader.isModLoaded("astralsorcery");
             case "mixins.capability_astralsorcery.json":
-                return LoliConfig.instance.fixAmuletHolderCapability && Loader.isModLoaded("astralsorcery");
+                return GaryConfig.instance.fixAmuletHolderCapability && Loader.isModLoaded("astralsorcery");
             case "mixins.modfixes_b3m.json":
-                return LoliConfig.instance.resourceLocationCanonicalization && Loader.isModLoaded("B3M"); // Stupid
+                return GaryConfig.instance.resourceLocationCanonicalization && Loader.isModLoaded("B3M"); // Stupid
         }
         return false;
     }

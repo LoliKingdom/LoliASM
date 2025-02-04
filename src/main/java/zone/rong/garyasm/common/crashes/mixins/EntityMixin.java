@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.crashes.mixins;
+package zone.rong.garyasm.common.crashes.mixins;
 
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zone.rong.loliasm.common.crashes.CrashUtils;
+import zone.rong.garyasm.common.crashes.CrashUtils;
 
 @Mixin(Entity.class)
 public class EntityMixin {

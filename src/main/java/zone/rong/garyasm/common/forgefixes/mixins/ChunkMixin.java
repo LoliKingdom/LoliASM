@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.forgefixes.mixins;
+package zone.rong.garyasm.common.forgefixes.mixins;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

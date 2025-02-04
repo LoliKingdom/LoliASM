@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.crashes;
+package zone.rong.garyasm.common.crashes;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.FMLContainer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.MinecraftDummyContainer;
 import net.minecraftforge.fml.common.ModContainer;
-import zone.rong.loliasm.LoliLogger;
+import zone.rong.garyasm.GaryLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,9 +51,9 @@ public class ModIdentifier {
         // Get the URL of the class
         final String untrasformedName = untransformName(Launch.classLoader, className);
         URL url = Launch.classLoader.getResource(untrasformedName.replace('.', '/') + ".class");
-        LoliLogger.instance.debug(className + " = " + untrasformedName + " = " + url);
+        GaryLogger.instance.debug(className + " = " + untrasformedName + " = " + url);
         if (url == null) {
-            LoliLogger.instance.warn("Failed to identify " + className + " (untransformed name: " + untrasformedName + ")");
+            GaryLogger.instance.warn("Failed to identify " + className + " (untransformed name: " + untrasformedName + ")");
             return Collections.emptySet();
         }
         // Get the mod containing that class

@@ -1,4 +1,4 @@
-package zone.rong.loliasm;
+package zone.rong.garyasm;
 
 import codechicken.asm.ClassHierarchyManager;
 import net.minecraft.nbt.NBTTagCompound;
@@ -6,18 +6,18 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
-import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
-import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.core.LoliLoadingPlugin;
-import zone.rong.loliasm.proxy.CommonProxy;
+import zone.rong.garyasm.api.mixins.RegistrySimpleExtender;
+import zone.rong.garyasm.config.GaryConfig;
+import zone.rong.garyasm.core.GaryLoadingPlugin;
+import zone.rong.garyasm.proxy.CommonProxy;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 
-@Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION, dependencies = "required-after:mixinbooter@[4.2,);after:jei;after:spark@[1.5.2]")
-public class LoliASM {
+@Mod(modid = "garyasm", name = "GaryASM", version = GaryLoadingPlugin.VERSION, dependencies = "required-after:mixinbooter@[4.2,);after:jei;after:spark@[1.5.2]")
+public class GaryASM {
 
-    @SidedProxy(modId = "loliasm", clientSide = "zone.rong.loliasm.proxy.ClientProxy", serverSide = "zone.rong.loliasm.proxy.CommonProxy")
+    @SidedProxy(modId = "garyasm", clientSide = "zone.rong.garyasm.proxy.ClientProxy", serverSide = "zone.rong.garyasm.proxy.CommonProxy")
     public static CommonProxy proxy;
 
     public static List<RegistrySimpleExtender> simpleRegistryInstances = new ArrayList<>();
@@ -25,9 +25,9 @@ public class LoliASM {
     public static BiConsumer<TileEntity, NBTTagCompound> customTileDataConsumer;
 
     static {
-        if (LoliConfig.instance.cleanupChickenASMClassHierarchyManager && LoliReflector.doesClassExist("codechicken.asm.ClassHierarchyManager")) {
+        if (GaryConfig.instance.cleanupChickenASMClassHierarchyManager && GaryReflector.doesClassExist("codechicken.asm.ClassHierarchyManager")) {
             // EXPERIMENTAL: As far as I know, this functionality of ChickenASM isn't actually used by any coremods that depends on ChickenASM
-            LoliLogger.instance.info("Replacing ClassHierarchyManager::superclasses with a dummy map.");
+            GaryLogger.instance.info("Replacing ClassHierarchyManager::superclasses with a dummy map.");
             ClassHierarchyManager.superclasses = new HashMap() {
                 @Override
                 public Object put(Object key, Object value) {

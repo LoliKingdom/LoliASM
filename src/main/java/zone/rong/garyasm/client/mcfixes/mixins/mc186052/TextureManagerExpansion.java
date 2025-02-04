@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.mcfixes.mixins.mc186052;
+package zone.rong.garyasm.client.mcfixes.mixins.mc186052;
 
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;

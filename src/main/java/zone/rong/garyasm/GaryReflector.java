@@ -1,13 +1,13 @@
-package zone.rong.loliasm;
+package zone.rong.garyasm;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.objectweb.asm.Type;
-import zone.rong.loliasm.api.datastructures.CaptureSet;
-import zone.rong.loliasm.api.datastructures.ResourceCache;
-import zone.rong.loliasm.core.LoliLoadingPlugin;
+import zone.rong.garyasm.api.datastructures.CaptureSet;
+import zone.rong.garyasm.api.datastructures.ResourceCache;
+import zone.rong.garyasm.core.GaryLoadingPlugin;
 
 import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * Helper class for Reflection nonsense.
  */
-public class LoliReflector {
+public class GaryReflector {
 
     public static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
@@ -142,7 +142,7 @@ public class LoliReflector {
         try {
             Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
-            if (LoliLoadingPlugin.isVMOpenJ9) {
+            if (GaryLoadingPlugin.isVMOpenJ9) {
                 fixOpenJ9PrivateStaticFinalRestraint(field);
             }
             return LOOKUP.unreflectGetter(field);
@@ -156,7 +156,7 @@ public class LoliReflector {
         try {
             Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
-            if (LoliLoadingPlugin.isVMOpenJ9) {
+            if (GaryLoadingPlugin.isVMOpenJ9) {
                 fixOpenJ9PrivateStaticFinalRestraint(field);
             }
             return LOOKUP.unreflectSetter(field);
@@ -188,7 +188,7 @@ public class LoliReflector {
         try {
             Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
-            if (LoliLoadingPlugin.isVMOpenJ9) {
+            if (GaryLoadingPlugin.isVMOpenJ9) {
                 fixOpenJ9PrivateStaticFinalRestraint(field);
             }
             return field;

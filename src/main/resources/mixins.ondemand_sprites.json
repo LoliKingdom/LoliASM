@@ -1,7 +1,7 @@
 {
-  "package": "zone.rong.loliasm.client.sprite.ondemand.mixins",
-  "plugin": "zone.rong.loliasm.core.LoliSpriteMixinPlugin",
-  "refmap": "mixins.loliasm.refmap.json",
+  "package": "zone.rong.garyasm.client.sprite.ondemand.mixins",
+  "plugin": "zone.rong.garyasm.core.GarySpriteMixinPlugin",
+  "refmap": "mixins.garyasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",

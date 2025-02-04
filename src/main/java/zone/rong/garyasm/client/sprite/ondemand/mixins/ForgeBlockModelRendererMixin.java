@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand.mixins;
+package zone.rong.garyasm.client.sprite.ondemand.mixins;
 
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraftforge.client.model.pipeline.ForgeBlockModelRenderer;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zone.rong.loliasm.client.sprite.ondemand.IVertexLighterExpander;
+import zone.rong.garyasm.client.sprite.ondemand.IVertexLighterExpander;
 
 @Mixin(value = ForgeBlockModelRenderer.class, remap = false)
 public class ForgeBlockModelRendererMixin {

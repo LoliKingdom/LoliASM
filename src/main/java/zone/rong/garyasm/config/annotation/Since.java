@@ -1,4 +1,4 @@
-package zone.rong.loliasm.config.annotation;
+package zone.rong.garyasm.config.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.priorities.mixins.client;
+package zone.rong.garyasm.common.priorities.mixins.client;
 
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.util.math.MathHelper;

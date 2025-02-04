@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.astralsorcery.mixins;
+package zone.rong.garyasm.common.modfixes.astralsorcery.mixins;
 
 import hellfirepvp.astralsorcery.common.auxiliary.tick.ITickHandler;
 import hellfirepvp.astralsorcery.common.enchantment.EnchantmentPlayerWornTick;
@@ -19,10 +19,10 @@ public abstract class PlayerAmuletHandlerMixin implements ITickHandler {
     public void onPlayerDeath(PlayerDropsEvent event) {
         EntityPlayer player = event.getEntityPlayer();
         for (ItemStack armorStack : player.getArmorInventoryList()) {
-            EnchantmentUpgradeHelperInvoker.loliasm$removeAmuletOwner(armorStack);
+            EnchantmentUpgradeHelperInvoker.garyasm$removeAmuletOwner(armorStack);
         }
-        EnchantmentUpgradeHelperInvoker.loliasm$removeAmuletOwner(player.getHeldItemMainhand());
-        EnchantmentUpgradeHelperInvoker.loliasm$removeAmuletOwner(player.getHeldItemOffhand());
+        EnchantmentUpgradeHelperInvoker.garyasm$removeAmuletOwner(player.getHeldItemMainhand());
+        EnchantmentUpgradeHelperInvoker.garyasm$removeAmuletOwner(player.getHeldItemOffhand());
     }
 
     @Override

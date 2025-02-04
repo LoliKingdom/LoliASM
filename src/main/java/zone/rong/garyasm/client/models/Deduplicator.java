@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.models;
+package zone.rong.garyasm.client.models;
 
 import com.google.common.collect.*;
 import it.unimi.dsi.fastutil.floats.FloatArrays;
@@ -13,10 +13,10 @@ import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.model.TRSRTransformation;
 import scala.collection.mutable.MultiMap;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.api.HashingStrategies;
-import zone.rong.loliasm.api.LoliStringPool;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.GaryReflector;
+import zone.rong.garyasm.api.HashingStrategies;
+import zone.rong.garyasm.api.GaryStringPool;
 
 import java.lang.invoke.MethodHandle;
 import java.util.*;
@@ -29,19 +29,19 @@ import java.util.*;
 @SuppressWarnings("rawtypes")
 public class Deduplicator {
 
-    private static final MethodHandle UNPACKED_DATA_GETTER = LoliReflector.resolveFieldGetter(UnpackedBakedQuad.class, "unpackedData");
-    // private static final MethodHandle UNPACKED_DATA_SETTER = LoliReflector.resolveFieldSetter(UnpackedBakedQuad.class, "unpackedData");
+    private static final MethodHandle UNPACKED_DATA_GETTER = GaryReflector.resolveFieldGetter(UnpackedBakedQuad.class, "unpackedData");
+    // private static final MethodHandle UNPACKED_DATA_SETTER = GaryReflector.resolveFieldSetter(UnpackedBakedQuad.class, "unpackedData");
 
-    private static final MethodHandle SIMPLE_BAKED_MODEL_FACE_QUADS_GETTER = LoliReflector.resolveFieldGetter(SimpleBakedModel.class, "faceQuads", "field_177561_b");
-    private static final MethodHandle SIMPLE_BAKED_MODEL_FACE_QUADS_SETTER = LoliReflector.resolveFieldSetter(SimpleBakedModel.class, "faceQuads", "field_177561_b");
-    private static final MethodHandle PERSPECTIVE_MAP_WRAPPER_TRANSFORMS_GETTER = LoliReflector.resolveFieldGetter(PerspectiveMapWrapper.class, "transforms");
-    private static final MethodHandle PERSPECTIVE_MAP_WRAPPER_TRANSFORMS_SETTER = LoliReflector.resolveFieldSetter(PerspectiveMapWrapper.class, "transforms");
-    private static final MethodHandle BAKED_ITEM_MODEL_TRANSFORMS_GETTER = LoliReflector.resolveFieldGetter(BakedItemModel.class, "transforms");
-    private static final MethodHandle BAKED_ITEM_MODEL_TRANSFORMS_SETTER = LoliReflector.resolveFieldSetter(BakedItemModel.class, "transforms");
-    private static final MethodHandle ITEM_OVERRIDE_LIST_OVERRIDES_GETTER = LoliReflector.resolveFieldGetter(ItemOverrideList.class, "overrides", "field_188023_b");
-    private static final MethodHandle ITEM_OVERRIDE_LIST_OVERRIDES_SETTER = LoliReflector.resolveFieldSetter(ItemOverrideList.class, "overrides", "field_188023_b");
-    private static final MethodHandle BLOCK_PART_FACE_TEXTURE_GETTER = LoliReflector.resolveFieldGetter(BlockPartFace.class, "texture", "field_178242_d");
-    private static final MethodHandle BLOCK_PART_FACE_TEXTURE_SETTER = LoliReflector.resolveFieldSetter(BlockPartFace.class, "texture", "field_178242_d");
+    private static final MethodHandle SIMPLE_BAKED_MODEL_FACE_QUADS_GETTER = GaryReflector.resolveFieldGetter(SimpleBakedModel.class, "faceQuads", "field_177561_b");
+    private static final MethodHandle SIMPLE_BAKED_MODEL_FACE_QUADS_SETTER = GaryReflector.resolveFieldSetter(SimpleBakedModel.class, "faceQuads", "field_177561_b");
+    private static final MethodHandle PERSPECTIVE_MAP_WRAPPER_TRANSFORMS_GETTER = GaryReflector.resolveFieldGetter(PerspectiveMapWrapper.class, "transforms");
+    private static final MethodHandle PERSPECTIVE_MAP_WRAPPER_TRANSFORMS_SETTER = GaryReflector.resolveFieldSetter(PerspectiveMapWrapper.class, "transforms");
+    private static final MethodHandle BAKED_ITEM_MODEL_TRANSFORMS_GETTER = GaryReflector.resolveFieldGetter(BakedItemModel.class, "transforms");
+    private static final MethodHandle BAKED_ITEM_MODEL_TRANSFORMS_SETTER = GaryReflector.resolveFieldSetter(BakedItemModel.class, "transforms");
+    private static final MethodHandle ITEM_OVERRIDE_LIST_OVERRIDES_GETTER = GaryReflector.resolveFieldGetter(ItemOverrideList.class, "overrides", "field_188023_b");
+    private static final MethodHandle ITEM_OVERRIDE_LIST_OVERRIDES_SETTER = GaryReflector.resolveFieldSetter(ItemOverrideList.class, "overrides", "field_188023_b");
+    private static final MethodHandle BLOCK_PART_FACE_TEXTURE_GETTER = GaryReflector.resolveFieldGetter(BlockPartFace.class, "texture", "field_178242_d");
+    private static final MethodHandle BLOCK_PART_FACE_TEXTURE_SETTER = GaryReflector.resolveFieldSetter(BlockPartFace.class, "texture", "field_178242_d");
 
     // Used to check instanceof ImmutableEnumMap which is package-private
     private static final ImmutableMap<Placeholder, Object> immutableEnumMap;
@@ -80,7 +80,7 @@ public class Deduplicator {
             if (o instanceof SimpleBakedModel) {
                 /* TODO: SimpleBakedModel$Builder can transform BakedQuads => BakedQuadRetextureds if the ctor with IBakedModel is used.
                     Add a small check in the builder method to check if the 2 sprites are identical before transforming.
-                    This isn't a big deal atm since LoliASM optimizes BakedQuadRetextureds as well.
+                    This isn't a big deal atm since GaryASM optimizes BakedQuadRetextureds as well.
                  */
                 trim(((IBakedModel) o).getQuads(null, null, 0L)); // Trim generalQuads
                 for (EnumFacing facing : EnumFacing.VALUES) {
@@ -89,12 +89,12 @@ public class Deduplicator {
                 try {
                     Map<EnumFacing, List<BakedQuad>> faceQuads = (Map<EnumFacing, List<BakedQuad>>) SIMPLE_BAKED_MODEL_FACE_QUADS_GETTER.invokeExact((SimpleBakedModel) o);
                     if (!(faceQuads instanceof EnumMap)) {
-                        LoliLogger.instance.debug("Found a non-EnumMap faceQuads instance! Preparing to transform");
+                        GaryLogger.instance.debug("Found a non-EnumMap faceQuads instance! Preparing to transform");
                         // If faceQuads isn't an EnumMap, we replace it with an EnumMap
                         SIMPLE_BAKED_MODEL_FACE_QUADS_SETTER.invokeExact((SimpleBakedModel) o, new EnumMap<>(faceQuads));
                     }
                 } catch (Throwable t) {
-                    LoliLogger.instance.throwing(t);
+                    GaryLogger.instance.throwing(t);
                 }
                 return o;
             } else if (o instanceof PerspectiveMapWrapper) {
@@ -103,7 +103,7 @@ public class Deduplicator {
                     if (transforms != null) {
                         Object newTransforms = canonicalize(transforms);
                         if (transforms != newTransforms) {
-                            LoliLogger.instance.debug("Canonized PerspectiveMapWrapper#transforms successfully.");
+                            GaryLogger.instance.debug("Canonized PerspectiveMapWrapper#transforms successfully.");
                             PERSPECTIVE_MAP_WRAPPER_TRANSFORMS_SETTER.invoke((PerspectiveMapWrapper) o, newTransforms);
                         }
                     }
@@ -320,10 +320,10 @@ public class Deduplicator {
         } else if (o instanceof ItemCameraTransforms) {
             n = itemCameraTransformsCache.addOrGet((ItemCameraTransforms) o);
         } else if (o instanceof String) {
-            n = LoliStringPool.canonicalize((String) o);
+            n = GaryStringPool.canonicalize((String) o);
         }
         if (n != o) {
-            LoliLogger.instance.info("Deduplicated {}@{} => {}@{} successfully", o.getClass().getName(), Integer.toHexString(o.hashCode()), n.getClass().getName(), Integer.toHexString(n.hashCode()));
+            GaryLogger.instance.info("Deduplicated {}@{} => {}@{} successfully", o.getClass().getName(), Integer.toHexString(o.hashCode()), n.getClass().getName(), Integer.toHexString(n.hashCode()));
         }
         return n;
     }

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand.mixins;
+package zone.rong.garyasm.client.sprite.ondemand.mixins;
 
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -6,8 +6,8 @@ import net.minecraft.client.renderer.chunk.CompiledChunk;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import zone.rong.loliasm.client.sprite.ondemand.IAnimatedSpritePrimer;
-import zone.rong.loliasm.client.sprite.ondemand.ICompiledChunkExpander;
+import zone.rong.garyasm.client.sprite.ondemand.IAnimatedSpritePrimer;
+import zone.rong.garyasm.client.sprite.ondemand.ICompiledChunkExpander;
 
 import java.util.List;
 

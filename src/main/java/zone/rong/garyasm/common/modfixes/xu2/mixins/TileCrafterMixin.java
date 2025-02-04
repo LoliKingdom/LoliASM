@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.xu2.mixins;
+package zone.rong.garyasm.common.modfixes.xu2.mixins;
 
 import com.google.common.collect.Lists;
 import com.rwtema.extrautils2.backend.ModifyingBakedModel;
@@ -34,8 +34,8 @@ import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import zone.rong.loliasm.common.modfixes.xu2.TileCrafterExtension;
-import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.garyasm.common.modfixes.xu2.TileCrafterExtension;
+import zone.rong.garyasm.config.GaryConfig;
 
 import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public abstract class TileCrafterMixin extends TileEntity implements ITESRHook, 
     @Override
     @SideOnly(Side.CLIENT)
     public void preRender(int destroyStage) {
-        if (!LoliConfig.instance.disableXU2CrafterRendering) {
+        if (!GaryConfig.instance.disableXU2CrafterRendering) {
             GlStateManager.blendFunc(770, 1);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 0.4F);
         }
@@ -114,7 +114,7 @@ public abstract class TileCrafterMixin extends TileEntity implements ITESRHook, 
     @Override
     @SideOnly(Side.CLIENT)
     public void render(IBlockAccess world, BlockPos pos, double x, double y, double z, float partialTicks, int destroyStage, IVertexBuffer buffer, BlockRendererDispatcher dispatcher) {
-        if (!LoliConfig.instance.disableXU2CrafterRendering) {
+        if (!GaryConfig.instance.disableXU2CrafterRendering) {
             ItemStack stack = ghostOutput.getStack();
             if (StackHelper.isNull(stack)) {
                 return;
@@ -154,7 +154,7 @@ public abstract class TileCrafterMixin extends TileEntity implements ITESRHook, 
     @Override
     @SideOnly(Side.CLIENT)
     public void postRender(int destroyStage) {
-        if (!LoliConfig.instance.disableXU2CrafterRendering) {
+        if (!GaryConfig.instance.disableXU2CrafterRendering) {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }

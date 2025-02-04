@@ -1,13 +1,13 @@
-package zone.rong.loliasm.core.classfactories;
+package zone.rong.garyasm.core.classfactories;
 
 import org.apache.commons.lang3.StringUtils;
 import org.objectweb.asm.*;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.bakedquad.BakedQuadClassFactory;
-import zone.rong.loliasm.core.LoliLoadingPlugin;
-import zone.rong.loliasm.core.LoliTransformer;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.config.GaryConfig;
+import zone.rong.garyasm.GaryReflector;
+import zone.rong.garyasm.bakedquad.BakedQuadClassFactory;
+import zone.rong.garyasm.core.GaryLoadingPlugin;
+import zone.rong.garyasm.core.GaryTransformer;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -16,23 +16,23 @@ public class BakedQuadRedirectorFactory {
     public static String generateRedirectorClass() {
 
         ClassWriter writer = new ClassWriter(0);
-        final String className = "zone.rong.loliasm.client.models.bakedquad.mixins.NewBakedQuadCallsRedirector";
+        final String className = "zone.rong.garyasm.client.models.bakedquad.mixins.NewBakedQuadCallsRedirector";
 
         writer.visit(V1_8, ACC_PUBLIC | ACC_SUPER, className.replace('.', '/'), null, "java/lang/Object", null);
         AnnotationVisitor mixinVisitor = writer.visitAnnotation("Lorg/spongepowered/asm/mixin/Mixin;", false);
         AnnotationVisitor valueVisitor = mixinVisitor.visitArray("value");
 
-        if (!LoliTransformer.squashBakedQuads) {
-            LoliLogger.instance.info("Defining a mock NewBakedQuadCallsRedirector Mixin.");
+        if (!GaryTransformer.squashBakedQuads) {
+            GaryLogger.instance.info("Defining a mock NewBakedQuadCallsRedirector Mixin.");
 
             valueVisitor.visit(null, Type.getType("Lnet/minecraft/client/renderer/block/model/FaceBakery;"));
             valueVisitor.visitEnd();
             mixinVisitor.visitEnd();
         } else {
             BakedQuadClassFactory.predefineBakedQuadClasses();
-            String[] targetNames = LoliConfig.instance.classesThatCallBakedQuadCtor;
+            String[] targetNames = GaryConfig.instance.classesThatCallBakedQuadCtor;
 
-            LoliLogger.instance.info("Defining NewBakedQuadCallsRedirector Mixin. With these mixin targets: {}", (Object) targetNames);
+            GaryLogger.instance.info("Defining NewBakedQuadCallsRedirector Mixin. With these mixin targets: {}", (Object) targetNames);
 
             for (String target : targetNames) {
                 String descriptor = ("L" + target + ";").replace('.', '/');
@@ -81,12 +81,12 @@ public class BakedQuadRedirectorFactory {
                 methodVisitor.visitVarInsn(ALOAD, isStatic ? 3 : 4);
                 if (isDeprecated) {
                     methodVisitor.visitInsn(ICONST_1);
-                    methodVisitor.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/vertex/DefaultVertexFormats", LoliLoadingPlugin.isDeobf ? "ITEM" : "field_176599_b", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
+                    methodVisitor.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/vertex/DefaultVertexFormats", GaryLoadingPlugin.isDeobf ? "ITEM" : "field_176599_b", "Lnet/minecraft/client/renderer/vertex/VertexFormat;");
                 } else {
                     methodVisitor.visitVarInsn(ILOAD, isStatic ? 4 : 5);
                     methodVisitor.visitVarInsn(ALOAD, isStatic ? 5 : 6);
                 }
-                methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/bakedquad/BakedQuadFactory", LoliConfig.instance.vertexDataCanonicalization ? "canonicalize" : "prepare", "([IILnet/minecraft/util/EnumFacing;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;ZLnet/minecraft/client/renderer/vertex/VertexFormat;)Lnet/minecraft/client/renderer/block/model/BakedQuad;", false);
+                methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/garyasm/bakedquad/BakedQuadFactory", GaryConfig.instance.vertexDataCanonicalization ? "canonicalize" : "prepare", "([IILnet/minecraft/util/EnumFacing;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;ZLnet/minecraft/client/renderer/vertex/VertexFormat;)Lnet/minecraft/client/renderer/block/model/BakedQuad;", false);
                 methodVisitor.visitInsn(ARETURN);
 
                 l1 = new Label();
@@ -111,7 +111,7 @@ public class BakedQuadRedirectorFactory {
 
         writer.visitEnd();
 
-        LoliReflector.defineMixinClass(className, writer.toByteArray());
+        GaryReflector.defineMixinClass(className, writer.toByteArray());
         return className.substring(className.lastIndexOf('.') + 1);
     }
 

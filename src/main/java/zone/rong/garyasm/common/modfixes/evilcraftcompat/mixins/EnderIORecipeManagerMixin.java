@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.evilcraftcompat.mixins;
+package zone.rong.garyasm.common.modfixes.evilcraftcompat.mixins;
 
 import crazypants.enderio.base.recipe.*;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.crashes;
+package zone.rong.garyasm.common.crashes;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
@@ -10,8 +10,8 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.api.HasteUpload;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.api.HasteUpload;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public abstract class GuiProblemScreen extends GuiScreen {
     public void initGui() {
         mc.setIngameNotInFocus();
         buttonList.clear();
-        buttonList.add(new GuiButton(1, width / 2 - 155 + 160, height / 4 + 120 + 12, 150, 20, I18n.format("loliasm.gui.getLink")));
+        buttonList.add(new GuiButton(1, width / 2 - 155 + 160, height / 4 + 120 + 12, 150, 20, I18n.format("garyasm.gui.getLink")));
     }
 
     @Override
@@ -46,8 +46,8 @@ public abstract class GuiProblemScreen extends GuiScreen {
                 ReflectionHelper.findField(GuiScreen.class, "clickedLinkURI", "field_175286_t").set(this, new URI(hasteLink));
                 mc.displayGuiScreen(new GuiConfirmOpenLink(this, hasteLink, 31102009, false));
             } catch (Throwable e) {
-                LoliLogger.instance.error("Exception when crash menu button clicked:", e);
-                button.displayString = I18n.format("loliasm.gui.failed");
+                GaryLogger.instance.error("Exception when crash menu button clicked:", e);
+                button.displayString = I18n.format("garyasm.gui.failed");
                 button.enabled = false;
             }
         }
@@ -60,14 +60,14 @@ public abstract class GuiProblemScreen extends GuiScreen {
         if (modListString == null) {
             final Set<ModContainer> suspectedMods = ((ICrashReportSuspectGetter) report).getSuspectedMods();
             if (suspectedMods == null) {
-                return modListString = I18n.format("loliasm.crashscreen.identificationErrored");
+                return modListString = I18n.format("garyasm.crashscreen.identificationErrored");
             }
             List<String> modNames = new ArrayList<>();
             for (ModContainer mod : suspectedMods) {
                 modNames.add(mod.getName());
             }
             if (modNames.isEmpty()) {
-                modListString = I18n.format("loliasm.crashscreen.unknownCause");
+                modListString = I18n.format("garyasm.crashscreen.unknownCause");
             } else {
                 modListString = StringUtils.join(modNames, ", ");
             }

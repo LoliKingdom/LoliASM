@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.registries.mixins;
+package zone.rong.garyasm.common.registries.mixins;
 
 import net.minecraft.client.audio.SoundEventAccessor;
 import net.minecraft.client.audio.SoundRegistry;
@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistrySimple;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
-import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
+import zone.rong.garyasm.api.mixins.RegistrySimpleExtender;
 
 import java.util.Map;
 

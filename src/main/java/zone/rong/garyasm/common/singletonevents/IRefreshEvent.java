@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.singletonevents;
+package zone.rong.garyasm.common.singletonevents;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.block.state.IBlockState;
@@ -17,9 +17,9 @@ import java.util.EnumSet;
  *
  * All {@link net.minecraftforge.fml.common.eventhandler.Event} implementing this must:
  *
- * 1. Have a unique field: { private EventPriority loliPriority = null; }
+ * 1. Have a unique field: { private EventPriority garyPriority = null; }
  * 2. Override {@link Event#getPhase()} and {@link Event#setPhase(EventPriority)}
- * 3. Point loliPriority towards those getters/setters
+ * 3. Point garyPriority towards those getters/setters
  * 4. Check Preconditions in {@link Event#setPhase(EventPriority)} via {@link IRefreshEvent#checkPrecondition(EventPriority, EventPriority)}
  */
 public interface IRefreshEvent {

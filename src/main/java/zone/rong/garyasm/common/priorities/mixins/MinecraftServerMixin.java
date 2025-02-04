@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.priorities.mixins;
+package zone.rong.garyasm.common.priorities.mixins;
 
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +17,6 @@ public class MinecraftServerMixin {
     private void setPriorityAndStart(Thread serverThread) {
         serverThread.setPriority(Thread.MIN_PRIORITY + 2);
         serverThread.start();
-        LOGGER.debug("LoliASM: Started server thread, with {} priority", serverThread.getPriority());
+        LOGGER.debug("GaryASM: Started server thread, with {} priority", serverThread.getPriority());
     }
 }

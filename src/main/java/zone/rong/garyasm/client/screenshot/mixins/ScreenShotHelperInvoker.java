@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.screenshot.mixins;
+package zone.rong.garyasm.client.screenshot.mixins;
 
 import net.minecraft.util.ScreenShotHelper;
 import org.spongepowered.asm.mixin.Mixin;

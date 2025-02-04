@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.internal.mixins;
+package zone.rong.garyasm.common.internal.mixins;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
@@ -9,8 +9,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.api.ICapabilityDispatcherManipulator;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.api.ICapabilityDispatcherManipulator;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -40,7 +40,7 @@ public class CapabilityDispatcherMixin implements ICapabilityDispatcherManipulat
 			}
 		}
 		if (provider == null) {
-			LoliLogger.instance.error("{}@{} does not exist in {}", name, capability.getName(), Arrays.toString(this.caps));
+			GaryLogger.instance.error("{}@{} does not exist in {}", name, capability.getName(), Arrays.toString(this.caps));
 			return;
 		}
 		this.caps = ArrayUtils.removeElement(this.caps, provider);

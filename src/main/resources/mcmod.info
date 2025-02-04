@@ -1,14 +1,14 @@
 [
 {
-  "modid": "loliasm",
-  "name": "LoliASM",
-  "description": "The lolis have bytecode manipulated your game.",
+  "modid": "garyasm",
+  "name": "GaryASM",
+  "description": "The garys have bytecode manipulated your game.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "https://github.com/LoliKingdom/LoliASM",
+  "url": "https://github.com/GaryKingdom/GaryASM",
   "updateUrl": "",
   "authorList": ["Rongmario"],
-  "logoFile": "assets/loliasm/loliasm.png",
+  "logoFile": "assets/garyasm/garyasm.png",
   "screenshots": [],
   "dependencies": []
 }

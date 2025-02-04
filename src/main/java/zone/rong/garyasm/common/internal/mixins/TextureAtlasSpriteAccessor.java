@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.internal.mixins;
+package zone.rong.garyasm.common.internal.mixins;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,6 +10,6 @@ import java.util.List;
 public interface TextureAtlasSpriteAccessor {
 
     @Accessor("framesTextureData")
-    List<int[][]> loli$getTextureData();
+    List<int[][]> gary$getTextureData();
 
 }

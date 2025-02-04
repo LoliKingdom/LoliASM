@@ -1,6 +1,6 @@
 {
-  "package": "zone.rong.loliasm.client.searchtree.mixins.vanilla",
-  "refmap": "mixins.loliasm.refmap.json",
+  "package": "zone.rong.garyasm.client.searchtree.mixins.vanilla",
+  "refmap": "mixins.garyasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",

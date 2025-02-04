@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.xu2.mixins;
+package zone.rong.garyasm.common.modfixes.xu2.mixins;
 
 import com.rwtema.extrautils2.compatibility.CompatClientHelper;
 import com.rwtema.extrautils2.compatibility.TESRCompat;
@@ -17,8 +17,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import zone.rong.loliasm.common.modfixes.xu2.TileCrafterExtension;
-import zone.rong.loliasm.config.LoliConfig;
+import zone.rong.garyasm.common.modfixes.xu2.TileCrafterExtension;
+import zone.rong.garyasm.config.GaryConfig;
 
 import javax.annotation.Nonnull;
 
@@ -35,7 +35,7 @@ public abstract class XUTESRBaseMixin<T extends XUTile> extends TESRCompat<T> {
     @Override
     @SideOnly(Side.CLIENT)
     public void render(@Nonnull T te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        if (LoliConfig.instance.fixXU2CrafterCrash && te instanceof TileCrafter) {
+        if (GaryConfig.instance.fixXU2CrafterCrash && te instanceof TileCrafter) {
             ((TileCrafterExtension) te).renderAlt(x, y, z);
         } else {
             Tessellator tessellator = Tessellator.getInstance();

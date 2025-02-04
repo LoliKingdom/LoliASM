@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.internal.mixins;
+package zone.rong.garyasm.common.internal.mixins;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;

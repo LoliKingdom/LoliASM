@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.crashes;
+package zone.rong.garyasm.common.crashes;
 
 import net.minecraft.crash.CrashReport;
 

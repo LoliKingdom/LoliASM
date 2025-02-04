@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.internal.mixins;
+package zone.rong.garyasm.common.internal.mixins;
 
 import com.google.common.base.Strings;
 import net.minecraftforge.fml.common.LoadController;
@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.spark.LoliSparker;
+import zone.rong.garyasm.config.GaryConfig;
+import zone.rong.garyasm.spark.GarySparker;
 
 import javax.annotation.Nullable;
 
@@ -58,65 +58,65 @@ public abstract class LoadControllerMixin {
         if (hasSpark) {
             if (stateEvent instanceof FMLStateEvent) {
                 if (stateEvent instanceof FMLConstructionEvent) {
-                    if (LoliConfig.instance.sparkProfileCoreModLoading) {
-                        LoliSparker.stop("coremod");
+                    if (GaryConfig.instance.sparkProfileCoreModLoading) {
+                        GarySparker.stop("coremod");
                     }
-                    if (LoliConfig.instance.sparkProfileConstructionStage) {
-                        LoliSparker.start(LoaderState.CONSTRUCTING.toString());
+                    if (GaryConfig.instance.sparkProfileConstructionStage) {
+                        GarySparker.start(LoaderState.CONSTRUCTING.toString());
                     }
                 } else if (stateEvent instanceof FMLPreInitializationEvent) {
-                    if (LoliConfig.instance.sparkProfileConstructionStage) {
-                        LoliSparker.stop(LoaderState.CONSTRUCTING.toString());
+                    if (GaryConfig.instance.sparkProfileConstructionStage) {
+                        GarySparker.stop(LoaderState.CONSTRUCTING.toString());
                     }
-                    if (LoliConfig.instance.sparkProfilePreInitializationStage) {
-                        LoliSparker.start(LoaderState.PREINITIALIZATION.toString());
+                    if (GaryConfig.instance.sparkProfilePreInitializationStage) {
+                        GarySparker.start(LoaderState.PREINITIALIZATION.toString());
                     }
                 } else if (stateEvent instanceof FMLInitializationEvent) {
-                    if (LoliConfig.instance.sparkProfilePreInitializationStage) {
-                        LoliSparker.stop(LoaderState.PREINITIALIZATION.toString());
+                    if (GaryConfig.instance.sparkProfilePreInitializationStage) {
+                        GarySparker.stop(LoaderState.PREINITIALIZATION.toString());
                     }
-                    if (LoliConfig.instance.sparkProfileInitializationStage) {
-                        LoliSparker.start(LoaderState.INITIALIZATION.toString());
+                    if (GaryConfig.instance.sparkProfileInitializationStage) {
+                        GarySparker.start(LoaderState.INITIALIZATION.toString());
                     }
                 } else if (stateEvent instanceof FMLPostInitializationEvent) {
-                    if (LoliConfig.instance.sparkProfileInitializationStage) {
-                        LoliSparker.stop(LoaderState.INITIALIZATION.toString());
+                    if (GaryConfig.instance.sparkProfileInitializationStage) {
+                        GarySparker.stop(LoaderState.INITIALIZATION.toString());
                     }
-                    if (LoliConfig.instance.sparkProfilePostInitializationStage) {
-                        LoliSparker.start(LoaderState.POSTINITIALIZATION.toString());
+                    if (GaryConfig.instance.sparkProfilePostInitializationStage) {
+                        GarySparker.start(LoaderState.POSTINITIALIZATION.toString());
                     }
                 } else if (stateEvent instanceof FMLLoadCompleteEvent) {
-                    if (LoliConfig.instance.sparkProfilePostInitializationStage) {
-                        LoliSparker.stop(LoaderState.POSTINITIALIZATION.toString());
+                    if (GaryConfig.instance.sparkProfilePostInitializationStage) {
+                        GarySparker.stop(LoaderState.POSTINITIALIZATION.toString());
                     }
-                    if (LoliConfig.instance.sparkProfileLoadCompleteStage) {
-                        LoliSparker.start(LoaderState.AVAILABLE.toString());
+                    if (GaryConfig.instance.sparkProfileLoadCompleteStage) {
+                        GarySparker.start(LoaderState.AVAILABLE.toString());
                     }
                 } else if (stateEvent instanceof FMLServerAboutToStartEvent) {
-                    if (LoliConfig.instance.sparkProfileWorldAboutToStartStage) {
-                        LoliSparker.start(LoaderState.SERVER_ABOUT_TO_START.toString());
+                    if (GaryConfig.instance.sparkProfileWorldAboutToStartStage) {
+                        GarySparker.start(LoaderState.SERVER_ABOUT_TO_START.toString());
                     }
-                    if (LoliConfig.instance.sparkProfileEntireWorldLoad) {
-                        LoliSparker.start("world");
+                    if (GaryConfig.instance.sparkProfileEntireWorldLoad) {
+                        GarySparker.start("world");
                     }
                 } else if (stateEvent instanceof FMLServerStartingEvent) {
-                    if (LoliConfig.instance.sparkProfileWorldAboutToStartStage) {
-                        LoliSparker.stop(LoaderState.SERVER_ABOUT_TO_START.toString());
+                    if (GaryConfig.instance.sparkProfileWorldAboutToStartStage) {
+                        GarySparker.stop(LoaderState.SERVER_ABOUT_TO_START.toString());
                     }
-                    if (LoliConfig.instance.sparkProfileWorldStartingStage) {
-                        LoliSparker.start(LoaderState.SERVER_STARTING.toString());
+                    if (GaryConfig.instance.sparkProfileWorldStartingStage) {
+                        GarySparker.start(LoaderState.SERVER_STARTING.toString());
                     }
                 } else if (stateEvent instanceof FMLServerStartedEvent) {
-                    if (LoliConfig.instance.sparkProfileWorldStartingStage) {
-                        LoliSparker.stop(LoaderState.SERVER_STARTING.toString());
+                    if (GaryConfig.instance.sparkProfileWorldStartingStage) {
+                        GarySparker.stop(LoaderState.SERVER_STARTING.toString());
                     }
-                    if (LoliConfig.instance.sparkProfileWorldStartedStage) {
-                        LoliSparker.start(LoaderState.SERVER_STARTED.toString());
+                    if (GaryConfig.instance.sparkProfileWorldStartedStage) {
+                        GarySparker.start(LoaderState.SERVER_STARTED.toString());
                     }
                 }
             } else if (stateEvent instanceof FMLModIdMappingEvent && !gameHasLoaded && ((FMLModIdMappingEvent) stateEvent).isFrozen) {
-                if (LoliConfig.instance.sparkProfileFinalizingStage) {
-                    LoliSparker.start("finalizing");
+                if (GaryConfig.instance.sparkProfileFinalizingStage) {
+                    GarySparker.start("finalizing");
                 }
             }
         }
@@ -127,30 +127,30 @@ public abstract class LoadControllerMixin {
         if (hasSpark) {
             if (stateEvent instanceof FMLStateEvent) {
                 if (stateEvent instanceof FMLLoadCompleteEvent) {
-                    if (LoliConfig.instance.sparkProfileLoadCompleteStage) {
-                        LoliSparker.stop(LoaderState.AVAILABLE.toString());
+                    if (GaryConfig.instance.sparkProfileLoadCompleteStage) {
+                        GarySparker.stop(LoaderState.AVAILABLE.toString());
                     }
                 } else if (stateEvent instanceof FMLServerStartedEvent) {
-                    if (LoliConfig.instance.sparkProfileWorldStartedStage) {
-                        LoliSparker.stop(LoaderState.SERVER_STARTED.toString());
+                    if (GaryConfig.instance.sparkProfileWorldStartedStage) {
+                        GarySparker.stop(LoaderState.SERVER_STARTED.toString());
                     }
-                    if (LoliConfig.instance.sparkProfileEntireWorldLoad) {
-                        LoliSparker.stop("world");
+                    if (GaryConfig.instance.sparkProfileEntireWorldLoad) {
+                        GarySparker.stop("world");
                     }
-                    if (LoliConfig.instance.sparkSummarizeHeapSpaceAfterWorldLoads) {
-                        LoliSparker.checkHeap(true, true);
+                    if (GaryConfig.instance.sparkSummarizeHeapSpaceAfterWorldLoads) {
+                        GarySparker.checkHeap(true, true);
                     }
                 }
             } else if (stateEvent instanceof FMLModIdMappingEvent && !gameHasLoaded && ((FMLModIdMappingEvent) stateEvent).isFrozen) {
-                if (LoliConfig.instance.sparkProfileFinalizingStage) {
-                    LoliSparker.stop("finalizing");
+                if (GaryConfig.instance.sparkProfileFinalizingStage) {
+                    GarySparker.stop("finalizing");
                     gameHasLoaded = true; // Don't profile when this fires on serverStopped etc
                 }
-                if (LoliConfig.instance.sparkProfileEntireGameLoad) {
-                    LoliSparker.stop("game");
+                if (GaryConfig.instance.sparkProfileEntireGameLoad) {
+                    GarySparker.stop("game");
                 }
-                if (LoliConfig.instance.sparkSummarizeHeapSpaceAfterGameLoads) {
-                    LoliSparker.checkHeap(true, true);
+                if (GaryConfig.instance.sparkSummarizeHeapSpaceAfterGameLoads) {
+                    GarySparker.checkHeap(true, true);
                 }
             }
         }

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.internal.mixins;
+package zone.rong.garyasm.common.internal.mixins;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zone.rong.loliasm.LoliASM;
+import zone.rong.garyasm.GaryASM;
 
 @SideOnly(Side.CLIENT)
 @Mixin(TileEntity.class)
@@ -25,8 +25,8 @@ public class TileEntityMixin {
                     shift = Shift.AFTER,
                     by = 2))
     private void afterReadingFromNBT(NBTTagCompound compound, CallbackInfo ci) {
-        if (LoliASM.customTileDataConsumer != null) {
-            LoliASM.customTileDataConsumer.accept((TileEntity) (Object) this, customTileData);
+        if (GaryASM.customTileDataConsumer != null) {
+            GaryASM.customTileDataConsumer.accept((TileEntity) (Object) this, customTileData);
         }
     }
 

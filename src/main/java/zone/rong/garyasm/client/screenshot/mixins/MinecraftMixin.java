@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.screenshot.mixins;
+package zone.rong.garyasm.client.screenshot.mixins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
@@ -11,7 +11,7 @@ import net.minecraftforge.client.event.ScreenshotEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import zone.rong.loliasm.client.screenshot.ScreenshotThread;
+import zone.rong.garyasm.client.screenshot.ScreenshotThread;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

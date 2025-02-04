@@ -1,11 +1,11 @@
-package zone.rong.loliasm.common.crashes.mixins;
+package zone.rong.garyasm.common.crashes.mixins;
 
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
-import zone.rong.loliasm.common.crashes.CrashUtils;
+import zone.rong.garyasm.common.crashes.CrashUtils;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.ExecutionException;

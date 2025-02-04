@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.singletonevents.mixins;
+package zone.rong.garyasm.common.singletonevents.mixins;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import zone.rong.loliasm.common.singletonevents.IRefreshEvent;
+import zone.rong.garyasm.common.singletonevents.IRefreshEvent;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;

@@ -1,6 +1,6 @@
 {
-  "package": "zone.rong.loliasm.common.modfixes.b3m.mixins",
-  "refmap": "mixins.loliasm.refmap.json",
+  "package": "zone.rong.garyasm.common.modfixes.b3m.mixins",
+  "refmap": "mixins.garyasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",

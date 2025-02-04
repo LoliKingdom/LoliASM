@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand.mixins;
+package zone.rong.garyasm.client.sprite.ondemand.mixins;
 
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zone.rong.loliasm.client.sprite.ondemand.IAnimatedSpritePrimer;
+import zone.rong.garyasm.client.sprite.ondemand.IAnimatedSpritePrimer;
 
 @Mixin(TextureManager.class)
 public class TextureManagerMixin {

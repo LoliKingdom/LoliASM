@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.xu2;
+package zone.rong.garyasm.common.modfixes.xu2;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

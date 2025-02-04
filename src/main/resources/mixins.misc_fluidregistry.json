@@ -1,6 +1,6 @@
 {
-  "package": "zone.rong.loliasm.common.misc_fluidregistry.mixins",
-  "refmap": "mixins.loliasm.refmap.json",
+  "package": "zone.rong.garyasm.common.misc_fluidregistry.mixins",
+  "refmap": "mixins.garyasm.refmap.json",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",

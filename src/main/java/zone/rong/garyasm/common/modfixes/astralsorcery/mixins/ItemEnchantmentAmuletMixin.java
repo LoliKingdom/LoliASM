@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.astralsorcery.mixins;
+package zone.rong.garyasm.common.modfixes.astralsorcery.mixins;
 
 import baubles.api.IBauble;
 import hellfirepvp.astralsorcery.common.enchantment.amulet.EnchantmentUpgradeHelper;
@@ -49,10 +49,10 @@ public abstract class ItemEnchantmentAmuletMixin implements IBauble {
     public void onUnequipped(ItemStack stack, EntityLivingBase player) {
         player.playSound(SoundEvents.BLOCK_GLASS_PLACE, 0.65F, 6.4F);
         for (ItemStack armorStack : player.getArmorInventoryList()) {
-            EnchantmentUpgradeHelperInvoker.loliasm$removeAmuletOwner(armorStack);
+            EnchantmentUpgradeHelperInvoker.garyasm$removeAmuletOwner(armorStack);
         }
-        EnchantmentUpgradeHelperInvoker.loliasm$removeAmuletOwner(player.getHeldItemMainhand());
-        EnchantmentUpgradeHelperInvoker.loliasm$removeAmuletOwner(player.getHeldItemOffhand());
+        EnchantmentUpgradeHelperInvoker.garyasm$removeAmuletOwner(player.getHeldItemMainhand());
+        EnchantmentUpgradeHelperInvoker.garyasm$removeAmuletOwner(player.getHeldItemOffhand());
     }
 
 }

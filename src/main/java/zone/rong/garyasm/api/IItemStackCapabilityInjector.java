@@ -1,4 +1,4 @@
-package zone.rong.loliasm.api;
+package zone.rong.garyasm.api;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityDispatcher;

@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.models;
+package zone.rong.garyasm.client.models;
 
 import com.google.common.base.Predicate;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

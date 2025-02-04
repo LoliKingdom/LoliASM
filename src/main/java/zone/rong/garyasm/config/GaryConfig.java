@@ -1,4 +1,4 @@
-package zone.rong.loliasm.config;
+package zone.rong.garyasm.config;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -8,20 +8,20 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.config.annotation.*;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.config.annotation.*;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.Set;
 
-public class LoliConfig {
+public class GaryConfig {
 
-    public static final LoliConfig instance = new LoliConfig();
+    public static final GaryConfig instance = new GaryConfig();
 
     static {
         instance.initialize();
-        File oldConfigFile = new File(Launch.minecraftHome, "config" + File.separator + "loliasm.json");
+        File oldConfigFile = new File(Launch.minecraftHome, "config" + File.separator + "garyasm.json");
         if (oldConfigFile.exists()) {
             Gson gson = new GsonBuilder()
                     .disableHtmlEscaping()
@@ -81,7 +81,7 @@ public class LoliConfig {
     public boolean crashReportImprovements, returnToMainMenuAfterCrash, rewriteLoggingWithDeobfuscatedNames, hideToastsAndContinuePlaying;
 
     private void initialize() {
-        configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "loliasm.cfg"));
+        configuration = new Configuration(new File(Launch.minecraftHome, "config" + File.separator + "garyasm.cfg"));
         load();
     }
 
@@ -92,7 +92,7 @@ public class LoliConfig {
         logClassesThatCallBakedQuadCtor = getBoolean("logClassesThatCallBakedQuadCtor", "bakedquad", "Log classes that need their BakedQuad::new calls redirected", true);
         reuseBucketQuads = getBoolean("reuseBucketQuads", "bakedquad", "Allows bucket models to re-use UnpackedBakedQuads", true);
 
-        cleanupLaunchClassLoaderEarly = getBoolean("cleanupLaunchClassLoaderEarly", "launchwrapper", "Cleanup some redundant data structures in LaunchClassLoader at the earliest point possible (when LoliASM is loaded). Helpful for those that don't have enough RAM to load into the game. This can induce slowdowns while loading the game in exchange for more available RAM", false);
+        cleanupLaunchClassLoaderEarly = getBoolean("cleanupLaunchClassLoaderEarly", "launchwrapper", "Cleanup some redundant data structures in LaunchClassLoader at the earliest point possible (when GaryASM is loaded). Helpful for those that don't have enough RAM to load into the game. This can induce slowdowns while loading the game in exchange for more available RAM", false);
         cleanupLaunchClassLoaderLate = getBoolean("cleanupLaunchClassLoaderLate", "launchwrapper", "Cleanup some redundant data structures in LaunchClassLoader at the latest point possible (when the game reaches the Main Screen). This is for those that have enough RAM to load the game and do not want any slowdowns while loading. Note: if 'cleanupLaunchClassLoaderEarly' is 'true', this option will be ignored", true);
         noResourceCache = getBoolean("noResourceCache", "launchwrapper", "Disabling caching of resources (Class Bytes). This will induce slowdowns to game/world loads in exchange for more available RAM", false);
         noClassCache = getBoolean("noClassCache", "launchwrapper", "Disabling caching of classes. This will induce major slowdowns to game/world loads in exchange for more available RAM", false);
@@ -175,7 +175,7 @@ public class LoliConfig {
 
         sparkProfileEntireGameLoad = getBoolean("sparkProfileEntireGameLoad", "spark", "When Spark is installed, profile the loading of the game in its entirety", false);
         sparkProfileEntireWorldLoad = getBoolean("sparkProfileEntireWorldLoad", "spark", "When Spark is installed, profile the loading of the world in its entirety", false);
-        sparkProfileCoreModLoading = getBoolean("sparkProfileCoreModLoading", "spark", "When Spark is installed, profile the loading of coremods, but only those that load after LoliASM", false);
+        sparkProfileCoreModLoading = getBoolean("sparkProfileCoreModLoading", "spark", "When Spark is installed, profile the loading of coremods, but only those that load after GaryASM", false);
         sparkProfileConstructionStage = getBoolean("sparkProfileConstructionStage", "spark", "When Spark is installed, profile the loading of FMLConstructionEvent stage", false);
         sparkProfilePreInitializationStage = getBoolean("sparkProfilePreInitializationStage", "spark", "When Spark is installed, profile the loading of FMLPreInitializationEvent stage", false);
         sparkProfileInitializationStage = getBoolean("sparkProfileInitializationStage", "spark", "When Spark is installed, profile the loading of FMLInitializationEvent stage", false);
@@ -185,7 +185,7 @@ public class LoliConfig {
         sparkProfileWorldAboutToStartStage = getBoolean("sparkProfileWorldAboutToStartStage", "spark", "When Spark is installed, profile the loading of FMLServerAboutToStartEvent stage", false);
         sparkProfileWorldStartingStage = getBoolean("sparkProfileWorldStartingStage", "spark", "When Spark is installed, profile the loading of FMLServerStartingEvent stage", false);
         sparkProfileWorldStartedStage = getBoolean("sparkProfileWorldStartedStage", "spark", "When Spark is installed, profile the loading of FMLServerStartedEvent stage", false);
-        includeAllThreadsWhenProfiling = getBoolean("includeAllThreadsWhenProfiling", "spark", "Allow LoliASM's Spark profiling to include all threads that are present", true);
+        includeAllThreadsWhenProfiling = getBoolean("includeAllThreadsWhenProfiling", "spark", "Allow GaryASM's Spark profiling to include all threads that are present", true);
         sparkSummarizeHeapSpaceAfterGameLoads = getBoolean("sparkSummarizeHeapSpaceAfterGameLoads", "spark", "When Spark is installed, summarize the heap space (/spark heapsummary) when the game finishes loading", false);
         sparkSummarizeHeapSpaceAfterWorldLoads = getBoolean("sparkSummarizeHeapSpaceAfterWorldLoads", "spark", "When Spark is installed, summarize the heap space (/spark heapsummary) when the world finishes loading", false);
 
@@ -209,7 +209,7 @@ public class LoliConfig {
         if (classes.add(clazz.getName())) {
             prop.set(classes.toArray(new String[0]));
             configuration.save();
-            LoliLogger.instance.warn("{} added to classesThatCallBakedQuadCtor list in loliasm.cfg", clazz.getName());
+            GaryLogger.instance.warn("{} added to classesThatCallBakedQuadCtor list in garyasm.cfg", clazz.getName());
         }
     }
 
@@ -219,7 +219,7 @@ public class LoliConfig {
         if (classes.add(clazz.getName())) {
             prop.set(classes.toArray(new String[0]));
             configuration.save();
-            LoliLogger.instance.warn("{} added to classesThatExtendBakedQuad list in loliasm.cfg", clazz.getName());
+            GaryLogger.instance.warn("{} added to classesThatExtendBakedQuad list in garyasm.cfg", clazz.getName());
         }
     }
 
@@ -241,7 +241,7 @@ public class LoliConfig {
         prop.setComment(description + " - <default: " + defaultValue + ">");
         prop.setRequiresMcRestart(true);
         prop.setShowInGui(true);
-        prop.setLanguageKey("loliasm.config." + name);
+        prop.setLanguageKey("garyasm.config." + name);
         return prop.getBoolean(defaultValue);
     }
 
@@ -251,7 +251,7 @@ public class LoliConfig {
         prop.setComment(description + " - <default: " + defaultValue + ">");
         prop.setRequiresMcRestart(true);
         prop.setShowInGui(true);
-        prop.setLanguageKey("loliasm.config." + name);
+        prop.setLanguageKey("garyasm.config." + name);
         return prop.getInt(defaultValue);
     }
 
@@ -261,7 +261,7 @@ public class LoliConfig {
         prop.setComment(description + " - <default: " + Arrays.toString(defaultValue) + ">");
         prop.setRequiresMcRestart(true);
         prop.setShowInGui(true);
-        prop.setLanguageKey("loliasm.config." + name);
+        prop.setLanguageKey("garyasm.config." + name);
         return prop.getStringList();
     }
 

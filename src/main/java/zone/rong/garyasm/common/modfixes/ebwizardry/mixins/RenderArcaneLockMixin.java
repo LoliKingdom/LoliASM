@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.modfixes.ebwizardry.mixins;
+package zone.rong.garyasm.common.modfixes.ebwizardry.mixins;
 
 import electroblob.wizardry.client.renderer.tileentity.RenderArcaneLock;
 import electroblob.wizardry.util.GeometryUtils;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import zone.rong.loliasm.common.modfixes.ebwizardry.ArcaneLocks;
+import zone.rong.garyasm.common.modfixes.ebwizardry.ArcaneLocks;
 
 import java.util.Iterator;
 

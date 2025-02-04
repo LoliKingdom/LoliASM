@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.forgefixes.mixins;
+package zone.rong.garyasm.common.forgefixes.mixins;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceArrayMap;
 import net.minecraft.entity.Entity;
@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.LoliReflector;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.GaryReflector;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
@@ -38,7 +38,7 @@ public class EntityEntryMixin {
     private void captureInit(CallbackInfo ci) {
         if (!Modifier.isAbstract(this.cls.getModifiers())) { // For some reason...
             try {
-                MethodHandles.Lookup lookup = LoliReflector.LOOKUP;
+                MethodHandles.Lookup lookup = GaryReflector.LOOKUP;
                 ClassLoader classLoader = this.cls.getClassLoader();
                 if (classLoader != Launch.classLoader) {
                     if (altLookups == null) {
@@ -46,8 +46,8 @@ public class EntityEntryMixin {
                     }
                     lookup = altLookups.get(classLoader);
                     if (lookup == null) {
-                        LoliLogger.instance.warn("Building a new MethodHandle::Lookup for ClassLoader: {} with intentions of building a faster Entity constructor replacement", classLoader);
-                        altLookups.put(classLoader, lookup = LoliReflector.getCtor(MethodHandles.Lookup.class, Class.class).newInstance(this.cls));
+                        GaryLogger.instance.warn("Building a new MethodHandle::Lookup for ClassLoader: {} with intentions of building a faster Entity constructor replacement", classLoader);
+                        altLookups.put(classLoader, lookup = GaryReflector.getCtor(MethodHandles.Lookup.class, Class.class).newInstance(this.cls));
                     }
                 }
                 CallSite callSite = LambdaMetafactory.metafactory(
@@ -55,15 +55,15 @@ public class EntityEntryMixin {
                         "apply",
                         MethodType.methodType(Function.class),
                         MethodType.methodType(Object.class, Object.class),
-                        LoliReflector.resolveCtor(this.cls, World.class),
+                        GaryReflector.resolveCtor(this.cls, World.class),
                         MethodType.methodType(this.cls, World.class));
                 this.factory = (Function) callSite.getTarget().invokeExact();
                 ci.cancel();
             } catch (Throwable t) {
-                LoliLogger.instance.warn("Could not establish a faster Entity constructor replacement for {}", this.cls, t);
+                GaryLogger.instance.warn("Could not establish a faster Entity constructor replacement for {}", this.cls, t);
             }
         } else {
-            LoliLogger.instance.warn("Could not establish a faster Entity constructor replacement for {}, as the class is abstract", this.cls);
+            GaryLogger.instance.warn("Could not establish a faster Entity constructor replacement for {}, as the class is abstract", this.cls);
         }
     }
 

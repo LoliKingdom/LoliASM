@@ -1,4 +1,4 @@
-package zone.rong.loliasm.core;
+package zone.rong.garyasm.core;
 
 import betterwithmods.module.gameplay.Gameplay;
 import com.google.common.collect.Multimap;
@@ -9,145 +9,145 @@ import net.minecraft.launchwrapper.Launch;
 import org.apache.commons.lang3.ArrayUtils;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
-import zone.rong.loliasm.LoliReflector;
-import zone.rong.loliasm.api.LoliStringPool;
-import zone.rong.loliasm.config.LoliConfig;
-import zone.rong.loliasm.LoliLogger;
-import zone.rong.loliasm.patches.*;
+import zone.rong.garyasm.GaryReflector;
+import zone.rong.garyasm.api.GaryStringPool;
+import zone.rong.garyasm.config.GaryConfig;
+import zone.rong.garyasm.GaryLogger;
+import zone.rong.garyasm.patches.*;
 
 import java.util.*;
 import java.util.function.Function;
 
 import static org.objectweb.asm.Opcodes.*;
 
-public class LoliTransformer implements IClassTransformer {
+public class GaryTransformer implements IClassTransformer {
 
     public static boolean isOptifineInstalled, isSodiumPortInstalled;
-    public static boolean squashBakedQuads = LoliConfig.instance.squashBakedQuads;
+    public static boolean squashBakedQuads = GaryConfig.instance.squashBakedQuads;
 
     Multimap<String, Function<byte[], byte[]>> transformations;
 
-    public LoliTransformer() {
-        LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
-        isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
-        isSodiumPortInstalled = LoliReflector.doesClassExist("me.jellysquid.mods.sodium.client.SodiumMixinTweaker");
+    public GaryTransformer() {
+        GaryLogger.instance.info("The garys are now preparing to bytecode manipulate your game.");
+        isOptifineInstalled = GaryReflector.doesClassExist("optifine.OptiFineForgeTweaker");
+        isSodiumPortInstalled = GaryReflector.doesClassExist("me.jellysquid.mods.sodium.client.SodiumMixinTweaker");
         if (squashBakedQuads) {
             if (isOptifineInstalled) {
                 squashBakedQuads = false;
-                LoliLogger.instance.info("Optifine is installed. BakedQuads won't be squashed as it is incompatible with OptiFine.");
+                GaryLogger.instance.info("Optifine is installed. BakedQuads won't be squashed as it is incompatible with OptiFine.");
             } else if (isSodiumPortInstalled) {
                 squashBakedQuads = false;
-                LoliLogger.instance.info("A sodium port is installed. BakedQuads won't be squashed as it is incompatible with Sodium.");
+                GaryLogger.instance.info("A sodium port is installed. BakedQuads won't be squashed as it is incompatible with Sodium.");
             }
         }
         transformations = MultimapBuilder.hashKeys(30).arrayListValues(1).build();
-        if (LoliLoadingPlugin.isClient) {
+        if (GaryLoadingPlugin.isClient) {
             // addTransformation("codechicken.lib.model.loader.blockstate.CCBlockStateLoader", bytes -> stripSubscribeEventAnnotation(bytes, "onModelBake", "onTextureStitchPre"));
             if (squashBakedQuads) {
                 addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", BakedQuadPatch::rewriteBakedQuad);
                 addTransformation("net.minecraft.client.renderer.block.model.BakedQuadRetextured", BakedQuadRetexturedPatch::patchBakedQuadRetextured);
                 addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad);
                 addTransformation("net.minecraftforge.client.model.pipeline.UnpackedBakedQuad$Builder", UnpackedBakedQuadPatch::rewriteUnpackedBakedQuad$Builder);
-                addTransformation("zone.rong.loliasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
-                for (String classThatExtendBakedQuad : LoliConfig.instance.classesThatExtendBakedQuad) {
+                addTransformation("zone.rong.garyasm.bakedquad.BakedQuadFactory", BakedQuadFactoryPatch::patchCreateMethod);
+                for (String classThatExtendBakedQuad : GaryConfig.instance.classesThatExtendBakedQuad) {
                     if (!classThatExtendBakedQuad.trim().isEmpty()) {
                         addTransformation(classThatExtendBakedQuad, this::extendSupportingBakedQuadInstead);
                     }
                 }
-            } else if (LoliConfig.instance.vertexDataCanonicalization) {
+            } else if (GaryConfig.instance.vertexDataCanonicalization) {
                 addTransformation("net.minecraft.client.renderer.block.model.BakedQuad", this::canonicalizeVertexData);
             }
-            if (LoliConfig.instance.modelConditionCanonicalization) {
+            if (GaryConfig.instance.modelConditionCanonicalization) {
                 addTransformation("net.minecraft.client.renderer.block.model.multipart.ICondition", this::canonicalBoolConditions);
                 addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionOr", bytes -> canonicalPredicatedConditions(bytes, true));
                 addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionAnd", bytes -> canonicalPredicatedConditions(bytes, false));
                 addTransformation("net.minecraft.client.renderer.block.model.multipart.ConditionPropertyValue", this::canonicalPropertyValueConditions);
                 // addTransformation("net.minecraft.client.renderer.block.model.MultipartBakedModel$Builder", this::cacheMultipartBakedModels); TODO
             }
-            if (LoliConfig.instance.resourceLocationCanonicalization) {
+            if (GaryConfig.instance.resourceLocationCanonicalization) {
                 addTransformation("net.minecraft.client.renderer.block.model.ModelResourceLocation", this::canonicalizeResourceLocationStrings);
             }
-            if (LoliConfig.instance.stripInstancedRandomFromSoundEventAccessor) {
+            if (GaryConfig.instance.stripInstancedRandomFromSoundEventAccessor) {
                 addTransformation("net.minecraft.client.audio.SoundEventAccessor", this::removeInstancedRandom);
             }
-            if (LoliConfig.instance.optimizeRegistries) {
+            if (GaryConfig.instance.optimizeRegistries) {
                 addTransformation("net.minecraft.client.audio.SoundRegistry", this::removeDupeMapFromSoundRegistry);
                 addTransformation("net.minecraftforge.client.model.ModelLoader", this::optimizeDataStructures);
                 addTransformation("net.minecraft.client.renderer.block.statemap.StateMapperBase", this::optimizeDataStructures);
                 addTransformation("net.minecraft.client.renderer.BlockModelShapes", this::optimizeDataStructures);
                 addTransformation("net.minecraft.client.renderer.block.statemap.BlockStateMapper", this::optimizeDataStructures);
             }
-            if (LoliConfig.instance.optimizeSomeRendering) {
-                addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, LoliLoadingPlugin.isDeobf ? "setupTerrain" : "func_174970_a"));
+            if (GaryConfig.instance.optimizeSomeRendering) {
+                addTransformation("net.minecraft.client.renderer.RenderGlobal", bytes -> fixEnumFacingValuesClone(bytes, GaryLoadingPlugin.isDeobf ? "setupTerrain" : "func_174970_a"));
             }
-            if (LoliConfig.instance.stripUnnecessaryLocalsInRenderHelper) {
+            if (GaryConfig.instance.stripUnnecessaryLocalsInRenderHelper) {
                 addTransformation("net.minecraft.client.renderer.RenderHelper", this::stripLocalsInEnableStandardItemLighting);
             }
-            if (LoliConfig.instance.spriteNameCanonicalization) {
+            if (GaryConfig.instance.spriteNameCanonicalization) {
                 addTransformation("net.minecraft.client.renderer.texture.TextureAtlasSprite", this::canonicalizeSpriteNames);
             }
-            if (LoliConfig.instance.removeExcessiveGCCalls) {
+            if (GaryConfig.instance.removeExcessiveGCCalls) {
                 addTransformation("net.minecraft.client.Minecraft", this::removeExcessiveGCCalls);
             }
-            if (LoliConfig.instance.smoothDimensionChange) {
+            if (GaryConfig.instance.smoothDimensionChange) {
                 addTransformation("net.minecraft.client.network.NetHandlerPlayClient", this::smoothDimensionChange);
             }
-            if (LoliConfig.instance.fixMC88176) {
+            if (GaryConfig.instance.fixMC88176) {
                 addTransformation("net.minecraft.client.renderer.RenderGlobal", this::disappearingEntitiesRenderGlobalFix);
                 addTransformation("net.minecraft.client.renderer.chunk.RenderChunk", this::disappearingEntitiesRenderChunkFix);
             }
         }
-        if (LoliConfig.instance.resourceLocationCanonicalization) {
+        if (GaryConfig.instance.resourceLocationCanonicalization) {
             addTransformation("net.minecraft.util.ResourceLocation", this::canonicalizeResourceLocationStrings);
         }
-        if (LoliConfig.instance.optimizeRegistries) {
+        if (GaryConfig.instance.optimizeRegistries) {
             addTransformation("net.minecraft.util.registry.RegistrySimple", this::removeValuesArrayFromRegistrySimple);
         }
-        if (LoliConfig.instance.nbtTagStringBackingStringCanonicalization) {
+        if (GaryConfig.instance.nbtTagStringBackingStringCanonicalization) {
             addTransformation("net.minecraft.nbt.NBTTagString", this::nbtTagStringRevamp);
         }
-        if (LoliConfig.instance.packageStringCanonicalization) {
+        if (GaryConfig.instance.packageStringCanonicalization) {
             addTransformation("net.minecraftforge.fml.common.discovery.ModCandidate", this::removePackageField);
         }
-        if (LoliConfig.instance.asmDataStringCanonicalization) {
+        if (GaryConfig.instance.asmDataStringCanonicalization) {
             addTransformation("net.minecraftforge.fml.common.discovery.ASMDataTable$ASMData", this::deduplicateASMDataStrings);
         }
-        if (LoliConfig.instance.stripNearUselessItemStackFields) {
+        if (GaryConfig.instance.stripNearUselessItemStackFields) {
             addTransformation("net.minecraft.item.ItemStack", this::stripItemStackFields);
         }
-        if (LoliConfig.instance.optimizeFurnaceRecipeStore) {
+        if (GaryConfig.instance.optimizeFurnaceRecipeStore) {
             addTransformation("net.minecraft.item.crafting.FurnaceRecipes", this::improveFurnaceRecipes);
         }
-        if (LoliConfig.instance.fixAmuletHolderCapability) {
+        if (GaryConfig.instance.fixAmuletHolderCapability) {
             addTransformation("hellfirepvp.astralsorcery.common.enchantment.amulet.PlayerAmuletHandler", bytes -> stripSubscribeEventAnnotation(bytes, "attachAmuletItemCapability"));
         }
-        if (LoliConfig.instance.labelCanonicalization) {
+        if (GaryConfig.instance.labelCanonicalization) {
             addTransformation("mezz.jei.suffixtree.Edge", this::deduplicateEdgeLabels);
         }
-        if (LoliConfig.instance.bwmBlastingOilOptimization) {
+        if (GaryConfig.instance.bwmBlastingOilOptimization) {
             addTransformation("betterwithmods.event.BlastingOilEvent", bytes -> stripSubscribeEventAnnotation(bytes, "onPlayerTakeDamage", "onHitGround"));
             addTransformation("betterwithmods.common.items.ItemMaterial", this::injectBlastingOilEntityItemUpdate);
         }
-        if (LoliConfig.instance.optimizeQMDBeamRenderer) {
+        if (GaryConfig.instance.optimizeQMDBeamRenderer) {
             addTransformation("lach_01298.qmd.render.entity.BeamRenderer", bytes -> stripSubscribeEventAnnotation(bytes, "renderBeamEffects"));
         }
-        if (LoliConfig.instance.fixTFCFallingBlockFalseStartingTEPos) {
+        if (GaryConfig.instance.fixTFCFallingBlockFalseStartingTEPos) {
             addTransformation("net.dries007.tfc.objects.entity.EntityFallingBlockTFC", this::fixTFCFallingBlock);
         }
-        if (LoliConfig.instance.delayItemStackCapabilityInit) {
+        if (GaryConfig.instance.delayItemStackCapabilityInit) {
             addTransformation("net.minecraft.item.ItemStack", this::delayItemStackCapabilityInit);
         }
-        if (LoliConfig.instance.fixMC30845) {
+        if (GaryConfig.instance.fixMC30845) {
             addTransformation("net.minecraft.client.renderer.EntityRenderer", this::fixMC30845);
         }
-        if (LoliConfig.instance.fixMC31681) {
+        if (GaryConfig.instance.fixMC31681) {
             addTransformation("net.minecraft.client.renderer.EntityRenderer", this::fixMC31681);
         }
-        addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, LoliConfig.instance.optimizeNBTTagCompoundBackingMap, LoliConfig.instance.optimizeNBTTagCompoundMapThreshold, LoliConfig.instance.nbtBackingMapStringCanonicalization));
+        addTransformation("net.minecraft.nbt.NBTTagCompound", bytes -> nbtTagCompound$replaceDefaultHashMap(bytes, GaryConfig.instance.optimizeNBTTagCompoundBackingMap, GaryConfig.instance.optimizeNBTTagCompoundMapThreshold, GaryConfig.instance.nbtBackingMapStringCanonicalization));
     }
 
     public void addTransformation(String key, Function<byte[], byte[]> value) {
-        LoliLogger.instance.info("Adding class {} to the transformation queue", key);
+        GaryLogger.instance.info("Adding class {} to the transformation queue", key);
         transformations.put(key, value);
     }
 
@@ -171,7 +171,7 @@ public class LoliTransformer implements IClassTransformer {
         reader.accept(node, 0);
 
         if (node.superName.equals("net/minecraft/client/renderer/block/model/BakedQuad")) {
-            node.superName = "zone/rong/loliasm/bakedquad/SupportingBakedQuad";
+            node.superName = "zone/rong/garyasm/bakedquad/SupportingBakedQuad";
         }
 
         Set<String> fieldsToLookOutFor = new ObjectOpenHashSet<>(new String[] { "face", "applyDiffuseLighting", "tintIndex" });
@@ -183,13 +183,13 @@ public class LoliTransformer implements IClassTransformer {
                 if (method.name.equals("<init>") && instruction instanceof MethodInsnNode) {
                     MethodInsnNode methodNode = (MethodInsnNode) instruction;
                     if (methodNode.getOpcode() == INVOKESPECIAL && methodNode.owner.equals("net/minecraft/client/renderer/block/model/BakedQuad")) {
-                        methodNode.owner = "zone/rong/loliasm/bakedquad/SupportingBakedQuad";
+                        methodNode.owner = "zone/rong/garyasm/bakedquad/SupportingBakedQuad";
                     }
                 } else if (instruction instanceof FieldInsnNode) {
                     FieldInsnNode fieldNode = (FieldInsnNode) instruction;
                     if (fieldNode.owner.equals("net/minecraft/client/renderer/block/model/BakedQuad")) {
                         if (fieldsToLookOutFor.contains(fieldNode.name)) {
-                            fieldNode.owner = "zone/rong/loliasm/bakedquad/SupportingBakedQuad";
+                            fieldNode.owner = "zone/rong/garyasm/bakedquad/SupportingBakedQuad";
                         }
                     }
                 }
@@ -212,12 +212,12 @@ public class LoliTransformer implements IClassTransformer {
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction instanceof MethodInsnNode && instruction.getOpcode() == INVOKEVIRTUAL && ((MethodInsnNode) instruction).name.equals("toLowerCase")) {
-                        LoliLogger.instance.info("Injecting calls in {}{} to canonicalize strings", node.name, method.name);
+                        GaryLogger.instance.info("Injecting calls in {}{} to canonicalize strings", node.name, method.name);
                         iter.previous();
                         iter.previous(); // Move to GETSTATIC
                         iter.remove(); // Remove GETSTATIC
                         iter.next(); // Replace INVOKEVIRTUAL with INVOKESTATIC
-                        iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/api/LoliStringPool", "lowerCaseAndCanonicalize", "(Ljava/lang/String;)Ljava/lang/String;", false));
+                        iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/api/GaryStringPool", "lowerCaseAndCanonicalize", "(Ljava/lang/String;)Ljava/lang/String;", false));
                     }
                 }
             }
@@ -240,13 +240,13 @@ public class LoliTransformer implements IClassTransformer {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction instanceof TypeInsnNode && instruction.getOpcode() == NEW) {
                         boolean bool = ((TypeInsnNode) instruction).desc.endsWith("$1");
-                        LoliLogger.instance.info("Canonizing {} IConditions", bool ? "TRUE" : "FALSE");
+                        GaryLogger.instance.info("Canonizing {} IConditions", bool ? "TRUE" : "FALSE");
                         iter.remove(); // Remove NEW
                         iter.next();
                         iter.remove(); // Remove DUP
                         iter.next();
                         iter.remove(); // Remove INVOKESPECIAL
-                        iter.add(new FieldInsnNode(GETSTATIC, "zone/rong/loliasm/client/models/conditions/CanonicalConditions", bool ? "TRUE" : "FALSE", "Lnet/minecraft/client/renderer/block/model/multipart/ICondition;"));
+                        iter.add(new FieldInsnNode(GETSTATIC, "zone/rong/garyasm/client/models/conditions/CanonicalConditions", bool ? "TRUE" : "FALSE", "Lnet/minecraft/client/renderer/block/model/multipart/ICondition;"));
                     }
                 }
             }
@@ -263,17 +263,17 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        final String getPredicate = LoliLoadingPlugin.isDeobf ? "getPredicate" : "func_188118_a";
+        final String getPredicate = GaryLoadingPlugin.isDeobf ? "getPredicate" : "func_188118_a";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(getPredicate)) {
-                final String conditions = LoliLoadingPlugin.isDeobf ? "conditions" : or ? "field_188127_c" : "field_188121_c";
-                LoliLogger.instance.info("Transforming {}::getPredicate to canonicalize different IConditions", node.name);
+                final String conditions = GaryLoadingPlugin.isDeobf ? "conditions" : or ? "field_188127_c" : "field_188121_c";
+                GaryLogger.instance.info("Transforming {}::getPredicate to canonicalize different IConditions", node.name);
                 method.instructions.clear();
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
                 method.instructions.add(new FieldInsnNode(GETFIELD, node.name, conditions, "Ljava/lang/Iterable;"));
                 method.instructions.add(new VarInsnNode(ALOAD, 1));
-                method.instructions.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/client/models/conditions/CanonicalConditions", or ? "orCache" : "andCache", "(Ljava/lang/Iterable;Lnet/minecraft/block/state/BlockStateContainer;)Lcom/google/common/base/Predicate;", false));
+                method.instructions.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/client/models/conditions/CanonicalConditions", or ? "orCache" : "andCache", "(Ljava/lang/Iterable;Lnet/minecraft/block/state/BlockStateContainer;)Lcom/google/common/base/Predicate;", false));
                 method.instructions.add(new InsnNode(ARETURN));
             }
         }
@@ -289,19 +289,19 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        final String getPredicate = LoliLoadingPlugin.isDeobf ? "getPredicate" : "func_188118_a";
+        final String getPredicate = GaryLoadingPlugin.isDeobf ? "getPredicate" : "func_188118_a";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(getPredicate)) {
-                LoliLogger.instance.info("Transforming {}::getPredicate to canonicalize different PropertyValueConditions", node.name);
+                GaryLogger.instance.info("Transforming {}::getPredicate to canonicalize different PropertyValueConditions", node.name);
                 method.instructions.clear();
                 method.instructions.add(new VarInsnNode(ALOAD, 1));
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
-                method.instructions.add(new FieldInsnNode(GETFIELD, node.name, LoliLoadingPlugin.isDeobf ? "key" : "field_188125_d", "Ljava/lang/String;"));
+                method.instructions.add(new FieldInsnNode(GETFIELD, node.name, GaryLoadingPlugin.isDeobf ? "key" : "field_188125_d", "Ljava/lang/String;"));
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
-                method.instructions.add(new FieldInsnNode(GETFIELD, node.name, LoliLoadingPlugin.isDeobf ? "value" : "field_188126_e", "Ljava/lang/String;"));
-                method.instructions.add(new FieldInsnNode(GETSTATIC, node.name, LoliLoadingPlugin.isDeobf ? "SPLITTER" : "field_188124_c", "Lcom/google/common/base/Splitter;"));
-                method.instructions.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/client/models/conditions/CanonicalConditions", "propertyValueCache", "(Lnet/minecraft/block/state/BlockStateContainer;Ljava/lang/String;Ljava/lang/String;Lcom/google/common/base/Splitter;)Lcom/google/common/base/Predicate;", false));
+                method.instructions.add(new FieldInsnNode(GETFIELD, node.name, GaryLoadingPlugin.isDeobf ? "value" : "field_188126_e", "Ljava/lang/String;"));
+                method.instructions.add(new FieldInsnNode(GETSTATIC, node.name, GaryLoadingPlugin.isDeobf ? "SPLITTER" : "field_188124_c", "Lcom/google/common/base/Splitter;"));
+                method.instructions.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/client/models/conditions/CanonicalConditions", "propertyValueCache", "(Lnet/minecraft/block/state/BlockStateContainer;Ljava/lang/String;Ljava/lang/String;Lcom/google/common/base/Splitter;)Lcom/google/common/base/Predicate;", false));
                 method.instructions.add(new InsnNode(ARETURN));
                 // method.localVariables.remove(0);
                 method.localVariables.clear();
@@ -319,16 +319,16 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        final String makeMultipartModel = LoliLoadingPlugin.isDeobf ? "makeMultipartModel" : "func_188647_a";
+        final String makeMultipartModel = GaryLoadingPlugin.isDeobf ? "makeMultipartModel" : "func_188647_a";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(makeMultipartModel)) {
-                LoliLogger.instance.info("Transforming {}::makeMultipartModel", node.name);
-                final String builderSelectors = LoliLoadingPlugin.isDeobf ? "builderSelectors" : "field_188649_a";
+                GaryLogger.instance.info("Transforming {}::makeMultipartModel", node.name);
+                final String builderSelectors = GaryLoadingPlugin.isDeobf ? "builderSelectors" : "field_188649_a";
                 method.instructions.clear();
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
                 method.instructions.add(new FieldInsnNode(GETFIELD, node.name, builderSelectors, "Ljava/util/Map;"));
-                method.instructions.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/client/models/MultipartBakedModelCache", "makeMultipartModel", "(Ljava/util/Map;)Lnet/minecraft/client/renderer/block/model/MultipartBakedModel;", false));
+                method.instructions.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/client/models/MultipartBakedModelCache", "makeMultipartModel", "(Ljava/util/Map;)Lnet/minecraft/client/renderer/block/model/MultipartBakedModel;", false));
                 method.instructions.add(new InsnNode(ARETURN));
             }
         }
@@ -343,7 +343,7 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        final String values = LoliLoadingPlugin.isDeobf ? "values" : "field_186802_b";
+        final String values = GaryLoadingPlugin.isDeobf ? "values" : "field_186802_b";
 
         node.fields.removeIf(f -> f.name.equals(values));
 
@@ -357,7 +357,7 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        final String soundRegistry = LoliLoadingPlugin.isDeobf ? "soundRegistry" : "field_148764_a";
+        final String soundRegistry = GaryLoadingPlugin.isDeobf ? "soundRegistry" : "field_148764_a";
 
         node.fields.removeIf(f -> f.name.equals(soundRegistry));
 
@@ -375,7 +375,7 @@ public class LoliTransformer implements IClassTransformer {
             if (method.name.equals("<init>")) {
                 ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
                 boolean isExperienceList = false;
-                LoliLogger.instance.info("Improving FurnaceRecipes. Lookups are now a lot faster.");
+                GaryLogger.instance.info("Improving FurnaceRecipes. Lookups are now a lot faster.");
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction instanceof MethodInsnNode) {
@@ -385,20 +385,20 @@ public class LoliTransformer implements IClassTransformer {
                             if (!isExperienceList) {
                                 iter.add(new TypeInsnNode(NEW, "it/unimi/dsi/fastutil/objects/Object2ObjectOpenCustomHashMap"));
                                 iter.add(new InsnNode(DUP));
-                                iter.add(new FieldInsnNode(GETSTATIC, "zone/rong/loliasm/api/HashingStrategies", "FURNACE_INPUT_HASH", "Lit/unimi/dsi/fastutil/Hash$Strategy;"));
+                                iter.add(new FieldInsnNode(GETSTATIC, "zone/rong/garyasm/api/HashingStrategies", "FURNACE_INPUT_HASH", "Lit/unimi/dsi/fastutil/Hash$Strategy;"));
                                 iter.add(new MethodInsnNode(INVOKESPECIAL, "it/unimi/dsi/fastutil/objects/Object2ObjectOpenCustomHashMap", "<init>", "(Lit/unimi/dsi/fastutil/Hash$Strategy;)V", false));
-                                if (LoliConfig.instance.furnaceExperienceVanilla) {
+                                if (GaryConfig.instance.furnaceExperienceVanilla) {
                                     break outer;
                                 }
                                 isExperienceList = true;
                             } else {
                                 iter.add(new TypeInsnNode(NEW, "it/unimi/dsi/fastutil/objects/Object2FloatOpenCustomHashMap"));
                                 iter.add(new InsnNode(DUP));
-                                iter.add(new FieldInsnNode(GETSTATIC, "zone/rong/loliasm/api/HashingStrategies", "FURNACE_INPUT_HASH", "Lit/unimi/dsi/fastutil/Hash$Strategy;"));
+                                iter.add(new FieldInsnNode(GETSTATIC, "zone/rong/garyasm/api/HashingStrategies", "FURNACE_INPUT_HASH", "Lit/unimi/dsi/fastutil/Hash$Strategy;"));
                                 iter.add(new MethodInsnNode(INVOKESPECIAL, "it/unimi/dsi/fastutil/objects/Object2FloatOpenCustomHashMap", "<init>", "(Lit/unimi/dsi/fastutil/Hash$Strategy;)V", false));
                                 iter.next();
                                 iter.add(new VarInsnNode(ALOAD, 0));
-                                iter.add(new FieldInsnNode(GETFIELD, "net/minecraft/item/crafting/FurnaceRecipes", LoliLoadingPlugin.isDeobf ? "experienceList" : "field_77605_c", "Ljava/util/Map;"));
+                                iter.add(new FieldInsnNode(GETFIELD, "net/minecraft/item/crafting/FurnaceRecipes", GaryLoadingPlugin.isDeobf ? "experienceList" : "field_77605_c", "Ljava/util/Map;"));
                                 iter.add(new TypeInsnNode(CHECKCAST, "it/unimi/dsi/fastutil/objects/Object2FloatFunction"));
                                 iter.add(new LdcInsnNode(0F));
                                 iter.add(new MethodInsnNode(INVOKEINTERFACE, "it/unimi/dsi/fastutil/objects/Object2FloatFunction", "defaultReturnValue", "(F)V", true));
@@ -442,7 +442,7 @@ public class LoliTransformer implements IClassTransformer {
                         }
                     }
                 }
-            } else if (method.name.equals(LoliLoadingPlugin.isDeobf ? "cloneEntry" : "func_148720_g")) {
+            } else if (method.name.equals(GaryLoadingPlugin.isDeobf ? "cloneEntry" : "func_148720_g")) {
                 ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
@@ -481,9 +481,9 @@ public class LoliTransformer implements IClassTransformer {
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction.getOpcode() == INVOKESTATIC) {
-                        iter.set(new TypeInsnNode(NEW, "zone/rong/loliasm/api/datastructures/LoliTagMap"));
+                        iter.set(new TypeInsnNode(NEW, "zone/rong/garyasm/api/datastructures/GaryTagMap"));
                         iter.add(new InsnNode(DUP));
-                        iter.add(new MethodInsnNode(INVOKESPECIAL, "zone/rong/loliasm/api/datastructures/LoliTagMap", "<init>", "()V", false));
+                        iter.add(new MethodInsnNode(INVOKESPECIAL, "zone/rong/garyasm/api/datastructures/GaryTagMap", "<init>", "()V", false));
                         break;
                     }
                 }
@@ -508,8 +508,8 @@ public class LoliTransformer implements IClassTransformer {
                     if (instruction.getOpcode() == INVOKESTATIC) {
                         MethodInsnNode methodInsnNode = (MethodInsnNode) instruction;
                         if (methodInsnNode.name.equals("values") && methodInsnNode.desc.equals("()[Lnet/minecraft/util/EnumFacing;")) {
-                            LoliLogger.instance.info("Transforming EnumFacing::values() to EnumFacing::VALUES in {}", node.name);
-                            iter.set(new FieldInsnNode(GETSTATIC, "net/minecraft/util/EnumFacing", LoliLoadingPlugin.isDeobf ? "VALUES" : "field_82609_l", "[Lnet/minecraft/util/EnumFacing;"));
+                            GaryLogger.instance.info("Transforming EnumFacing::values() to EnumFacing::VALUES in {}", node.name);
+                            iter.set(new FieldInsnNode(GETSTATIC, "net/minecraft/util/EnumFacing", GaryLoadingPlugin.isDeobf ? "VALUES" : "field_82609_l", "[Lnet/minecraft/util/EnumFacing;"));
                         }
                     }
                 }
@@ -526,9 +526,9 @@ public class LoliTransformer implements IClassTransformer {
         // Canonicalize default ClassLoader packages strings first so any more of the same package strings uses those instances instead.
 
         try {
-            Map<String, Package> packages = (Map<String, Package>)  LoliReflector.getField(ClassLoader.class, "packages").get(Launch.classLoader);
+            Map<String, Package> packages = (Map<String, Package>)  GaryReflector.getField(ClassLoader.class, "packages").get(Launch.classLoader);
             Set<String> packageStrings = packages.keySet();
-            packageStrings.forEach(LoliStringPool::canonicalize);
+            packageStrings.forEach(GaryStringPool::canonicalize);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -553,12 +553,12 @@ public class LoliTransformer implements IClassTransformer {
                             fieldNode.desc = "Ljava/util/Set;";
                             iter.previous();
                             iter.previous();
-                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "createHashSet", "()Lit/unimi/dsi/fastutil/objects/ObjectOpenHashSet;", false));
+                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/core/GaryHooks", "createHashSet", "()Lit/unimi/dsi/fastutil/objects/ObjectOpenHashSet;", false));
                             break;
                         }
                     }
                 }
-            } else if (method.name.equals("addClassEntry")) { // see: LoliHooks::modCandidate$override$addClassEntry
+            } else if (method.name.equals("addClassEntry")) { // see: GaryHooks::modCandidate$override$addClassEntry
                 method.instructions.clear();
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
                 method.instructions.add(new VarInsnNode(ALOAD, 1));
@@ -568,7 +568,7 @@ public class LoliTransformer implements IClassTransformer {
                 method.instructions.add(new FieldInsnNode(GETFIELD, "net/minecraftforge/fml/common/discovery/ModCandidate", "packages", "Ljava/util/Set;"));
                 method.instructions.add(new VarInsnNode(ALOAD, 0));
                 method.instructions.add(new FieldInsnNode(GETFIELD, "net/minecraftforge/fml/common/discovery/ModCandidate", "table", "Lnet/minecraftforge/fml/common/discovery/ASMDataTable;"));
-                method.instructions.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "modCandidate$override$addClassEntry", "(Lnet/minecraftforge/fml/common/discovery/ModCandidate;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Lnet/minecraftforge/fml/common/discovery/ASMDataTable;)V", false));
+                method.instructions.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/core/GaryHooks", "modCandidate$override$addClassEntry", "(Lnet/minecraftforge/fml/common/discovery/ModCandidate;Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;Lnet/minecraftforge/fml/common/discovery/ASMDataTable;)V", false));
                 method.instructions.add(new InsnNode(RETURN));
             } else if (method.name.equals("getContainedPackages")) { // Return ArrayList with Set elements
                 ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
@@ -594,7 +594,7 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        // node.fields.removeIf(f -> f.name.equals(LoliLoadingPlugin.isDeobf ? "data" : "field_74751_a"));
+        // node.fields.removeIf(f -> f.name.equals(GaryLoadingPlugin.isDeobf ? "data" : "field_74751_a"));
 
         for (MethodNode method : node.methods) {
             if (method.name.equals("<init>") && method.desc.equals("(Ljava/lang/String;)V")) {
@@ -602,7 +602,7 @@ public class LoliTransformer implements IClassTransformer {
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction.getOpcode() == PUTFIELD) {
-                        method.instructions.insertBefore(instruction, new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "nbtTagString$override$ctor", "(Ljava/lang/String;)Ljava/lang/String;", false));
+                        method.instructions.insertBefore(instruction, new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/core/GaryHooks", "nbtTagString$override$ctor", "(Ljava/lang/String;)Ljava/lang/String;", false));
                     }
                 }
             }
@@ -640,11 +640,11 @@ public class LoliTransformer implements IClassTransformer {
         reader.accept(node, 0);
 
         String[] fields = new String[5];
-        fields[0] = !LoliLoadingPlugin.isDeobf ? "field_82843_f" : "itemFrame";
-        fields[1] = !LoliLoadingPlugin.isDeobf ? "field_179552_h" : "canDestroyCacheBlock";
-        fields[2] = !LoliLoadingPlugin.isDeobf ? "field_179553_i" : "canDestroyCacheResult";
-        fields[3] = !LoliLoadingPlugin.isDeobf ? "field_179550_j" : "canPlaceOnCacheBlock";
-        fields[4] = !LoliLoadingPlugin.isDeobf ? "field_179551_k" : "canPlaceOnCacheResult";
+        fields[0] = !GaryLoadingPlugin.isDeobf ? "field_82843_f" : "itemFrame";
+        fields[1] = !GaryLoadingPlugin.isDeobf ? "field_179552_h" : "canDestroyCacheBlock";
+        fields[2] = !GaryLoadingPlugin.isDeobf ? "field_179553_i" : "canDestroyCacheResult";
+        fields[3] = !GaryLoadingPlugin.isDeobf ? "field_179550_j" : "canPlaceOnCacheBlock";
+        fields[4] = !GaryLoadingPlugin.isDeobf ? "field_179551_k" : "canPlaceOnCacheResult";
 
         node.fields.removeIf(f -> ArrayUtils.contains(fields, f.name));
 
@@ -659,7 +659,7 @@ public class LoliTransformer implements IClassTransformer {
         reader.accept(node, 0);
 
         for (MethodNode method : node.methods) {
-            if (method.name.equals(LoliLoadingPlugin.isDeobf ? "enableStandardItemLighting" : "func_74519_b")) {
+            if (method.name.equals(GaryLoadingPlugin.isDeobf ? "enableStandardItemLighting" : "func_74519_b")) {
                 ListIterator<AbstractInsnNode> iter = method.instructions.iterator();
                 while (iter.hasNext()) {
                     AbstractInsnNode instruction = iter.next();
@@ -692,7 +692,7 @@ public class LoliTransformer implements IClassTransformer {
                     AbstractInsnNode instruction = iter.next();
                     if (instruction.getOpcode() == PUTFIELD && ((FieldInsnNode) instruction).name.equals("label")) {
                         iter.previous();
-                        iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/api/LoliStringPool", "canonicalize", "(Ljava/lang/String;)Ljava/lang/String;", false));
+                        iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/api/GaryStringPool", "canonicalize", "(Ljava/lang/String;)Ljava/lang/String;", false));
                         // iter.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "intern", "()Ljava/lang/String;", false));
                         iter.next();
                     }
@@ -719,7 +719,7 @@ public class LoliTransformer implements IClassTransformer {
                         FieldInsnNode fieldNode = (FieldInsnNode) instruction;
                         if (fieldNode.name.equals("annotationName") || fieldNode.name.equals("className")) {
                             iter.previous();
-                            iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/core/LoliHooks", "asmData$redirect$CtorStringsToIntern", "(Ljava/lang/String;)Ljava/lang/String;", false));
+                            iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/core/GaryHooks", "asmData$redirect$CtorStringsToIntern", "(Ljava/lang/String;)Ljava/lang/String;", false));
                             iter.next();
                         }
                     }
@@ -746,7 +746,7 @@ public class LoliTransformer implements IClassTransformer {
                         FieldInsnNode fieldNode = (FieldInsnNode) instruction;
                         if (fieldNode.desc.equals("Ljava/lang/String")) {
                             iter.previous();
-                            iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/api/LoliStringPool", "canonicalize", "(Ljava/lang/String;)Ljava/lang/String;", false));
+                            iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/api/GaryStringPool", "canonicalize", "(Ljava/lang/String;)Ljava/lang/String;", false));
                             // iter.add(new MethodInsnNode(INVOKEVIRTUAL, "java/lang/String", "intern", "()Ljava/lang/String;", false));
                             iter.next();
                             break;
@@ -772,7 +772,7 @@ public class LoliTransformer implements IClassTransformer {
             MethodVisitor methodVisitor = writer.visitMethod(ACC_PUBLIC, "onEntityItemUpdate", "(Lnet/minecraft/entity/item/EntityItem;)Z", null, null);
             methodVisitor.visitCode();
             methodVisitor.visitVarInsn(ALOAD, 1);
-            methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/loliasm/common/modfixes/betterwithmods/BWMBlastingOilOptimization", "inject$ItemMaterial$onEntityItemUpdate", "(Lnet/minecraft/entity/item/EntityItem;)Z", false);
+            methodVisitor.visitMethodInsn(INVOKESTATIC, "zone/rong/garyasm/common/modfixes/betterwithmods/BWMBlastingOilOptimization", "inject$ItemMaterial$onEntityItemUpdate", "(Lnet/minecraft/entity/item/EntityItem;)Z", false);
             methodVisitor.visitInsn(IRETURN);
             methodVisitor.visitMaxs(2, 2);
             methodVisitor.visitEnd();
@@ -798,7 +798,7 @@ public class LoliTransformer implements IClassTransformer {
                         if (fieldNode.desc.equals("[I")) {
                             iter.previous();
                             iter.add(new VarInsnNode(ALOAD, 0));
-                            iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/bakedquad/LoliVertexDataPool", "canonicalize", "([ILnet/minecraft/client/renderer/block/model/BakedQuad;)[I", false));
+                            iter.add(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/bakedquad/GaryVertexDataPool", "canonicalize", "([ILnet/minecraft/client/renderer/block/model/BakedQuad;)[I", false));
                             method.maxStack = 3;
                             break;
                         }
@@ -826,27 +826,27 @@ public class LoliTransformer implements IClassTransformer {
                         MethodInsnNode methodNode = (MethodInsnNode) instruction;
                         switch (methodNode.name) {
                             case "newIdentityHashMap":
-                                methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
+                                methodNode.owner = "zone/rong/garyasm/core/GaryHooks";
                                 methodNode.name = "createReferenceMap";
                                 methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/Reference2ObjectOpenHashMap;";
                                 break;
                             case "newLinkedHashMap":
-                                methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
+                                methodNode.owner = "zone/rong/garyasm/core/GaryHooks";
                                 methodNode.name = "createLinkedMap";
                                 methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/Object2ObjectLinkedOpenHashMap;";
                                 break;
                             case "newHashMap":
-                                methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
+                                methodNode.owner = "zone/rong/garyasm/core/GaryHooks";
                                 methodNode.name = "createHashMap";
                                 methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap;";
                                 break;
                             case "newHashSet":
-                                methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
+                                methodNode.owner = "zone/rong/garyasm/core/GaryHooks";
                                 methodNode.name = "createHashSet";
                                 methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/ObjectOpenHashSet;";
                                 break;
                             case "newIdentityHashSet":
-                                methodNode.owner = "zone/rong/loliasm/core/LoliHooks";
+                                methodNode.owner = "zone/rong/garyasm/core/GaryHooks";
                                 methodNode.name = "createReferenceSet";
                                 methodNode.desc = "()Lit/unimi/dsi/fastutil/objects/ReferenceOpenHashSet;";
                                 break;
@@ -895,9 +895,9 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        String writeToNBT = !LoliLoadingPlugin.isDeobf ? "func_77955_b" : "writeToNBT";
-        String isEmpty = !LoliLoadingPlugin.isDeobf ? "func_82582_d" : "isEmpty";
-        String setTag = !LoliLoadingPlugin.isDeobf ? "func_74782_a" : "setTag";
+        String writeToNBT = !GaryLoadingPlugin.isDeobf ? "func_77955_b" : "writeToNBT";
+        String isEmpty = !GaryLoadingPlugin.isDeobf ? "func_82582_d" : "isEmpty";
+        String setTag = !GaryLoadingPlugin.isDeobf ? "func_74782_a" : "setTag";
 
         LabelNode branchLabel = new LabelNode(new Label());
         LabelNode returnLabel = null;
@@ -952,7 +952,7 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        String loadWorld = !LoliLoadingPlugin.isDeobf ? "func_71353_a" : "loadWorld";
+        String loadWorld = !GaryLoadingPlugin.isDeobf ? "func_71353_a" : "loadWorld";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(loadWorld)) {
@@ -998,8 +998,8 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        String handleJoinGame = !LoliLoadingPlugin.isDeobf ? "func_147282_a" : "handleJoinGame";
-        String handleRespawn = !LoliLoadingPlugin.isDeobf ? "func_147280_a" : "handleRespawn";
+        String handleJoinGame = !GaryLoadingPlugin.isDeobf ? "func_147282_a" : "handleJoinGame";
+        String handleRespawn = !GaryLoadingPlugin.isDeobf ? "func_147280_a" : "handleRespawn";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(handleJoinGame) || method.name.equals(handleRespawn)) {
@@ -1030,9 +1030,9 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        String orientCamera = !LoliLoadingPlugin.isDeobf ? "func_78467_g" : "orientCamera";
-        String rayTraceBlocksOld = !LoliLoadingPlugin.isDeobf ? "func_72933_a" : "rayTraceBlocks";
-        String rayTraceBlocksNew = !LoliLoadingPlugin.isDeobf ? "func_147447_a" : "rayTraceBlocks";
+        String orientCamera = !GaryLoadingPlugin.isDeobf ? "func_78467_g" : "orientCamera";
+        String rayTraceBlocksOld = !GaryLoadingPlugin.isDeobf ? "func_72933_a" : "rayTraceBlocks";
+        String rayTraceBlocksNew = !GaryLoadingPlugin.isDeobf ? "func_147447_a" : "rayTraceBlocks";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(orientCamera)) {
@@ -1067,8 +1067,8 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        String updateRenderer = !LoliLoadingPlugin.isDeobf ? "func_78464_a" : "updateRenderer";
-        String renderDistanceChunks = !LoliLoadingPlugin.isDeobf ? "field_151451_c" : "renderDistanceChunks";
+        String updateRenderer = !GaryLoadingPlugin.isDeobf ? "func_78464_a" : "updateRenderer";
+        String renderDistanceChunks = !GaryLoadingPlugin.isDeobf ? "field_151451_c" : "renderDistanceChunks";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(updateRenderer)) {
@@ -1107,8 +1107,8 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        String setupTerrain = !LoliLoadingPlugin.isDeobf ? "func_174970_a" : "setupTerrain";
-        String renderChunkBoundingBox = !LoliLoadingPlugin.isDeobf ? "field_178591_c" : "boundingBox";
+        String setupTerrain = !GaryLoadingPlugin.isDeobf ? "func_174970_a" : "setupTerrain";
+        String renderChunkBoundingBox = !GaryLoadingPlugin.isDeobf ? "field_178591_c" : "boundingBox";
 
         for (MethodNode method : node.methods) {
             if (method.name.equals(setupTerrain)) {
@@ -1118,7 +1118,7 @@ public class LoliTransformer implements IClassTransformer {
                     if (instruction.getOpcode() == GETFIELD) {
                         FieldInsnNode getField = (FieldInsnNode) instruction;
                         if (getField.name.equals(renderChunkBoundingBox)) {
-                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/patches/RenderGlobalPatch", "getCorrectBoundingBox", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;)Lnet/minecraft/util/math/AxisAlignedBB;", false));
+                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/patches/RenderGlobalPatch", "getCorrectBoundingBox", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;)Lnet/minecraft/util/math/AxisAlignedBB;", false));
                         }
                     }
                 }
@@ -1135,7 +1135,7 @@ public class LoliTransformer implements IClassTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0);
 
-        String renderChunkBoundingBox = !LoliLoadingPlugin.isDeobf ? "field_178591_c" : "boundingBox";
+        String renderChunkBoundingBox = !GaryLoadingPlugin.isDeobf ? "field_178591_c" : "boundingBox";
 
         for (MethodNode method : node.methods) {
             /* OptiFine adds this */
@@ -1146,7 +1146,7 @@ public class LoliTransformer implements IClassTransformer {
                     if (instruction.getOpcode() == GETFIELD) {
                         FieldInsnNode getField = (FieldInsnNode) instruction;
                         if (getField.name.equals(renderChunkBoundingBox)) {
-                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/loliasm/patches/RenderGlobalPatch", "getCorrectBoundingBox", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;)Lnet/minecraft/util/math/AxisAlignedBB;", false));
+                            iter.set(new MethodInsnNode(INVOKESTATIC, "zone/rong/garyasm/patches/RenderGlobalPatch", "getCorrectBoundingBox", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;)Lnet/minecraft/util/math/AxisAlignedBB;", false));
                         }
                     }
                 }

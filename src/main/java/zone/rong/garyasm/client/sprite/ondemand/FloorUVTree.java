@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand;
+package zone.rong.garyasm.client.sprite.ondemand;
 
 import it.unimi.dsi.fastutil.floats.Float2ObjectMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

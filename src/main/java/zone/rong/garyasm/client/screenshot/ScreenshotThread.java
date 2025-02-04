@@ -1,11 +1,11 @@
-package zone.rong.loliasm.client.screenshot;
+package zone.rong.garyasm.client.screenshot;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
-import zone.rong.loliasm.LoliLogger;
+import zone.rong.garyasm.GaryLogger;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -28,10 +28,10 @@ public class ScreenshotThread extends Thread {
                 fileName.getStyle().setUnderlined(true);
                 mc.addScheduledTask(() -> mc.ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("screenshot.success", fileName)));
             } catch (Throwable t) {
-                LoliLogger.instance.warn("Couldn't save screenshot", t);
+                GaryLogger.instance.warn("Couldn't save screenshot", t);
                 mc.addScheduledTask(() -> mc.ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("screenshot.failure", t.getMessage())));
             }
-        }, "LoliScreenshotThread");
+        }, "GaryScreenshotThread");
     }
 
 }

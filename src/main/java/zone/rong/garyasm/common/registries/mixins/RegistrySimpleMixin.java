@@ -1,4 +1,4 @@
-package zone.rong.loliasm.common.registries.mixins;
+package zone.rong.garyasm.common.registries.mixins;
 
 import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
@@ -6,8 +6,8 @@ import net.minecraft.util.registry.RegistrySimple;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.*;
-import zone.rong.loliasm.LoliASM;
-import zone.rong.loliasm.api.mixins.RegistrySimpleExtender;
+import zone.rong.garyasm.GaryASM;
+import zone.rong.garyasm.api.mixins.RegistrySimpleExtender;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -26,8 +26,8 @@ public class RegistrySimpleMixin<K, V> implements RegistrySimpleExtender {
      */
     @Overwrite
     protected Map<K, V> createUnderlyingMap() {
-        if (LoliASM.simpleRegistryInstances != null) {
-            LoliASM.simpleRegistryInstances.add(this);
+        if (GaryASM.simpleRegistryInstances != null) {
+            GaryASM.simpleRegistryInstances.add(this);
         }
         return new Object2ReferenceOpenHashMap<>();
     }

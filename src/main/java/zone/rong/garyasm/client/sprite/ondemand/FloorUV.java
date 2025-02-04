@@ -1,4 +1,4 @@
-package zone.rong.loliasm.client.sprite.ondemand;
+package zone.rong.garyasm.client.sprite.ondemand;
 
 public class FloorUV {
 
