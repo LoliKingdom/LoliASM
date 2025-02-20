@@ -4,6 +4,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import zone.rong.loliasm.LoliLogger;
+import zone.rong.loliasm.config.LoliConfig;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +28,7 @@ public class LoliSpriteMixinPlugin implements IMixinConfigPlugin {
             LoliLogger.instance.error("Optifine is installed. On demand sprites won't be activated as Optifine already has Smart Animations.");
             logged = true;
         }
-        return !LoliTransformer.isOptifineInstalled;
+        return LoliConfig.instance.onDemandAnimatedTextures && !LoliTransformer.isOptifineInstalled;
     }
 
     @Override
