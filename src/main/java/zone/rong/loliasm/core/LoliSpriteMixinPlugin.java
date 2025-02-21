@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class LoliSpriteMixinPlugin implements IMixinConfigPlugin {
 
-    static boolean logged = false;
+    private Boolean shouldApply;
 
     @Override
     public void onLoad(String s) { }
@@ -24,11 +24,17 @@ public class LoliSpriteMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String s, String s1) {
-        if (!logged) {
-            LoliLogger.instance.error("Optifine is installed. On demand sprites won't be activated as Optifine already has Smart Animations.");
-            logged = true;
+        if (this.shouldApply != null) {
+            return this.shouldApply;
         }
-        return LoliConfig.instance.onDemandAnimatedTextures && !LoliTransformer.isOptifineInstalled;
+        this.shouldApply = LoliConfig.instance.onDemandAnimatedTextures;
+        if (this.shouldApply) {
+            if (LoliTransformer.isOptifineInstalled) {
+                this.shouldApply = false;
+                LoliLogger.instance.error("Optifine is installed. onDemandAnimatedTextures won't be activated as Optifine already has Smart Animations.");
+            }
+        }
+        return this.shouldApply;
     }
 
     @Override
