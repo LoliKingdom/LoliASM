@@ -115,6 +115,7 @@ dependencies {
     compileOnly rfg.deobf('curse.maven:treasure2-289760:3758107')
     compileOnly rfg.deobf('curse.maven:time-speed-mod-221053:2991593')
     compileOnly rfg.deobf('curse.maven:gregtech-ce-unofficial-557242:3745499')
+    compileOnly rfg.deobf("curse.maven:railcraft-51195:3853491")
 
     api ('org.spongepowered:mixin:0.8.3') {
         transitive = false
