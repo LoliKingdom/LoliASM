@@ -20,7 +20,8 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
                 "mixins.modfixes_ebwizardry.json",
                 "mixins.modfixes_xu2.json",
                 "mixins.modfixes_b3m.json",
-                "mixins.searchtree_mod.json");
+                "mixins.searchtree_mod.json",
+                "mixins.modfixes_railcraft.json");
     }
 
     @Override
@@ -45,6 +46,8 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
                 return LoliConfig.instance.fixAmuletHolderCapability && Loader.isModLoaded("astralsorcery");
             case "mixins.modfixes_b3m.json":
                 return LoliConfig.instance.resourceLocationCanonicalization && Loader.isModLoaded("B3M"); // Stupid
+            case "mixins.modfixes_railcraft.json":
+                return LoliConfig.instance.efficientHashing && Loader.isModLoaded("railcraft");
         }
         return false;
     }
