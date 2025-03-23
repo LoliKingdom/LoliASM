@@ -18,14 +18,16 @@ import org.spongepowered.asm.mixin.Pseudo;
         "mrtjp.projectred.illumination.BlockLamp",
         "mrtjp.projectred.expansion.BlockMachine",
         "mrtjp.projectred.relocation.BlockFrame",
+        "mrtjp.projectred.exploration.BlockDecorativeWall",
+        "mrtjp.projectred.fabrication.BlockICMachine",
         "thefloydman.moremystcraft.block.BlockLockedLectern",
         "thefloydman.moremystcraft.block.BlockLockedBookstand",
         "buildcraft.lib.engine.BlockEngineBase_BC8",
         "buildcraft.factory.block.BlockDistiller"
 })
-public abstract class GenericDisableParticlesBlockMixin extends Block {
+public abstract class DisableAllParticlesBlockMixin extends Block {
 
-    protected GenericDisableParticlesBlockMixin(Material material) {
+    protected DisableAllParticlesBlockMixin(Material material) {
         super(material);
     }
 
