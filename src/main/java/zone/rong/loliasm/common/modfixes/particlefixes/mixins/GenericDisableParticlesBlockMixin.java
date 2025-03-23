@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 @Mixin(targets = {
         "mrtjp.projectred.illumination.BlockLamp",
         "mrtjp.projectred.expansion.BlockMachine",
+        "mrtjp.projectred.relocation.BlockFrame",
         "thefloydman.moremystcraft.block.BlockLockedLectern",
         "thefloydman.moremystcraft.block.BlockLockedBookstand",
         "buildcraft.lib.engine.BlockEngineBase_BC8",
