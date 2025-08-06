@@ -33,6 +33,10 @@ public class LoliSpriteMixinPlugin implements IMixinConfigPlugin {
                 this.shouldApply = false;
                 LoliLogger.instance.error("Optifine is installed. onDemandAnimatedTextures won't be activated as Optifine already has Smart Animations.");
             }
+            if (LoliTransformer.isCeleritasInstalled) {
+                this.shouldApply = false;
+                LoliLogger.instance.error("Celeritas is installed. onDemandAnimatedTextures won't be activated as Celeritas has similar optimizations.");
+            }
         }
         return this.shouldApply;
     }

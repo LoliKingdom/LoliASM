@@ -22,7 +22,7 @@ import static org.objectweb.asm.Opcodes.*;
 
 public class LoliTransformer implements IClassTransformer {
 
-    public static boolean isOptifineInstalled, isSodiumPortInstalled;
+    public static boolean isOptifineInstalled, isSodiumPortInstalled, isCeleritasInstalled;
     public static boolean squashBakedQuads = LoliConfig.instance.squashBakedQuads;
 
     Multimap<String, Function<byte[], byte[]>> transformations;
@@ -31,6 +31,7 @@ public class LoliTransformer implements IClassTransformer {
         LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
         isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
         isSodiumPortInstalled = LoliReflector.doesClassExist("me.jellysquid.mods.sodium.client.SodiumMixinTweaker");
+        isCeleritasInstalled = LoliReflector.doesClassExist("org.taumc.celeritas.core.CeleritasLoadingPlugin");
         if (squashBakedQuads) {
             if (isOptifineInstalled) {
                 squashBakedQuads = false;
