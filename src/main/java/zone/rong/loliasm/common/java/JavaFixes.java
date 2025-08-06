@@ -12,7 +12,7 @@ import java.lang.invoke.MethodHandle;
 import java.security.*;
 import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("all")
 public class JavaFixes {
@@ -44,7 +44,7 @@ public class JavaFixes {
         Stopwatch stopwatch = Stopwatch.createStarted();
         try {
             LoliStringPool.establishPool(LoliStringPool.FILE_PERMISSIONS_ID, 512);
-            HashMap<CodeSource, ProtectionDomain> pdcache = (HashMap<CodeSource, ProtectionDomain>) SECURECLASSLOADER$PDCACHE$GETTER.invoke(Launch.classLoader);
+            Map<CodeSource, ProtectionDomain> pdcache = (Map<CodeSource, ProtectionDomain>) SECURECLASSLOADER$PDCACHE$GETTER.invoke(Launch.classLoader);
             for (ProtectionDomain pd : pdcache.values()) {
                 PermissionCollection pc = pd.getPermissions();
                 if (pc != null) {
