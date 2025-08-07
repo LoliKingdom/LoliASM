@@ -15,6 +15,7 @@ import zone.rong.loliasm.config.LoliConfig;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.patches.*;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 
@@ -527,9 +528,13 @@ public class LoliTransformer implements IClassTransformer {
         // Canonicalize default ClassLoader packages strings first so any more of the same package strings uses those instances instead.
 
         try {
-            Map<String, Package> packages = (Map<String, Package>)  LoliReflector.getField(ClassLoader.class, "packages").get(Launch.classLoader);
-            Set<String> packageStrings = packages.keySet();
-            packageStrings.forEach(LoliStringPool::canonicalize);
+            Field packagesField = LoliReflector.getField(ClassLoader.class, "packages");
+            // Packages field is reflection blacklisted on newer Java versions
+            if (packagesField != null) {
+                Map<String, Package> packages = (Map<String, Package>) LoliReflector.getField(ClassLoader.class, "packages").get(Launch.classLoader);
+                Set<String> packageStrings = packages.keySet();
+                packageStrings.forEach(LoliStringPool::canonicalize);
+            }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
