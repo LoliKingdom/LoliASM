@@ -35,10 +35,13 @@ public class LoliTransformer implements IClassTransformer {
         if (squashBakedQuads) {
             if (isOptifineInstalled) {
                 squashBakedQuads = false;
-                LoliLogger.instance.info("Optifine is installed. BakedQuads won't be squashed as it is incompatible with OptiFine.");
+                LoliLogger.instance.error("Optifine is installed. BakedQuads won't be squashed as it is incompatible with OptiFine.");
             } else if (isSodiumPortInstalled) {
                 squashBakedQuads = false;
-                LoliLogger.instance.info("A sodium port is installed. BakedQuads won't be squashed as it is incompatible with Sodium.");
+                LoliLogger.instance.error("A sodium port is installed. BakedQuads won't be squashed as it is incompatible with Sodium.");
+            } else if (isCeleritasInstalled) {
+                squashBakedQuads = false;
+                LoliLogger.instance.error("Celeritas is installed. BakedQuads won't be squashed as it is incompatible with Celeritas.");
             }
         }
         transformations = MultimapBuilder.hashKeys(30).arrayListValues(1).build();
