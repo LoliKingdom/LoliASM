@@ -1,0 +1,13 @@
+{
+  "package": "zone.rong.loliasm.common.modfixes.crafttweaker.mixins",
+  "refmap": "mixins.loliasm.refmap.json",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "NBTConverterMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
