@@ -73,11 +73,7 @@ public class ModIdentifier {
             if (mod instanceof MinecraftDummyContainer || mod instanceof FMLContainer) {
                 continue;
             }
-            try {
-                modMap.computeIfAbsent(mod.getSource().getCanonicalFile(), k -> new ObjectArraySet<>()).add(mod);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            modMap.computeIfAbsent(mod.getSource().getAbsoluteFile(), k -> new ObjectArraySet<>()).add(mod);
         }
         return modMap;
     }
