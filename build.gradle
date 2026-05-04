@@ -60,9 +60,6 @@ repositories {
         url 'https://www.cursemaven.com'
     }
     maven {
-        url 'https://dvs1.progwml6.com/files/maven/'
-    }
-    maven {
         url 'https://modmaven.k-4u.nl/'
     }
     maven {
@@ -95,10 +92,11 @@ dependencies {
     compileOnly 'codechicken:ChickenASM:1.12-1.0.2.9'
     compileOnly 'epicsquid.mysticallib:mysticallib:1.12.2-+'
     compileOnly 'mezz.jei:jei_1.12.2:4.15.0.293'
-    compileOnly 'slimeknights.mantle:Mantle:1.12-1.3.3.55'
-    compileOnly 'slimeknights:TConstruct:1.12.2-2.13.0.183'
     compileOnly 'betterwithmods:BetterWithMods:1.12-2.3.20-1030'
     compileOnly 'CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.711'
+
+    implementation rfg.deobf("curse.maven:mantle-74924:2713386")
+    implementation rfg.deobf("curse.maven:tinkers-construct-74072:2902483")
 
     compileOnly rfg.deobf('codechicken:CodeChickenLib:1.12.2-3.2.3.358:universal')
     compileOnly rfg.deobf('com.azanor.baubles:Baubles:1.12-1.5.2')
