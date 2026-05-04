@@ -30,10 +30,12 @@ public class LoliMixinPlugin implements IMixinConfigPlugin {
         switch (mixinClassName) {
             case "zone.rong.loliasm.common.forgefixes.mixins.ChunkMixin":
                 return LoliConfig.instance.fixTileEntityOnLoadCME;
-            case "zone.rong.loliasm.common.forgefixes.mixins.EntityEntryMixin":
-                return LoliConfig.instance.fasterEntitySpawnPreparation;
             case "zone.rong.loliasm.common.forgefixes.mixins.DimensionTypeMixin":
                 return LoliConfig.instance.fixDimensionTypesInliningCrash;
+            case "zone.rong.loliasm.common.forgefixes.mixins.EntityEntryMixin":
+                return LoliConfig.instance.fasterEntitySpawnPreparation;
+            case "zone.rong.loliasm.common.forgefixes.mixins.ForgeEventFactoryMixin":
+                return LoliConfig.instance.fixFillBucketEventNullPointerException;
             case "zone.rong.loliasm.client.screenshot.mixins.MinecraftMixin":
                 return LoliConfig.instance.copyScreenshotToClipboard;
             case "zone.rong.loliasm.client.screenshot.mixins.ScreenShotHelperMixin":

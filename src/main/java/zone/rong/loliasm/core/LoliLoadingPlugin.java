@@ -231,8 +231,6 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                 return LoliConfig.instance.optimizeFurnaceRecipeStore;
             case "mixins.misc_fluidregistry.json":
                 return LoliConfig.instance.quickerEnableUniversalBucketCheck;
-            case "mixins.forgefixes.json":
-                return LoliConfig.instance.fixFillBucketEventNullPointerException || LoliConfig.instance.fixTileEntityOnLoadCME;
             case "mixins.capability.json":
                 return LoliConfig.instance.delayItemStackCapabilityInit;
             case "mixins.singletonevents.json":
