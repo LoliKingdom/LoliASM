@@ -68,6 +68,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     public LoliLoadingPlugin() {
         LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
         LoliLogger.instance.info("Lolis are preparing and loading in mixins since Rongmario's too lazy to write pure ASM at times despite the mod being called 'LoliASM'");
+
         if (LoliConfig.instance.sparkProfileCoreModLoading) {
             LoliSparker.start("coremod");
         }
@@ -88,19 +89,20 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         if (LoliConfig.instance.removeForgeSecurityManager) {
             UnsafeLolis.removeFMLSecurityManager();
         }
+
+        // Remove legacy cache
+        File modDir = new File(Launch.minecraftHome, "config/loliasm");
+        if (modDir.exists()) {
+            modDir.delete();
+        }
+
         if (LoliConfig.instance.crashReportImprovements || LoliConfig.instance.rewriteLoggingWithDeobfuscatedNames) {
-            File modDir = new File(Launch.minecraftHome, "config/loliasm");
-            modDir.mkdirs();
             // Initialize StacktraceDeobfuscator
             LoliLogger.instance.info("Initializing StacktraceDeobfuscator...");
             try {
-                File mappings = new File(modDir, "methods-stable_39.csv");
-                if (mappings.exists()) {
-                    LoliLogger.instance.info("Found MCP stable-39 method mappings: {}", mappings.getName());
-                } else {
-                    LoliLogger.instance.info("Downloading MCP stable-39 method mappings to: {}", mappings.getName());
+                try (InputStream is = this.getClass().getResource("/methods-stable_39.csv").openStream()) {
+                    StacktraceDeobfuscator.init(is);
                 }
-                StacktraceDeobfuscator.init(mappings);
             } catch (Exception e) {
                 LoliLogger.instance.error("Failed to get MCP stable-39 data!", e);
             }
