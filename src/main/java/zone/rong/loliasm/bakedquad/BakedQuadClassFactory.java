@@ -1,6 +1,5 @@
 package zone.rong.loliasm.bakedquad;
 
-import net.minecraft.launchwrapper.Launch;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;

@@ -91,9 +91,10 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
         }
 
         // Remove legacy cache
-        File modDir = new File(Launch.minecraftHome, "config/loliasm");
-        if (modDir.exists()) {
-            modDir.delete();
+        try {
+            FileUtils.deleteDirectory(new File(Launch.minecraftHome, "config/loliasm"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         if (LoliConfig.instance.crashReportImprovements || LoliConfig.instance.rewriteLoggingWithDeobfuscatedNames) {
