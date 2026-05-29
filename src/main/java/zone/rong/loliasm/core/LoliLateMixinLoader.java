@@ -23,7 +23,8 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
                 "mixins.searchtree_mod.json",
                 "mixins.modfixes_railcraft.json",
                 "mixins.modfixes_disable_broken_particles.json",
-                "mixins.modfixes_crafttweaker.json");
+                "mixins.modfixes_crafttweaker.json",
+                "mixins.modfixes_thaumcraft.json");
     }
 
     @Override
@@ -57,6 +58,10 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
                 int mapThreshold = LoliConfig.instance.optimizeNBTTagCompoundMapThreshold;
                 boolean canonicalizeString = LoliConfig.instance.nbtBackingMapStringCanonicalization;
                 return ((optimizeMap && mapThreshold > 0) || canonicalizeString) && LoliConfig.instance.optimizeCraftTweakerNBTConverter && Loader.isModLoaded("crafttweaker");
+            case "mixins.modfixes_thaumcraft.json":
+                // The @Overwrite reproduces 6.1.BETA26's method body verbatim; skip on any other build
+                return LoliConfig.instance.optimizeThaumcraftAspectGeneration && Loader.isModLoaded("thaumcraft") &&
+                        "6.1.BETA26".equals(Loader.instance().getIndexedModList().get("thaumcraft").getVersion());
         }
         return false;
     }
