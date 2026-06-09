@@ -82,7 +82,7 @@ repositories {
 
 dependencies {
     embed 'me.nallar.whocalled:WhoCalled:1.1'
-    implementation 'zone.rong:mixinbooter:7.1'
+    implementation 'zone.rong:mixinbooter:10.7'
     implementation files('./etc/spark-forge-deobf.jar')
 
     compileOnly 'com.enderio.core:EnderCore:1.12.2-+'
@@ -115,6 +115,7 @@ dependencies {
     compileOnly rfg.deobf('curse.maven:time-speed-mod-221053:2991593')
     compileOnly rfg.deobf('curse.maven:gregtech-ce-unofficial-557242:3745499')
     compileOnly rfg.deobf("curse.maven:railcraft-51195:3853491")
+    compileOnly rfg.deobf("curse.maven:advent-of-ascension-311054:3054253")
 
     api ('org.spongepowered:mixin:0.8.3') {
         transitive = false

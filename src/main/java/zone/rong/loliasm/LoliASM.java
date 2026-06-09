@@ -14,7 +14,7 @@ import zone.rong.loliasm.proxy.CommonProxy;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-@Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION, dependencies = "required-after:mixinbooter@[4.2,);after:jei;after:spark@[1.5.2]")
+@Mod(modid = "loliasm", name = "LoliASM", version = LoliLoadingPlugin.VERSION, dependencies = "required-after:mixinbooter@[10.7,);after:jei;after:spark@[1.5.2]")
 public class LoliASM {
 
     @SidedProxy(modId = "loliasm", clientSide = "zone.rong.loliasm.proxy.ClientProxy", serverSide = "zone.rong.loliasm.proxy.CommonProxy")
