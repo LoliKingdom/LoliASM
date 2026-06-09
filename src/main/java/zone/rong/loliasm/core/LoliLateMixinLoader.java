@@ -23,7 +23,8 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
                 "mixins.searchtree_mod.json",
                 "mixins.modfixes_railcraft.json",
                 "mixins.modfixes_disable_broken_particles.json",
-                "mixins.modfixes_crafttweaker.json");
+                "mixins.modfixes_crafttweaker.json",
+                "mixins.capability_aoa3.json");
     }
 
     @Override
@@ -57,6 +58,8 @@ public class LoliLateMixinLoader implements ILateMixinLoader {
                 int mapThreshold = LoliConfig.instance.optimizeNBTTagCompoundMapThreshold;
                 boolean canonicalizeString = LoliConfig.instance.nbtBackingMapStringCanonicalization;
                 return ((optimizeMap && mapThreshold > 0) || canonicalizeString) && LoliConfig.instance.optimizeCraftTweakerNBTConverter && Loader.isModLoaded("crafttweaker");
+            case "mixins.capability_aoa3.json":
+                return LoliConfig.instance.delayItemStackCapabilityInit && Loader.isModLoaded("aoa3");
         }
         return false;
     }
