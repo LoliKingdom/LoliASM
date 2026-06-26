@@ -6,11 +6,9 @@ import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import zone.rong.loliasm.LoliLogger;
 import zone.rong.loliasm.bakedquad.LoliVertexDataPool;
 import zone.rong.loliasm.client.models.bucket.LoliBakedDynBucket;
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Mod.EventBusSubscriber(modid = "loliasm", value = Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
     public static final List<Runnable> refreshAfterModels = new ArrayList<>();
@@ -58,7 +55,7 @@ public class ClientProxy extends CommonProxy {
             releaseSpriteFramesCache();
         }
         if (!LoliTransformer.isOptifineInstalled && LoliConfig.instance.vertexDataCanonicalization) {
-            LoliLogger.instance.info("{} total quads processed. {} unique vertex data array in LoliVertexDataPool, {} vertex data arrays deduplicated altogether during game load.", LoliVertexDataPool.getDeduplicatedCount(), LoliVertexDataPool.getSize(), LoliVertexDataPool.getDeduplicatedCount() - LoliVertexDataPool.getSize());
+            LoliLogger.instance.info("{} total quads processed. {} unique vertex data array in VertexDataPool, {} vertex data arrays deduplicated altogether during game load.", LoliVertexDataPool.getDeduplicatedCount(), LoliVertexDataPool.getSize(), LoliVertexDataPool.getDeduplicatedCount() - LoliVertexDataPool.getSize());
             MinecraftForge.EVENT_BUS.register(LoliVertexDataPool.class);
         }
     }

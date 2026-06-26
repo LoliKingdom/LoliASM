@@ -62,7 +62,7 @@ public class LoliVertexDataPool {
         // POOL.clear();
         // POOL.trim();
         POOL = null;
-        LoliLogger.instance.warn("Clearing LoliVertexDataPool");
+        LoliLogger.instance.warn("Clearing VertexDataPool");
     }
 
     @SubscribeEvent
@@ -70,7 +70,7 @@ public class LoliVertexDataPool {
         Minecraft minecraft = Minecraft.getMinecraft();
         if (minecraft.gameSettings.showDebugInfo) {
             ArrayList<String> list = event.getLeft();
-            list.add(String.format("%s%s%s: %s vertex data arrays processed. %s unique, %s deduplicated.", TextFormatting.AQUA, "<LoliASM>", TextFormatting.RESET, deduplicatedCount, uniqueCount, deduplicatedCount - uniqueCount));
+            list.add(String.format("%s%s%s: %s vertex data arrays processed. %s unique, %s deduplicated.", TextFormatting.AQUA, "<Chibi>", TextFormatting.RESET, deduplicatedCount, uniqueCount, deduplicatedCount - uniqueCount));
         }
     }
 

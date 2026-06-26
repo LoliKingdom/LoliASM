@@ -9,7 +9,7 @@ loliasm.crashscreen.summary=Minecraft遇到一个问题崩溃了。
 loliasm.crashscreen.paragraph1.line1=下列的mod被确定为崩溃的可能原因:
 
 loliasm.crashscreen.unknownCause=未知
-loliasm.crashscreen.identificationErrored=[鉴别错误,请报告给LoliASM]
+loliasm.crashscreen.identificationErrored=[鉴别错误,请报告给Chibi]
 
 loliasm.crashscreen.paragraph2.line1=点击列表中的任意mod即可访问它们的网站获取技术支持。
 loliasm.crashscreen.paragraph2.line2=一份报告已经生成，你可以在这里找到（点击）:
@@ -18,7 +18,7 @@ loliasm.crashscreen.reportSaveFailed=[保存报告错误,请查看日志]
 
 loliasm.crashscreen.paragraph3.line1=点击"获取链接"按钮在你的浏览器中打开它。
 loliasm.crashscreen.paragraph3.line2=我们建议您将此报告发送给mod的作者以帮助它们修复问题。
-loliasm.crashscreen.paragraph3.line3=由于安装了LoliASM，尽管发生了崩溃但是你可以继续游戏。
+loliasm.crashscreen.paragraph3.line3=由于安装了Chibi，尽管发生了崩溃但是你可以继续游戏。
 loliasm.crashscreen.paragraph3.line4= 
 
 loliasm.initerrorscreen.title=Minecraft未能启动!
@@ -39,7 +39,7 @@ loliasm.warnscreen.paragraph1.line3=The following mod(s) have been identified as
 loliasm.warnscreen.paragraph3.line1=点击"获取链接"按钮在你的浏览器中打开它。
 loliasm.warnscreen.paragraph3.line2=我们建议您将此报告发送给mod的作者以帮助它们修复问题。
 loliasm.warnscreen.paragraph3.line3=您可以继续游戏,但请注意，您稍后可能会遇到一些问题。
-loliasm.warnscreen.paragraph3.line4=可以在 Mods > LoliASM > Config > Crashes 中禁用此警告。
+loliasm.warnscreen.paragraph3.line4=可以在 Mods > Chibi > Config > Crashes 中禁用此警告。
 loliasm.warnscreen.paragraph3.line5= 
 
 loliasm.notification.title.unknown=发生未知问题!
