@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-@IFMLLoadingPlugin.Name("LoliASM")
+@IFMLLoadingPlugin.Name("Chibi")
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
@@ -66,8 +66,8 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     public static final boolean isClient = FMLLaunchHandler.side() == Side.CLIENT;
 
     public LoliLoadingPlugin() {
-        LoliLogger.instance.info("Lolis are on the {}-side.", isClient ? "client" : "server");
-        LoliLogger.instance.info("Lolis are preparing and loading in mixins since Rongmario's too lazy to write pure ASM at times despite the mod being called 'LoliASM'");
+        LoliLogger.instance.info("Chibis are on the {}-side.", isClient ? "client" : "server");
+        LoliLogger.instance.info("Chibis are preparing and loading in mixins since Rongmario's too lazy to write pure ASM at times despite the mod formerly being called 'CensoredASM'");
 
         if (LoliConfig.instance.sparkProfileCoreModLoading) {
             LoliSparker.start("coremod");
@@ -125,7 +125,7 @@ public class LoliLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
                     }
                 }
                 if (needToDGSFFFF) {
-                    LoliLogger.instance.fatal("LoliASM notices that you're using Eclipse OpenJ9 {}!", SystemUtils.JAVA_VERSION);
+                    LoliLogger.instance.fatal("Chibi notices that you're using Eclipse OpenJ9 {}!", SystemUtils.JAVA_VERSION);
                     LoliLogger.instance.fatal("This OpenJ9 version is outdated and contains a critical bug: https://github.com/eclipse-openj9/openj9/issues/8353");
                     LoliLogger.instance.fatal("Either use '-Xjit:disableGuardedStaticFinalFieldFolding' as part of your java arguments, or update OpenJ9!");
                 }

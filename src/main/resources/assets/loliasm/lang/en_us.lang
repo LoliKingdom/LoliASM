@@ -10,7 +10,7 @@ loliasm.crashscreen.summary=Minecraft ran into a problem and crashed.
 loliasm.crashscreen.paragraph1.line1=The following mod(s) have been identified as potential causes:
 
 loliasm.crashscreen.unknownCause=Unknown
-loliasm.crashscreen.identificationErrored=[Error identifying, report to LoliASM]
+loliasm.crashscreen.identificationErrored=[Error identifying, report to Chibi]
 
 loliasm.crashscreen.paragraph2.line1=Click any mod in the list to go to their website for support. A
 loliasm.crashscreen.paragraph2.line2=report has been generated with this name in your crash folder.
@@ -19,7 +19,7 @@ loliasm.crashscreen.reportSaveFailed=[Error saving report, see log]
 
 loliasm.crashscreen.paragraph3.line1=Click the "Get link" button to open it in your browser. You're
 loliasm.crashscreen.paragraph3.line2=encouraged to send this report to the mod's author to help
-loliasm.crashscreen.paragraph3.line3=them fix the issue. Since LoliASM is installed, you can keep
+loliasm.crashscreen.paragraph3.line3=them fix the issue. Since Chibi is installed, you can keep
 loliasm.crashscreen.paragraph3.line4=playing despite the crash.
 
 loliasm.initerrorscreen.title=Minecraft failed to start!
@@ -41,7 +41,7 @@ loliasm.warnscreen.paragraph3.line1=Click the "Get link" button to open it in yo
 loliasm.warnscreen.paragraph3.line2=encouraged to send this report to the mod's author to help
 loliasm.warnscreen.paragraph3.line3=them fix the issue. You can keep playing, but be aware that
 loliasm.warnscreen.paragraph3.line4=you will likely encounter some problems later on. This warning
-loliasm.warnscreen.paragraph3.line5=can be disabled in Mods > LoliASM > Config > Crashes.
+loliasm.warnscreen.paragraph3.line5=can be disabled in Mods > Chibi > Config > Crashes.
 
 loliasm.notification.title.unknown=An unknown problem occured!
 loliasm.notification.title.mod=%s ran into a problem!

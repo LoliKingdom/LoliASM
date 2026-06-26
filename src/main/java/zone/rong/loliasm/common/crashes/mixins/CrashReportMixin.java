@@ -76,7 +76,7 @@ public abstract class CrashReportMixin implements ICrashReportSuspectGetter {
     public String getCompleteReport() {
         StringBuilder builder = new StringBuilder();
         builder.append("---- Minecraft Crash Report ----\n")
-                .append("// Lolis deobfuscated this stacktrace using MCP's stable-39 mappings.\n")
+                .append("// Chibis deobfuscated this stacktrace using MCP's stable-39 mappings.\n")
                 .append("// ").append(getWittyComment());
         String blame = getFunnyBlame();
         if (!blame.isEmpty()) {
@@ -114,7 +114,7 @@ public abstract class CrashReportMixin implements ICrashReportSuspectGetter {
             if (Math.random() < 0.01 && !suspectedMods.isEmpty()) {
                 ModContainer mod = suspectedMods.iterator().next();
                 String author = mod.getMetadata().authorList.get(0);
-                return "The lolis blame " + author + "!";
+                return "The chibis blame " + author + "!";
             }
         } catch (Throwable ignored) {}
         return "";

@@ -106,7 +106,7 @@ public class LoliStringPool {
             }
             int size = getSize();
             long deduplicatedCount = getDeduplicatedCount();
-            list.add(String.format("%s%s%s: %s strings processed. %s unique, %s deduplicated.", TextFormatting.AQUA, "<LoliASM>", TextFormatting.RESET, deduplicatedCount, size, deduplicatedCount - size));
+            list.add(String.format("%s%s%s: %s strings processed. %s unique, %s deduplicated.", TextFormatting.AQUA, "<Chibi>", TextFormatting.RESET, deduplicatedCount, size, deduplicatedCount - size));
         }
     }
 
@@ -133,7 +133,7 @@ public class LoliStringPool {
 
         @Override
         protected void finalize() {
-            LoliLogger.instance.warn("Clearing LoliStringPool {}", id);
+            LoliLogger.instance.warn("Clearing StringPool {}", id);
         }
     }
 
