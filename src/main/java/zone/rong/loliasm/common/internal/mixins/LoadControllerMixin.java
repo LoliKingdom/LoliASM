@@ -53,7 +53,7 @@ public abstract class LoadControllerMixin {
     @Inject(method = "propogateStateMessage", at = @At("HEAD"))
     private void injectBeforeDistributingState(FMLEvent stateEvent, CallbackInfo ci) {
         if (hasSpark == null) {
-            hasSpark = Loader.isModLoaded("spark");
+            hasSpark = Loader.isModLoaded("spark") && loliasm$hasLegacySparkProfilerApi();
         }
         if (hasSpark) {
             if (stateEvent instanceof FMLStateEvent) {
@@ -119,6 +119,16 @@ public abstract class LoadControllerMixin {
                     LoliSparker.start("finalizing");
                 }
             }
+        }
+    }
+
+    @Unique
+    private static boolean loliasm$hasLegacySparkProfilerApi() {
+        try {
+            Class.forName("me.lucko.spark.common.sampler.Sampler").getMethod("stop");
+            return true;
+        } catch (ReflectiveOperationException | LinkageError ignored) {
+            return false;
         }
     }
 
