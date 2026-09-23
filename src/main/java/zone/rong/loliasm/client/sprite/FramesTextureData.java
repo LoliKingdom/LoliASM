@@ -27,8 +27,9 @@ public class FramesTextureData extends ArrayList<int[][]> {
 
     private static final Class<?> FOAMFIX_SPRITE = LoliReflector.getNullableClass("pl.asie.foamfix.client.FastTextureAtlasSprite");
     private static final int INACTIVITY_THRESHOLD = 20;
+    private static final int LOADING = -1;
 
-    private static boolean canReload = true;
+    private static volatile boolean canReload = true;
 
     private static final Set<FramesTextureData> tickingSpritesSet = new ReferenceLinkedOpenHashSet<>();
 
@@ -82,6 +83,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
 
     private final TextureAtlasSprite sprite;
 
+    // Set to LOADING while load() runs. A separate boolean field would pad each instance by 8 bytes.
     private int ticksInactive;
 
     public FramesTextureData(TextureAtlasSprite sprite) {
@@ -102,7 +104,9 @@ public class FramesTextureData extends ArrayList<int[][]> {
     }
 
     private void markActive() {
-        this.ticksInactive = 0;
+        if (this.ticksInactive != LOADING) {
+            this.ticksInactive = 0;
+        }
         synchronized (tickingSpritesSet) {
             tickingSpritesSet.add(this);
         }
@@ -111,7 +115,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
     @Override
     public int[][] get(int index) {
         synchronized (this) {
-            if (canReload && super.isEmpty()) {
+            if (canReload && ticksInactive != LOADING && super.isEmpty()) {
                 load();
             }
             markActive();
@@ -122,7 +126,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
     @Override
     public int size() {
         synchronized (this) {
-            if (canReload && super.isEmpty()) {
+            if (canReload && ticksInactive != LOADING && super.isEmpty()) {
                 load();
             }
             markActive();
@@ -133,7 +137,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
     @Override
     public boolean isEmpty() {
         synchronized (this) {
-            if (canReload && super.isEmpty()) {
+            if (canReload && ticksInactive != LOADING && super.isEmpty()) {
                 load();
             }
             markActive();
@@ -151,8 +155,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
 
     private void load() {
         // Prevent recursive loads
-        boolean oldReload = canReload;
-        canReload = false;
+        ticksInactive = LOADING;
         try {
             ResourceLocation location = getLocation();
             IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
@@ -175,7 +178,7 @@ public class FramesTextureData extends ArrayList<int[][]> {
                 }
             }
         } finally {
-            canReload = oldReload;
+            ticksInactive = 0;
         }
     }
 
