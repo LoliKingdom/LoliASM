@@ -100,7 +100,7 @@ public class LoliSparker {
 
         @Override
         public String getName() {
-            return "LoliASM";
+            return "Chibi";
         }
 
         @Override
@@ -121,7 +121,7 @@ public class LoliSparker {
         private final String name;
 
         public LoliCommandSender() {
-            this.name = "LoliASM";
+            this.name = "Chibi";
         }
 
         @Override

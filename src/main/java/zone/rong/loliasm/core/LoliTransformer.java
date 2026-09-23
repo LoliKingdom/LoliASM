@@ -28,7 +28,7 @@ public class LoliTransformer implements IClassTransformer {
     Multimap<String, Function<byte[], byte[]>> transformations;
 
     public LoliTransformer() {
-        LoliLogger.instance.info("The lolis are now preparing to bytecode manipulate your game.");
+        LoliLogger.instance.info("The chibis are now preparing to bytecode manipulate your game.");
         isOptifineInstalled = LoliReflector.doesClassExist("optifine.OptiFineForgeTweaker");
         isSodiumPortInstalled = LoliReflector.doesClassExist("me.jellysquid.mods.sodium.client.SodiumMixinTweaker");
         isCeleritasInstalled = LoliReflector.doesClassExist("org.taumc.celeritas.core.CeleritasLoadingPlugin");

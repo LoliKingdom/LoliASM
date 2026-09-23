@@ -10,7 +10,7 @@ loliasm.crashscreen.summary=O Minecraft parou em decorrência de um erro.
 loliasm.crashscreen.paragraph1.line1=Os seguinte(s) mod(s) foram apontados como possíveis causas:
 
 loliasm.crashscreen.unknownCause=Desconhecido
-loliasm.crashscreen.identificationErrored=[Erro ao identificar, relatar ao LoliASM]
+loliasm.crashscreen.identificationErrored=[Erro ao identificar, relatar ao Chibi]
 
 loliasm.crashscreen.paragraph2.line1=Clique em qualquer mod da lista para acessar a página de assistência. Um
 loliasm.crashscreen.paragraph2.line2=relatório foi criado e pode ser acessado aqui (clique):
@@ -19,7 +19,7 @@ loliasm.crashscreen.reportSaveFailed=[Erro ao salvar o relatório, ver o registr
 
 loliasm.crashscreen.paragraph3.line1=Clique em "Acessar link" para abri-lo em seu navegador. Se preferir,
 loliasm.crashscreen.paragraph3.line2=envie este relatório para o desenvolvedor do mod a fim de ajudá-lo
-loliasm.crashscreen.paragraph3.line3=a corrigir o erro. Já que o LoliASM está instalado, você pode
+loliasm.crashscreen.paragraph3.line3=a corrigir o erro. Já que o Chibi está instalado, você pode
 loliasm.crashscreen.paragraph3.line4=continuar jogando.
 
 loliasm.initerrorscreen.title=O Minecraft não pôde ser inicializado!
@@ -41,7 +41,7 @@ loliasm.warnscreen.paragraph3.line1=Clique em "Acessar link" para abri-lo em seu
 loliasm.warnscreen.paragraph3.line2=envie este relatório ao desenvolvedor do mod para ajudá-lo a
 loliasm.warnscreen.paragraph3.line3=corrigir o erro. Você pode continuar jogando, porém, esteja ciente
 loliasm.warnscreen.paragraph3.line4=de que mais falhas podem ocorrer. Este aviso pode ser desativado em
-loliasm.warnscreen.paragraph3.line5=Mods > LoliASM > Config. > Erros
+loliasm.warnscreen.paragraph3.line5=Mods > Chibi > Config. > Erros
 
 loliasm.notification.title.unknown=Ocorreu um problema desconhecido!
 loliasm.notification.title.mod=%s está com problemas!

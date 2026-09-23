@@ -510,7 +510,7 @@ public abstract class MinecraftMixin implements IMinecraftExtender {
                 File modFile = new File(url.toURI());
                 defaultResourcePacks.add(modFile.isDirectory() ? new FolderResourcePack(modFile) : new FileResourcePack(modFile));
             } catch (Throwable t) {
-                LoliLogger.instance.error("Failed to load LoliASM resource pack", t);
+                LoliLogger.instance.error("Failed to load Chibi resource pack", t);
             }
             resourceManager = new SimpleReloadableResourceManager(metadataSerializer);
             renderEngine = new TextureManager(resourceManager);
@@ -604,7 +604,7 @@ public abstract class MinecraftMixin implements IMinecraftExtender {
             updateDisplay();
             Thread.yield();
             Display.sync(60);
-            checkGLError("LoliASM GUI Loop");
+            checkGLError("Chibi GUI Loop");
         }
     }
 

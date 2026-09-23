@@ -39,8 +39,8 @@ public class CommonProxy {
         boolean vanillaFix = Loader.isModLoaded("vanillafix");
         if (texFix || vanillaFix) {
             List<String> messages = new ArrayList<>();
-            messages.add("LoliASM has replaced and improved upon functionalities from the following mods.");
-            messages.add("Therefore, these mods are now incompatible with LoliASM:");
+            messages.add("Chibi has replaced and improved upon functionalities from the following mods.");
+            messages.add("Therefore, these mods are now incompatible with Chibi:");
             messages.add("");
             if (texFix) {
                 messages.add(TextFormatting.BOLD + "TexFix");
@@ -99,7 +99,7 @@ public class CommonProxy {
         }
         if (LoliStringPool.getSize() > 0) {
             MinecraftForge.EVENT_BUS.register(LoliStringPool.class);
-            LoliLogger.instance.info("{} total strings processed. {} unique strings in LoliStringPool, {} strings deduplicated altogether during game load.", LoliStringPool.getDeduplicatedCount(), LoliStringPool.getSize(), LoliStringPool.getDeduplicatedCount() - LoliStringPool.getSize());
+            LoliLogger.instance.info("{} total strings processed. {} unique strings in StringPool, {} strings deduplicated altogether during game load.", LoliStringPool.getDeduplicatedCount(), LoliStringPool.getSize(), LoliStringPool.getDeduplicatedCount() - LoliStringPool.getSize());
         }
         if (LoliConfig.instance.filePermissionsCacheCanonicalization) {
             MinecraftForge.EVENT_BUS.register(JavaFixes.INSTANCE);

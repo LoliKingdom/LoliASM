@@ -8,7 +8,7 @@ loliasm.crashscreen.summary=Minecraft a rencontré un problème et a crashé.
 loliasm.crashscreen.paragraph1.line1=Ces mod(s) ont été identifiés comme des causes potentielles:
 
 loliasm.crashscreen.unknownCause=Cause inconnue
-loliasm.crashscreen.identificationErrored=[Problème dans l'identification, raportez à LoliASM]
+loliasm.crashscreen.identificationErrored=[Problème dans l'identification, raportez à Chibi]
 
 loliasm.crashscreen.paragraph2.line1=Cliquez n'importe quel mod dans la liste pour aller a leur page
 loliasm.crashscreen.paragraph2.line2=pour du support. Un raport a été génére et se trouve ici (cliquez):
@@ -17,7 +17,7 @@ loliasm.crashscreen.reportSaveFailed=[Erreur durant la sauvegarde, voir le log]
 
 loliasm.crashscreen.paragraph3.line1=Cliquez le bouton « Obtenir un lien » pour l'ouvrir dans votre
 loliasm.crashscreen.paragraph3.line2=navigateur web. Vous êtez encouragé de l'envoyer à l'auteur du
-loliasm.crashscreen.paragraph3.line3=mod pour l'aider à résoudre le problême. Vu que LoliASM est
+loliasm.crashscreen.paragraph3.line3=mod pour l'aider à résoudre le problême. Vu que Chibi est
 loliasm.crashscreen.paragraph3.line4=installé, vous pouvez continuer a jouer malgré le crash.
 
 loliasm.warnscreen.title=Problème potentiel trouvé!
